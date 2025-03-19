@@ -39,7 +39,7 @@ function Extract-Files {
 
         # Esperar hasta que el archivo no esté en uso por IDM o Hydra
         Write-Output "Verificando si $($archive.FullName) está en uso por IDM o Hydra..."
-        while (Is-FileInUseByIDMan -filePath $archive.FullName -or Is-FileInUseByHydra -filePath $archive.FullName)) {
+        while (Is-FileInUseByIDMan -filePath $archive.FullName -or Is-FileInUseByHydra -filePath $archive.FullName) {
             Write-Output "Archivo en uso por IDM o Hydra. Esperando..."
             Start-Sleep -Seconds 5
         }
