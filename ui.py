@@ -144,7 +144,9 @@ def process_games(update_progress):
         "vcredist_2015-2019_x86.exe",
         "vcredist_x64.exe",
         "vcredist_x86.exe",
-        "xnafx40_redist.msi"
+        "xnafx40_redist.msi",
+        "Setup.exe",
+        "setup.exe"
         ]
 
         for folder in extracted_folders:
@@ -385,6 +387,25 @@ class GameInstallationProgress(QMainWindow):
         self.log_text.setReadOnly(True)
         layout.addWidget(self.log_text)
 
+        self.cancelar_button = QPushButton("Cancelar")
+        self.cancelar_button.setFixedHeight(30)
+        self.cancelar_button.setStyleSheet("""
+            QPushButton {
+                background-color: #F3F3F3;
+                color: #202020;
+                border-radius: 6px;
+                font-weight: bold;
+                font-family: 'Segoe UI', sans-serif;
+                font-size: 14px;
+            }
+            QPushButton:hover {
+                background-color: #D8DEE9;
+            }
+        """)
+        self.cancelar_button.clicked.connect(lambda: sys.exit(0))
+        self.cancelar_button.setVisible(True)  # Inicialmente oculto
+        layout.addWidget(self.cancelar_button) 
+
         self.finish_button = QPushButton("Finalizar")
         self.finish_button.setFixedHeight(30)
         self.finish_button.setStyleSheet("""
@@ -402,7 +423,7 @@ class GameInstallationProgress(QMainWindow):
         """)
         self.finish_button.clicked.connect(lambda: sys.exit(0))
         self.finish_button.setVisible(False)  # Inicialmente oculto
-        layout.addWidget(self.finish_button)    
+        layout.addWidget(self.finish_button)   
 
         self.is_dragging = False
         self.drag_position = QPoint()
@@ -431,6 +452,7 @@ class GameInstallationProgress(QMainWindow):
         self.status_label.setText("Instalación completada")
         self.progress_bar.setValue(100)
         self.title.setText("Instalado")
+        self.cancelar_button.setVisible(False)
         self.finish_button.setVisible(True)
         # Iniciar el temporizador para cerrar la ventana después de 5 segundos
         # self.close_timer.start(5000)  # 5000 milisegundos = 5 segundos

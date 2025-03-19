@@ -54,8 +54,7 @@ function Extract-Files {
             }
             cls
             Write-Output "Archivo ya no está en uso por Hydra. Ejecutando instalador..."
-
-            # Ejecutar el instalador sin importar el nombre del archivo
+            
             Start-Process -FilePath "python" -ArgumentList "`"D:\Programacion\Python\Automatic Game Instalation\ui.py`"" -NoNewWindow -Wait
             Write-Output "ui.py ejecutado para $($archive.FullName)"
         } else {
