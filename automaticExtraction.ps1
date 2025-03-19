@@ -37,30 +37,32 @@ function Extract-Files {
             New-Item -Path $extractionPath -ItemType Directory | Out-Null
         }
 
-        # Esperar hasta que el archivo no esté en uso ni por IDMan.exe ni por Hydra.exe
-        Write-Output "Verificando si $($archive.FullName) esta en uso por IDM o Hydra..."
-        while (Is-FileInUseByIDMan -filePath $archive.FullName -or Is-FileInUseByHydra -filePath $archive.FullName) {
+        # Esperar hasta que el archivo no esté en uso por IDM o Hydra
+        Write-Output "Verificando si $($archive.FullName) está en uso por IDM o Hydra..."
+        while (Is-FileInUseByIDMan -filePath $archive.FullName -or Is-FileInUseByHydra -filePath $archive.FullName)) {
             Write-Output "Archivo en uso por IDM o Hydra. Esperando..."
             Start-Sleep -Seconds 5
         }
 
-        # Verificar si el archivo fue usado por Hydra.exe
+        # Si el archivo fue usado por Hydra, esperar hasta que ya no lo esté
         if (Is-FileInUseByHydra -filePath $archive.FullName) {
             Write-Output "Archivo usado por Hydra. Esperando a que termine de descargar..."
             while (Is-FileInUseByHydra -filePath $archive.FullName) {
-                Write-Output "Archivo aun en uso por Hydra. Esperando..."
+                Write-Output "Archivo aún en uso por Hydra. Esperando..."
                 Start-Sleep -Seconds 5
                 cls
             }
             cls
-            Write-Output "Archivo ya no esta en uso por Hydra. Ejecutando instalador..."
-            
-            if ($archive.Name -like "*SteamRIP*") {
-                Write-Output "Archivo contiene 'SteamRIP'. Ejecutando instalador..."
-                Start-Process -FilePath "python" -ArgumentList "`"D:\Programacion\Python\Automatic Game Instalation\ui.py`"" -NoNewWindow -Wait
-                Write-Output "ui.py ejecutado para $($archive.FullName)"
-            }
+            Write-Output "Archivo ya no está en uso por Hydra."
+        }
+
+        # Si contiene "SteamRIP", ejecutar instalador
+        if ($archive.Name -like "*SteamRIP*") {
+            Write-Output "Archivo contiene 'SteamRIP'. Ejecutando instalador..."
+            Start-Process -FilePath "python" -ArgumentList "`"D:\Programacion\Python\Automatic Game Instalation\ui.py`"" -NoNewWindow -Wait
+            Write-Output "ui.py ejecutado para $($archive.FullName)"
         } else {
+            # Si el archivo no es SteamRIP o ya fue manejado por el instalador, extraerlo
             Write-Output "Extrayendo $($archive.FullName) a $extractionPath..."
             $arguments = "x `"$($archive.FullName)`" -o`"$extractionPath`" -aoa"
             Start-Process -FilePath "7z.exe" -ArgumentList $arguments -NoNewWindow -Wait
@@ -71,6 +73,7 @@ function Extract-Files {
         }
     }
 }
+
 
 
 
