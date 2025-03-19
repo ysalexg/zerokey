@@ -37,14 +37,14 @@ function Extract-Files {
             New-Item -Path $extractionPath -ItemType Directory | Out-Null
         }
 
-        # Esperar hasta que el archivo no esté en uso por IDM o Hydra
+        # Esperar hasta que el archivo no esté en uso ni por IDMan.exe ni por Hydra.exe
         Write-Output "Verificando si $($archive.FullName) está en uso por IDM o Hydra..."
         while (Is-FileInUseByIDMan -filePath $archive.FullName -or Is-FileInUseByHydra -filePath $archive.FullName) {
             Write-Output "Archivo en uso por IDM o Hydra. Esperando..."
             Start-Sleep -Seconds 5
         }
 
-        # Si el archivo fue usado por Hydra, esperar hasta que ya no lo esté
+        # Verificar si el archivo fue usado por Hydra.exe
         if (Is-FileInUseByHydra -filePath $archive.FullName) {
             Write-Output "Archivo usado por Hydra. Esperando a que termine de descargar..."
             while (Is-FileInUseByHydra -filePath $archive.FullName) {
@@ -53,16 +53,12 @@ function Extract-Files {
                 cls
             }
             cls
-            Write-Output "Archivo ya no está en uso por Hydra."
-        }
+            Write-Output "Archivo ya no está en uso por Hydra. Ejecutando instalador..."
 
-        # Si contiene "SteamRIP", ejecutar instalador
-        if ($archive.Name -like "*SteamRIP*") {
-            Write-Output "Archivo contiene 'SteamRIP'. Ejecutando instalador..."
+            # Ejecutar el instalador sin importar el nombre del archivo
             Start-Process -FilePath "python" -ArgumentList "`"D:\Programacion\Python\Automatic Game Instalation\ui.py`"" -NoNewWindow -Wait
             Write-Output "ui.py ejecutado para $($archive.FullName)"
         } else {
-            # Si el archivo no es SteamRIP o ya fue manejado por el instalador, extraerlo
             Write-Output "Extrayendo $($archive.FullName) a $extractionPath..."
             $arguments = "x `"$($archive.FullName)`" -o`"$extractionPath`" -aoa"
             Start-Process -FilePath "7z.exe" -ArgumentList $arguments -NoNewWindow -Wait
