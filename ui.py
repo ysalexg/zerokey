@@ -79,7 +79,7 @@ def extract_archives(update_progress):
                         nested_archive = os.path.join(root, file)
                         nested_destination = os.path.join(destination_folder, Path(file).stem)
                         extract_recursive(nested_archive, nested_destination)
-                        os.remove(nested_archive)  # Opcional: elimina el archivo comprimido anidado
+                        # os.remove(nested_archive)  # Opcional: elimina el archivo comprimido anidado
 
         # Usamos os.walk para recorrer todo el download_folder recursivamente
         compressed_files = []
@@ -98,7 +98,7 @@ def extract_archives(update_progress):
             extracted_paths.append(extraction_path)
             update_progress(progress, f"Extrayendo archivos...")
             extract_recursive(file, extraction_path)
-            os.remove(file)  # Opcional: elimina el archivo original después de la extracción
+            # os.remove(file)  # Opcional: elimina el archivo original después de la extracción
             progress += progress_step
 
         log_messages.append(f"\033[32mArchivos extraídos correctamente.\033[0m")
@@ -112,9 +112,11 @@ def extract_archives(update_progress):
 # Eliminar las carpetas de extracción específicas   
 def cleanup_extraction_paths(update_progress):
     try:
-        for path in extracted_paths:
+        # Solo eliminamos las carpetas que fueron procesadas exitosamente
+        for path in successful_paths:
             if os.path.exists(path):
                 shutil.rmtree(path)
+                print(f"Eliminada carpeta de extracción: {path}")
         update_progress(100, "Instalación completada.")
     except Exception as e:
         update_progress(0, f"Error al limpiar las carpetas: {e}")
@@ -128,7 +130,6 @@ def load_manifest():
 def process_games(update_progress):
     try:
         print("Cargando manifest...")
-        # log_messages.append("Cargando manifest...")
         update_progress(85, "Cargando base de datos...")
         manifest_data = load_manifest()
         log_messages.append("\033[32mManifest cargado correctamente.\033[0m")
@@ -151,7 +152,6 @@ def process_games(update_progress):
 
         for folder in extracted_folders:
             print(f"Procesando carpeta: {folder}")
-            # log_messages.append(f"Procesando carpeta: {folder}")
 
             executables = []  # Lista para almacenar los ejecutables encontrados
 
@@ -166,6 +166,10 @@ def process_games(update_progress):
                 no_exec_msg = f"No se encontró ejecutable en: {folder}"
                 print(no_exec_msg)
                 log_messages.append(no_exec_msg)
+                # No agregamos esta carpeta a la lista de successful_paths
+                # Y la removemos de extracted_paths si está ahí
+                if folder in extracted_paths:
+                    extracted_paths.remove(folder)
                 continue
 
             # Procesar cada ejecutable encontrado
@@ -173,6 +177,7 @@ def process_games(update_progress):
                 # Si process_executable devuelve True, detener el procesamiento de más ejecutables
                 if process_executable(exe_file, exe_path, manifest_data, update_progress):
                     print(f"Procesamiento exitoso, deteniendo búsqueda en {folder}.")
+                    successful_paths.append(folder)  # Agregar a la lista de éxito
                     break  # Salir del bucle de ejecutables
     except Exception as e:
         error_msg = f"Error procesando juegos: {e}"
