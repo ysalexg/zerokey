@@ -1,9 +1,4 @@
 # ENHANCEMENTS
-# Integrar DODI (cant) - FitGirl - Xatab - Kaos - GOG - Generic
-# Subir porcentaje de acuerdo a porcentaje de extracción
-# Si no encuentra ejecutable -> buscar por nombre en steamdb -> usar config para determinar el .exe
-# Sino, si no encuentra ejecutable -> buscar todos los .exe en steamdb -> si encuentra coincidencia, usar appid encontrado para el resto
-
 # Al terminar development -> descomentar os.remove (borrar solo si es exitoso) y el cerrado automatico (cerrar solo si es exitoso)
 
 import os
@@ -70,39 +65,68 @@ def is_excluded(folder_path):
 
 def extract_archives(update_progress):
     try:
-        def extract_recursive(file_path, destination_folder):
-            # Extrae un archivo comprimido y verifica si hay otros archivos comprimidos dentro
+        def extract_recursive(file_path, destination_folder, start_progress=None, file_progress_range=None, is_main=True):
             os.makedirs(destination_folder, exist_ok=True)
-            subprocess.run(["7z", "x", file_path, f"-o{destination_folder}", "-aoa"], check=True)
+            
+            if is_main and start_progress is not None and file_progress_range is not None:
+                # Monitorear progreso para la extracción principal
+                process = subprocess.Popen(
+                    ["7z", "x", file_path, f"-o{destination_folder}", "-aoa", "-bsp1"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True
+                )
+                for line in process.stdout:
+                    if "%" in line:
+                        try:
+                            percentage = int(line.split("%")[0].strip())
+                            file_progress = percentage / 100.0
+                            total_progress = start_progress + file_progress * file_progress_range
+                            update_progress(
+                                int(total_progress),
+                                f"Extrayendo juego... {percentage}%"
+                            )
+                        except ValueError:
+                            pass
+                process.wait()
+                if process.returncode != 0:
+                    raise subprocess.CalledProcessError(process.returncode, process.args)
+            else:
+                # Extracción anidada sin monitoreo de progreso
+                subprocess.run(["7z", "x", file_path, f"-o{destination_folder}", "-aoa"], check=True)
+
+            # Buscar archivos comprimidos anidados
             for root, dirs, files in os.walk(destination_folder):
                 for file in files:
                     if file.endswith(('.zip', '.rar', '.7z')):
                         nested_archive = os.path.join(root, file)
                         nested_destination = os.path.join(destination_folder, Path(file).stem)
-                        extract_recursive(nested_archive, nested_destination)
-                        os.remove(nested_archive)  # Opcional: elimina el archivo comprimido anidado
+                        extract_recursive(nested_archive, nested_destination, update_progress, is_main=False)
+                        # os.remove(nested_archive)  # Descomentar al finalizar desarrollo si es exitoso
 
-        # Usamos os.walk para recorrer todo el download_folder recursivamente
+        # Recolectar archivos comprimidos
         compressed_files = []
         for root, dirs, files in os.walk(download_folder):
             for file in files:
                 if file.endswith(('.zip', '.rar', '.7z')):
                     compressed_files.append(os.path.join(root, file))
 
-        progress_step = 40 // max(len(compressed_files), 1)
-        progress = 20
+        # Calcular el rango de progreso para la extracción (20% a 60%)
+        total_extraction_progress = 40  # 60% - 20%
+        num_files = len(compressed_files)
+        file_progress_range = total_extraction_progress / num_files if num_files > 0 else 0
+        progress = 20  # Inicio del rango de extracción
 
         for file in compressed_files:
             extraction_path = os.path.join(extraction_folder, Path(file).stem)
             if is_excluded(extraction_path):
                 continue
             extracted_paths.append(extraction_path)
-            update_progress(progress, f"Extrayendo archivos...")
-            extract_recursive(file, extraction_path)
-            os.remove(file)  # Opcional: elimina el archivo original después de la extracción
-            progress += progress_step
+            extract_recursive(file, extraction_path, progress, file_progress_range, is_main=True)
+            progress += file_progress_range
+            # os.remove(file)  # Descomentar al finalizar desarrollo si es exitoso
 
-        log_messages.append(f"\033[32mArchivos extraídos correctamente.\033[0m")
+        log_messages.append("\033[32mArchivos extraídos correctamente.\033[0m")
     except Exception as e:
         error_msg = f"Error durante la extracción: {e}"
         update_progress(0, error_msg)
@@ -313,7 +337,7 @@ class GameInstallationProgress(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Instalación de Juego")
-        self.setGeometry(100, 100, 255, 225)
+        self.setGeometry(100, 100, 255, 255)
         
         # Quitar barra de ventana
         self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.Tool)
