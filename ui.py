@@ -44,7 +44,7 @@ def resource_path(relative_path):
 # Descargar manifest.yaml
 def download_manifest(update_progress):
     try:
-        update_progress(10, "Descargando base de datos...")
+        update_progress(10, "Descargando base de datos...", log_message="Descargando base de datos...")
         print("Descargando manifest...")
         response = requests.get(manifest_url, headers={'User-Agent': 'Mozilla/5.0'})
         response.raise_for_status()
@@ -54,7 +54,7 @@ def download_manifest(update_progress):
         log_messages.append("\033[32mManifest descargado correctamente.\033[0m")
     except Exception as e:
         error_msg = f"Error al descargar el manifest: {e}"
-        update_progress(0, f"Error al descargar el manifest: {e}")
+        update_progress(0, f"Error al descargar el manifest: {e}", log_message=f"Error al descargar el manifest: {e}")
         print(error_msg)
         log_messages.append(error_msg)
         raise
@@ -84,7 +84,8 @@ def extract_archives(update_progress):
                             total_progress = start_progress + file_progress * file_progress_range
                             update_progress(
                                 int(total_progress),
-                                f"Extrayendo juego... {percentage}%"
+                                f"Extrayendo juego... {percentage}%",
+                                log_message=None  # No agregar al log durante el progreso
                             )
                         except ValueError:
                             pass
@@ -102,7 +103,7 @@ def extract_archives(update_progress):
                         nested_archive = os.path.join(root, file)
                         nested_destination = os.path.join(destination_folder, Path(file).stem)
                         extract_recursive(nested_archive, nested_destination, update_progress, is_main=False)
-                        # os.remove(nested_archive)  # Descomentar al finalizar desarrollo si es exitoso
+                        os.remove(nested_archive)  # Descomentar al finalizar desarrollo si es exitoso
 
         # Recolectar archivos comprimidos
         compressed_files = []
@@ -122,14 +123,20 @@ def extract_archives(update_progress):
             if is_excluded(extraction_path):
                 continue
             extracted_paths.append(extraction_path)
+            # Mensaje único para el log al inicio de la extracción
+            update_progress(
+                progress,
+                f"Iniciando extracción de {os.path.basename(file)}...",
+                log_message="Extrayendo juego..."
+            )
             extract_recursive(file, extraction_path, progress, file_progress_range, is_main=True)
             progress += file_progress_range
-            # os.remove(file)  # Descomentar al finalizar desarrollo si es exitoso
+            os.remove(file)  # Descomentar al finalizar desarrollo si es exitoso
 
         log_messages.append("\033[32mArchivos extraídos correctamente.\033[0m")
     except Exception as e:
         error_msg = f"Error durante la extracción: {e}"
-        update_progress(0, error_msg)
+        update_progress(0, error_msg, log_message=error_msg)
         print(error_msg)
         log_messages.append(error_msg)
         raise
@@ -142,9 +149,9 @@ def cleanup_extraction_paths(update_progress):
             if os.path.exists(path):
                 shutil.rmtree(path)
                 print(f"Eliminada carpeta de extracción: {path}")
-        update_progress(100, "Instalación completada.")
+        update_progress(100, "Instalación completada.", log_message="Instalación completada.")
     except Exception as e:
-        update_progress(0, f"Error al limpiar las carpetas: {e}")
+        update_progress(0, f"Error al limpiar las carpetas: {e}", log_message=f"Error al limpiar las carpetas: {e}")
 
 # Leer manifest.yaml
 def load_manifest():
@@ -155,7 +162,7 @@ def load_manifest():
 def process_games(update_progress):
     try:
         print("Cargando manifest...")
-        update_progress(85, "Cargando base de datos...")
+        update_progress(85, "Cargando base de datos...", log_message="Cargando base de datos...")
         manifest_data = load_manifest()
         log_messages.append("\033[32mManifest cargado correctamente.\033[0m")
         extracted_folders = [
@@ -315,13 +322,13 @@ def save_game_name(folder_name, output_file="game_name.txt"):
 
 class GameInstallationThread(QThread):
     progress_update = pyqtSignal(int)
-    status_update = pyqtSignal(str)
+    status_update = pyqtSignal(tuple)
     installation_complete = pyqtSignal()
 
     def run(self):
         try:
-            def update_progress(progress, message):
-                self.status_update.emit(message)
+            def update_progress(progress, message, log_message=None):
+                self.status_update.emit((message, log_message))
                 self.progress_update.emit(progress)
 
             download_manifest(update_progress)
@@ -331,13 +338,13 @@ class GameInstallationThread(QThread):
 
             self.installation_complete.emit()
         except Exception as e:
-            self.status_update.emit(f"Error crítico: {str(e)}")
+            self.status_update.emit((f"Error crítico: {str(e)}", f"Error crítico: {str(e)}"))
 
 class GameInstallationProgress(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Instalación de Juego")
-        self.setGeometry(100, 100, 255, 255)
+        self.setFixedSize(255, 255)  # Tamaño fijo de 255x255 píxeles
         
         # Quitar barra de ventana
         self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.Tool)
@@ -415,6 +422,7 @@ class GameInstallationProgress(QMainWindow):
         # Área de log de mensajes estilizada
         self.log_text = QTextEdit()
         self.log_text.setReadOnly(True)
+        self.log_text.setMaximumHeight(100)
         layout.addWidget(self.log_text)
 
         self.cancelar_button = QPushButton("Cancelar")
@@ -474,9 +482,11 @@ class GameInstallationProgress(QMainWindow):
     def update_progress(self, value):
         self.progress_bar.setValue(value)
     
-    def update_status(self, message):
+    def update_status(self, status_tuple):
+        message, log_message = status_tuple
         self.status_label.setText(message)
-        self.log_text.append(message)
+        if log_message:
+            self.log_text.append(log_message)
     
     def on_installation_complete(self):
         self.status_label.setText("Instalación completada")
