@@ -34,6 +34,7 @@ excluded_folders = [
 
 log_messages = []
 extracted_paths = []
+successful_paths = []
 
 def resource_path(relative_path):
     """Obtiene la ruta absoluta del recurso, funciona tanto para desarrollo como para el ejecutable"""
@@ -79,7 +80,7 @@ def extract_archives(update_progress):
                         nested_archive = os.path.join(root, file)
                         nested_destination = os.path.join(destination_folder, Path(file).stem)
                         extract_recursive(nested_archive, nested_destination)
-                        # os.remove(nested_archive)  # Opcional: elimina el archivo comprimido anidado
+                        os.remove(nested_archive)  # Opcional: elimina el archivo comprimido anidado
 
         # Usamos os.walk para recorrer todo el download_folder recursivamente
         compressed_files = []
@@ -98,7 +99,7 @@ def extract_archives(update_progress):
             extracted_paths.append(extraction_path)
             update_progress(progress, f"Extrayendo archivos...")
             extract_recursive(file, extraction_path)
-            # os.remove(file)  # Opcional: elimina el archivo original después de la extracción
+            os.remove(file)  # Opcional: elimina el archivo original después de la extracción
             progress += progress_step
 
         log_messages.append(f"\033[32mArchivos extraídos correctamente.\033[0m")
