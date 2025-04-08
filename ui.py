@@ -14,12 +14,14 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QLabel,
 from PyQt5.QtCore import QThread, pyqtSignal, Qt, QPoint, QTimer
 from PyQt5.QtGui import QFont, QIcon
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
 # Variables globales
 download_folder = "E:\\Descargas"
 extraction_folder = "D:\\Extracciones"
 game_folder = "D:\\Juegos"
 manifest_url = "https://raw.githubusercontent.com/mtkennerly/ludusavi-manifest/refs/heads/master/data/manifest.yaml"
-manifest_path = "manifest.yaml"
+manifest_path = os.path.join(script_dir, "manifest.yaml")
 
 excluded_folders = [
     r"D:\Extracciones\Drive Cache",
