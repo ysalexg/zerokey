@@ -1,6 +1,3 @@
-# ENHANCEMENTS
-# Al terminar development -> descomentar os.remove (borrar solo si es exitoso) y el cerrado automatico (cerrar solo si es exitoso)
-
 import os
 import sys
 import requests
