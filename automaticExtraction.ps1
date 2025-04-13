@@ -120,6 +120,7 @@ while ($true) {
             Write-Output "Moviendo archivo no comprimido: $($file.FullName) -> $destination"
             Move-Item -Path $file.FullName -Destination $destination -Force
 
+            Close-IDMan
             # Ejecutar notificationExtract.py
             $notifScript = Join-Path $PSScriptRoot "notificationExtract.py"
             Write-Output "Ejecutando notificación de archivo movido: $notifScript"
