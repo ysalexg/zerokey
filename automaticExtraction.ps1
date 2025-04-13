@@ -100,17 +100,34 @@ function Is-HydraRunning {
 
 # Bucle principal
 while ($true) {
-    # Esperar a que IDMan.exe esté en ejecución o que un archivo esté en uso por Hydra.exe
     Write-Output "Esperando a que IDM este en ejecucion o que un archivo este en uso por Hydra..."
 
-    # Aquí se verifica si IDMan.exe está en ejecución o si algún archivo está siendo manejado por Hydra.exe
-    while (-not (Is-IDManRunning) -and (Get-ChildItem -Path $downloadFolder -Include *.rar, *.zip, *.7z -File -Recurse | Where-Object { Is-FileInUseByHydra -filePath $_.FullName }).Count -eq 0) {
-        Start-Sleep -Seconds 5
+    while (-not (Is-IDManRunning) -and (Get-ChildItem -Path $downloadFolder -File -Recurse | Where-Object { Is-FileInUseByHydra -filePath $_.FullName }).Count -eq 0) {
+        Start-Sleep -Seconds 3
     }
 
-    Write-Output "IDM o archivo en uso por Hydra detectado. Comenzando la extraccion de archivos..."
+    Write-Output "IDM o archivo en uso por Hydra detectado. Comprobando archivos..."
 
-    # Verificar si hay archivos para extraer
+    # Obtener todos los archivos
+    $allFiles = Get-ChildItem -Path $downloadFolder -File -Recurse
+
+    foreach ($file in $allFiles) {
+        $extension = $file.Extension.ToLower()
+
+        if ($extension -ne ".rar" -and $extension -ne ".zip" -and $extension -ne ".7z") {
+            # Archivo NO es comprimido, mover a Extracciones
+            $destination = Join-Path -Path $outputFolder -ChildPath $file.Name
+            Write-Output "Moviendo archivo no comprimido: $($file.FullName) -> $destination"
+            Move-Item -Path $file.FullName -Destination $destination -Force
+
+            # Ejecutar notificationExtract.py
+            $notifScript = Join-Path $PSScriptRoot "notificationExtract.py"
+            Write-Output "Ejecutando notificación de archivo movido: $notifScript"
+            & python $notifScript
+        }
+    }
+
+    # Verificar si hay archivos comprimidos para extraer
     $filesToExtract = Get-ChildItem -Path $downloadFolder -Include *.rar, *.zip, *.7z -File -Recurse
 
     if ($filesToExtract.Count -gt 0) {
@@ -123,14 +140,14 @@ while ($true) {
         # Esperar a que IDMan.exe o Hydra.exe se vuelva a ejecutar
         Write-Output "Esperando a que IDM o Hydra se vuelvan a iniciar..."
         while (-not (Is-IDManRunning) -and -not (Is-HydraRunning)) {
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds 3
         }
 
         Write-Output "IDM o Hydra detectados nuevamente. Continuando con la siguiente verificacion..."
     } else {
-        Write-Output "No hay archivos para extraer."
+        Write-Output "No hay archivos comprimidos para extraer."
     }
 
-    # Esperar un intervalo antes de la próxima verificación
-    Start-Sleep -Seconds 5
+    Start-Sleep -Seconds 3
 }
+
