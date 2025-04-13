@@ -238,48 +238,45 @@ def save_full_executable_path(target_folder, matching_exe, output_file="full_exe
 
 def process_executable(executable, folder_path, manifest_data, update_progress):
     """
-    Procesa un ejecutable, manejando nombres genéricos mediante steam_emu.ini,
-    y asegurando que coincidan tanto el nombre del exe como el AppId en el manifest.
+    Procesa un ejecutable, siempre intentando leer steam_emu.ini para AppId,
+    y si no existe o no resuelve, hace el flujo normal de matching por nombre.
     """
-    generic_names = {"setup.exe", "launcher.exe"}
     resolved_game = None
     resolved_exe = executable
     resolved_path = folder_path
 
-    # 1) Si es nombre genérico, intentar extraer AppId de steam_emu.ini
-    if executable.lower() in generic_names:
-        ini_path = os.path.join(folder_path, "steam_emu.ini")
-        if os.path.isfile(ini_path):
-            appid = None
+    # Intentar siempre extraer AppId de steam_emu.ini si existe
+    ini_path = os.path.join(folder_path, "steam_emu.ini")
+    if os.path.isfile(ini_path):
+        appid = None
+        # Primero intento UTF-8, si falla pruebo Latin-1
+        try:
             with open(ini_path, "r", encoding="utf-8") as f:
-                for line in f:
-                    if line.strip().startswith("AppId="):
-                        _, appid = line.strip().split("=", 1)
-                        break
-            if appid:
-                # 2) Buscar en el manifest la entrada con steam.id == appid
-                for game_name, game_info in manifest_data.items():
-                    if str(game_info.get("steam", {}).get("id", "")) == appid:
-                        launch_paths = game_info.get("launch", {})
-                        if not launch_paths:
-                            break
-                        # Tomar el primer launch path
+                lines = f.readlines()
+        except UnicodeDecodeError:
+            with open(ini_path, "r", encoding="latin-1") as f:
+                lines = f.readlines()
+
+        for line in lines:
+            if line.strip().startswith("AppId="):
+                _, appid = line.strip().split("=", 1)
+                break
+        if appid:
+            for game_name, game_info in manifest_data.items():
+                if str(game_info.get("steam", {}).get("id", "")) == appid:
+                    launch_paths = game_info.get("launch", {})
+                    if launch_paths:
                         desired_exe = os.path.basename(next(iter(launch_paths.keys())))
-                        # Buscar ese exe dentro de la carpeta
                         for root, _, files in os.walk(folder_path):
                             if desired_exe.lower() in (f.lower() for f in files):
                                 resolved_exe = next(f for f in files if f.lower() == desired_exe.lower())
                                 resolved_path = root
                                 resolved_game = (game_name, game_info)
                                 break
-                        break
+                    break
 
-    # 3) Si no resolvimos por AppId, hacemos el flujo normal de matching por nombre
+    # Si no se resolvió vía AppId, usar matching por nombre de exe en manifest
     if not resolved_game:
-        exe_files = [
-            (f, folder_path) for f in os.listdir(folder_path)
-            if f.lower().endswith(".exe")
-        ]
         for game_name, game_info in manifest_data.items():
             for launch_path in game_info.get("launch", {}):
                 if os.path.basename(launch_path).lower() == executable.lower():
@@ -288,19 +285,15 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             if resolved_game:
                 break
 
-    # 4) Si tenemos ya la entrada correcta, procedemos a mover/guardar datos
+    # Si tenemos la entrada correcta, procedemos a mover/guardar datos
     if resolved_game:
         game_name, game_info = resolved_game
         install_dir = next(iter(game_info.get("installDir", {}).keys()), game_name)
         app_id = game_info.get("steam", {}).get("id", None)
 
-        # Carpeta destino
         target_folder = os.path.join(game_folder, install_dir)
-        executable_msg = f"\033[32mEjecutable encontrado: {resolved_exe} (AppID={app_id})\033[0m"
-        print(executable_msg)
-        log_messages.append(executable_msg)
+        log_messages.append(f"\033[32mEjecutable encontrado: {resolved_exe} (AppID={app_id})\033[0m")
 
-        # Guardar exe y game_path
         out_dir = r"D:\Programacion\Python\Automatic Game Instalation"
         os.makedirs(out_dir, exist_ok=True)
         with open(os.path.join(out_dir, "executable.txt"), "w", encoding="utf-8") as f:
@@ -308,24 +301,22 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         with open(os.path.join(out_dir, "game_path.txt"), "w", encoding="utf-8") as f:
             f.write(target_folder)
 
-        # Mover carpeta si no existe destino
         if not os.path.exists(target_folder):
             save_game_name(install_dir)
             shutil.move(resolved_path, target_folder)
             log_messages.append(f"\033[32mMovido {resolved_path} a {target_folder}\033[0m")
         else:
-            print(f"La carpeta destino ya existe: {target_folder}")
+            log_messages.append(f"La carpeta destino ya existe: {target_folder}")
 
-        # Guardar ruta completa del exe si hay AppID
         if app_id:
             save_full_executable_path(target_folder, resolved_exe)
         else:
-            print(f"No se encontró AppID para el juego {game_name}")
+            log_messages.append(f"No se encontró AppID para el juego {game_name}")
 
         return True
 
-    # 5) Si no encontramos nada
-    print(f"No se encontró información en el manifest para ningún ejecutable en {folder_path}.")
+    # Si no encontramos nada en el manifest
+    log_messages.append(f"No se encontró información en el manifest para ningún ejecutable en {folder_path}.")
     return False
 
 
