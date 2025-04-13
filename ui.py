@@ -238,44 +238,100 @@ def save_full_executable_path(target_folder, matching_exe, output_file="full_exe
 
 def process_executable(executable, folder_path, manifest_data, update_progress):
     """
-    Procesa un ejecutable, siempre intentando leer steam_emu.ini para AppId,
-    y si no existe o no resuelve, hace el flujo normal de matching por nombre.
+    Procesa un ejecutable:
+      1) Busca recursivamente steam_emu.ini, cream_api.ini y steam_appid.txt
+      2) Extrae todos los AppId que encuentre
+      3) Si hay al menos 2 coincidencias, las usa. Si hay 1, también.
+      4) Si no hay AppId, matching por nombre en el manifest.
     """
     resolved_game = None
     resolved_exe = executable
     resolved_path = folder_path
 
-    # Intentar siempre extraer AppId de steam_emu.ini si existe
-    ini_path = os.path.join(folder_path, "steam_emu.ini")
-    if os.path.isfile(ini_path):
-        appid = None
-        # Primero intento UTF-8, si falla pruebo Latin-1
+    # 1) Buscar recursivamente los archivos de AppId
+    ini_paths = []
+    cream_paths = []
+    steam_txt_paths = []
+    for root, dirs, files in os.walk(folder_path):
+        for f in files:
+            name = f.lower()
+            if name == "steam_emu.ini":
+                ini_paths.append(os.path.join(root, f))
+            elif name == "cream_api.ini":
+                cream_paths.append(os.path.join(root, f))
+            elif name == "steam_appid.txt":
+                steam_txt_paths.append(os.path.join(root, f))
+
+    # 2) Recolectar posibles AppIds
+    appid_candidates = []
+
+    # steam_emu.ini
+    for ini_path in ini_paths:
         try:
             with open(ini_path, "r", encoding="utf-8") as f:
                 lines = f.readlines()
         except UnicodeDecodeError:
             with open(ini_path, "r", encoding="latin-1") as f:
                 lines = f.readlines()
-
         for line in lines:
             if line.strip().startswith("AppId="):
-                _, appid = line.strip().split("=", 1)
+                _, aid = line.strip().split("=", 1)
+                appid_candidates.append(aid.strip())
                 break
-        if appid:
-            for game_name, game_info in manifest_data.items():
-                if str(game_info.get("steam", {}).get("id", "")) == appid:
-                    launch_paths = game_info.get("launch", {})
-                    if launch_paths:
-                        desired_exe = os.path.basename(next(iter(launch_paths.keys())))
-                        for root, _, files in os.walk(folder_path):
-                            if desired_exe.lower() in (f.lower() for f in files):
-                                resolved_exe = next(f for f in files if f.lower() == desired_exe.lower())
-                                resolved_path = root
-                                resolved_game = (game_name, game_info)
-                                break
-                    break
 
-    # Si no se resolvió vía AppId, usar matching por nombre de exe en manifest
+    # cream_api.ini
+    for cream_path in cream_paths:
+        try:
+            with open(cream_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    if "appid" in line.lower() and "=" in line:
+                        aid = line.split("=", 1)[1].strip()
+                        if aid.isdigit():
+                            appid_candidates.append(aid)
+                            break
+        except UnicodeDecodeError:
+            continue
+
+    # steam_appid.txt
+    for txt_path in steam_txt_paths:
+        try:
+            with open(txt_path, "r", encoding="utf-8") as f:
+                content = f.read().strip()
+                if content.isdigit():
+                    appid_candidates.append(content)
+        except UnicodeDecodeError:
+            continue
+
+    # 3) Determinar AppId válido
+    from collections import Counter
+    counts = Counter(appid_candidates)
+    appid = None
+    if counts:
+        # Preferimos un candidato con >=2 apariciones
+        for aid, cnt in counts.items():
+            if cnt >= 2:
+                appid = aid
+                break
+        # Si solo hay 1 candidato total, lo aceptamos
+        if appid is None and len(counts) == 1:
+            appid = next(iter(counts))
+
+    # 4) Si tenemos AppId, intentamos resolver por manifest
+    if appid:
+        for game_name, game_info in manifest_data.items():
+            if str(game_info.get("steam", {}).get("id", "")) == appid:
+                launch_paths = game_info.get("launch", {})
+                if launch_paths:
+                    desired_exe = os.path.basename(next(iter(launch_paths.keys())))
+                    for root, _, files in os.walk(folder_path):
+                        if desired_exe.lower() in (f.lower() for f in files):
+                            resolved_exe = next(f for f in files if f.lower() == desired_exe.lower())
+                            resolved_path = root
+                            resolved_game = (game_name, game_info)
+                            break
+                break
+
+    # 5) Si no se resolvió vía AppId, matching por nombre de exe
     if not resolved_game:
         for game_name, game_info in manifest_data.items():
             for launch_path in game_info.get("launch", {}):
@@ -285,7 +341,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             if resolved_game:
                 break
 
-    # Si tenemos la entrada correcta, procedemos a mover/guardar datos
+    # 6) Si tenemos juego resuelto, movemos/guardamos
     if resolved_game:
         game_name, game_info = resolved_game
         install_dir = next(iter(game_info.get("installDir", {}).keys()), game_name)
@@ -315,9 +371,11 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
 
         return True
 
-    # Si no encontramos nada en el manifest
+    # 7) Si no encontramos nada en el manifest
     log_messages.append(f"No se encontró información en el manifest para ningún ejecutable en {folder_path}.")
     return False
+
+
 
 
 
