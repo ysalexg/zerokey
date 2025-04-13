@@ -571,7 +571,26 @@ class GameInstallationProgress(QMainWindow):
             self.log_text.append(log_message)
     
     def on_installation_complete(self):
-        self.status_label.setText("Instalación completada")
+        # Construimos la ruta relativa al directorio del script
+        game_name_file = os.path.join(script_dir, "game_name.txt")
+
+        # Texto por defecto
+        status_text = "Instalación completada"
+
+        # Intentamos leer el nombre del juego
+        try:
+            with open(game_name_file, "r", encoding="utf-8") as f:
+                content = f.read().strip()
+                if content:
+                    status_text = content
+        except Exception as e:
+            # Opcional: loguear el error
+            print(f"Error al leer {game_name_file}: {e}")
+
+        # ÚNICO cambio: actualizar sólo el status_label
+        self.status_label.setText(status_text)
+
+        # El resto de la UI queda igual
         self.progress_bar.setValue(100)
         self.title.setText("Instalado")
         self.cancelar_button.setVisible(False)
