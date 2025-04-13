@@ -62,6 +62,11 @@ function Extract-Files {
             $arguments = "x `"$($archive.FullName)`" -o`"$extractionPath`" -aoa"
             Start-Process -FilePath "7z.exe" -ArgumentList $arguments -NoNewWindow -Wait
 
+            # --- Ejecutar notificationExtract.py justo después de extraer y antes de eliminar ---
+            $notifScript = Join-Path $PSScriptRoot "notificationExtract.py"
+            Write-Output "Ejecutando notificación de extracción: $notifScript"
+            & python $notifScript
+
             # Eliminar archivo después de la extracción
             Remove-Item -Path $archive.FullName -Force
             Write-Output "Archivo eliminado: $($archive.FullName)"
