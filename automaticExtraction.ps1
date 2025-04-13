@@ -22,7 +22,7 @@ function Is-FileInUseByHydra {
     )
 
     $handleOutput = & $handlePath $filePath
-    return $handleOutput -match "aria2c.exe"
+    return $handleOutput -match "hydra-httpdl.exe"
 }
 
 # Función para verificar y extraer archivos
