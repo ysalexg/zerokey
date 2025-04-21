@@ -5,7 +5,7 @@ from win11toast import toast
 folder_path = r"D:\Extracciones"
 
 # Extensiones a ignorar
-ignored_extensions = ('.tmp', '.temp', '.aria2')
+ignored_extensions = ('.tmp', '.temp', '.aria2', '.crdownload')
 
 # Listar archivos y carpetas, ignorando archivos con extensiones no deseadas
 entries = [

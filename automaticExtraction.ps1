@@ -115,7 +115,7 @@ while ($true) {
         $extension = $file.Extension.ToLower()
     
         # Ignorar archivos .tmp, .temp, .aria2
-        if ($extension -eq ".tmp" -or $extension -eq ".temp" -or $extension -eq ".aria2") {
+        if ($extension -eq ".tmp" -or $extension -eq ".temp" -or $extension -eq ".aria2" -or $extension -eq ".crdownload") {
             Write-Output "Ignorando archivo temporal: $($file.FullName)"
             continue
         }
