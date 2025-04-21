@@ -113,13 +113,19 @@ while ($true) {
 
     foreach ($file in $allFiles) {
         $extension = $file.Extension.ToLower()
-
+    
+        # Ignorar archivos .tmp, .temp, .aria2
+        if ($extension -eq ".tmp" -or $extension -eq ".temp" -or $extension -eq ".aria2") {
+            Write-Output "Ignorando archivo temporal: $($file.FullName)"
+            continue
+        }
+    
         if ($extension -ne ".rar" -and $extension -ne ".zip" -and $extension -ne ".7z") {
             # Archivo NO es comprimido, mover a Extracciones
             $destination = Join-Path -Path $outputFolder -ChildPath $file.Name
             Write-Output "Moviendo archivo no comprimido: $($file.FullName) -> $destination"
             Move-Item -Path $file.FullName -Destination $destination -Force
-
+    
             Close-IDMan
             # Ejecutar notificationExtract.py
             $notifScript = Join-Path $PSScriptRoot "notificationExtract.py"
@@ -127,6 +133,7 @@ while ($true) {
             & python $notifScript
         }
     }
+    
 
     # Verificar si hay archivos comprimidos para extraer
     $filesToExtract = Get-ChildItem -Path $downloadFolder -Include *.rar, *.zip, *.7z -File -Recurse
