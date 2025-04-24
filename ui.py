@@ -102,7 +102,7 @@ def extract_archives(update_progress):
                         nested_archive = os.path.join(root, file)
                         nested_destination = os.path.join(destination_folder, Path(file).stem)
                         extract_recursive(nested_archive, nested_destination, update_progress, is_main=False)
-                        # os.remove(nested_archive)  # Descomentar al finalizar desarrollo si es exitoso
+                        os.remove(nested_archive)  # Descomentar al finalizar desarrollo si es exitoso
 
         # Recolectar archivos comprimidos
         compressed_files = []
@@ -158,6 +158,46 @@ def load_manifest():
     with open(manifest_path, "r", encoding="utf-8") as f:
         return yaml.load(f)
 
+def handle_crack_files(original_exe_path, crack_exe_path):
+    """
+    Maneja los archivos de crack:
+    1. Identifica la carpeta del crack
+    2. Copia todos los archivos de la carpeta del crack a la carpeta original
+    """
+    try:
+        # Obtener la carpeta del crack
+        crack_folder = os.path.dirname(crack_exe_path)
+        original_folder = os.path.dirname(original_exe_path)
+        
+        # Archivos de crack comunes
+        crack_files = [
+            "steam_emu.ini",
+            "steam_api64.dll",
+            "steam_api64.me",
+            os.path.splitext(os.path.basename(original_exe_path))[0] + ".me"
+        ]
+        
+        # Copiar todos los archivos de la carpeta del crack
+        for root, _, files in os.walk(crack_folder):
+            for file in files:
+                source_path = os.path.join(root, file)
+                relative_path = os.path.relpath(source_path, crack_folder)
+                target_path = os.path.join(original_folder, relative_path)
+                
+                # Crear directorios necesarios
+                os.makedirs(os.path.dirname(target_path), exist_ok=True)
+                
+                # Copiar el archivo
+                shutil.copy2(source_path, target_path)
+                log_messages.append(f"\033[32mCopiado archivo de crack: {file} a {target_path}\033[0m")
+        
+        return True
+    except Exception as e:
+        error_msg = f"Error al manejar archivos de crack: {e}"
+        print(error_msg)
+        log_messages.append(error_msg)
+        return False
+
 def process_games(update_progress):
     try:
         print("Cargando manifest...")
@@ -181,6 +221,24 @@ def process_games(update_progress):
         "setup.exe"
         ]
 
+        # Diccionario para almacenar ejecutables duplicados
+        duplicate_executables = {}
+
+        # Primera pasada: recolectar todos los ejecutables
+        for folder in extracted_folders:
+            print(f"Procesando carpeta: {folder}")
+
+            for root, dirs, files in os.walk(folder):
+                if is_excluded(root):
+                    continue
+                for file in files:
+                    if file.endswith(".exe") and file not in excluded_executables:
+                        full_path = os.path.join(root, file)
+                        if file not in duplicate_executables:
+                            duplicate_executables[file] = []
+                        duplicate_executables[file].append(full_path)
+
+        # Segunda pasada: procesar ejecutables y manejar cracks
         for folder in extracted_folders:
             print(f"Procesando carpeta: {folder}")
 
@@ -191,25 +249,34 @@ def process_games(update_progress):
                     continue
                 for file in files:
                     if file.endswith(".exe") and file not in excluded_executables:
+                        full_path = os.path.join(root, file)
+                        # Verificar si es un ejecutable duplicado
+                        if len(duplicate_executables.get(file, [])) > 1:
+                            # Verificar si está en una carpeta de crack
+                            if "crack" in root.lower():
+                                # Encontrar el ejecutable original
+                                original_path = next(p for p in duplicate_executables[file] if "crack" not in p.lower())
+                                # Manejar los archivos de crack
+                                if handle_crack_files(original_path, full_path):
+                                    log_messages.append(f"\033[32mArchivos de crack aplicados correctamente para {file}\033[0m")
+                                continue
                         executables.append((file, root))
 
             if not executables:
                 no_exec_msg = f"No se encontró ejecutable en: {folder}"
                 print(no_exec_msg)
                 log_messages.append(no_exec_msg)
-                # No agregamos esta carpeta a la lista de successful_paths
-                # Y la removemos de extracted_paths si está ahí
                 if folder in extracted_paths:
                     extracted_paths.remove(folder)
                 continue
 
             # Procesar cada ejecutable encontrado
             for exe_file, exe_path in executables:
-                # Si process_executable devuelve True, detener el procesamiento de más ejecutables
                 if process_executable(exe_file, exe_path, manifest_data, update_progress):
                     print(f"Procesamiento exitoso, deteniendo búsqueda en {folder}.")
-                    successful_paths.append(folder)  # Agregar a la lista de éxito
-                    break  # Salir del bucle de ejecutables
+                    successful_paths.append(folder)
+                    break
+
     except Exception as e:
         error_msg = f"Error procesando juegos: {e}"
         print(error_msg)
@@ -374,10 +441,6 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
     # 7) Si no encontramos nada en el manifest
     log_messages.append(f"No se encontró información en el manifest para ningún ejecutable en {folder_path}.")
     return False
-
-
-
-
 
 
 def save_game_name(folder_name, output_file="game_name.txt"):
