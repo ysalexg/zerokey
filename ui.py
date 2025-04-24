@@ -102,7 +102,7 @@ def extract_archives(update_progress):
                         nested_archive = os.path.join(root, file)
                         nested_destination = os.path.join(destination_folder, Path(file).stem)
                         extract_recursive(nested_archive, nested_destination, update_progress, is_main=False)
-                        os.remove(nested_archive)  # Descomentar al finalizar desarrollo si es exitoso
+                        # os.remove(nested_archive)  # Descomentar al finalizar desarrollo si es exitoso
 
         # Recolectar archivos comprimidos
         compressed_files = []
