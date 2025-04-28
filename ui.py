@@ -218,7 +218,25 @@ def process_games(update_progress):
         "vcredist_x86.exe",
         "xnafx40_redist.msi",
         "Setup.exe",
-        "setup.exe"
+        "setup.exe",
+        "Language Selector.exe",
+        "UEPrereqSetup_x64.exe",
+        "crashpad_handler.exe",
+        "SteamworksExample.exe",
+        "Common.ExtProtocolExecutor.exe",
+        "ezTransXP.ExtProtocol.exe",
+        "Lec.ExtProtocol.exe",
+        "UnityCrashHandler64.exe",
+        "crs-video.exe",
+        "crs-uploader.exe",
+        "crs-handler.exe",
+        "CrashReportClient.exe",
+        "UnrealCEFSubProcess.exe",
+        "unins000.exe",
+        "createdump.exe",
+        "EAAntiCheat.GameServiceLauncher.exe",
+        "EAAntiCheat.Installer.exe",
+        "Cleanup.exe"
         ]
 
         # Diccionario para almacenar ejecutables duplicados
@@ -412,6 +430,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
                             resolved_exe = next(f for f in files if f.lower() == desired_exe.lower())
                             resolved_path = root
                             resolved_game = (game_name, game_info)
+                            print("Juego encontrado con método 4 (AppId en manifest)")
                             break
                 break
 
@@ -421,6 +440,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             for launch_path in game_info.get("launch", {}):
                 if os.path.basename(launch_path).lower() == executable.lower():
                     resolved_game = (game_name, game_info)
+                    print("Juego encontrado con método 5 (matching por nombre de exe)")
                     break
             if resolved_game:
                 break
@@ -440,6 +460,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
                         resolved_path = root
         if largest_exe:
             resolved_exe = largest_exe
+            print("Juego encontrado con método 6 (exe más grande)")
             log_messages.append(f"\033[33mNo se encontró en el manifest. Usando el ejecutable más grande: {resolved_exe}\033[0m")
 
     # 7) Si tenemos juego resuelto o ejecutable más grande, movemos/guardamos
