@@ -490,8 +490,10 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         else:
             log_messages.append(f"La carpeta destino ya existe: {target_folder}")
 
+        # Guardar la ruta del ejecutable independientemente de si hay AppID o no
+        save_full_executable_path(target_folder, resolved_exe)
         if app_id:
-            save_full_executable_path(target_folder, resolved_exe)
+            log_messages.append(f"AppID encontrado: {app_id}")
         else:
             log_messages.append(f"No se encontró AppID para el juego {install_dir}")
 
