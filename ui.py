@@ -306,10 +306,11 @@ def save_full_executable_path(target_folder, matching_exe, output_file="full_exe
 def process_executable(executable, folder_path, manifest_data, update_progress):
     """
     Procesa un ejecutable:
-      1) Busca recursivamente steam_emu.ini, cream_api.ini y steam_appid.txt
+      1) Busca recursivamente steam_emu.ini, cream_api.ini, steam_appid.txt y CPY.ini
       2) Extrae todos los AppId que encuentre
       3) Si hay al menos 2 coincidencias, las usa. Si hay 1, también.
       4) Si no hay AppId, matching por nombre en el manifest.
+      5) Si no encuentra en el manifest, usa el .exe más grande.
     """
     resolved_game = None
     resolved_exe = executable
@@ -319,6 +320,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
     ini_paths = []
     cream_paths = []
     steam_txt_paths = []
+    cpy_paths = []
     for root, dirs, files in os.walk(folder_path):
         for f in files:
             name = f.lower()
@@ -328,6 +330,8 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
                 cream_paths.append(os.path.join(root, f))
             elif name == "steam_appid.txt":
                 steam_txt_paths.append(os.path.join(root, f))
+            elif name == "cpy.ini":
+                cpy_paths.append(os.path.join(root, f))
 
     # 2) Recolectar posibles AppIds
     appid_candidates = []
@@ -366,6 +370,19 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
                 content = f.read().strip()
                 if content.isdigit():
                     appid_candidates.append(content)
+        except UnicodeDecodeError:
+            continue
+
+    # CPY.ini
+    for cpy_path in cpy_paths:
+        try:
+            with open(cpy_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    if line.strip().startswith("AppID="):
+                        aid = line.strip().split("=", 1)[1]
+                        if aid.isdigit():
+                            appid_candidates.append(aid)
+                            break
         except UnicodeDecodeError:
             continue
 
@@ -408,11 +425,32 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             if resolved_game:
                 break
 
-    # 6) Si tenemos juego resuelto, movemos/guardamos
-    if resolved_game:
-        game_name, game_info = resolved_game
-        install_dir = next(iter(game_info.get("installDir", {}).keys()), game_name)
-        app_id = game_info.get("steam", {}).get("id", None)
+    # 6) Si no se encontró en el manifest, usar el .exe más grande
+    if not resolved_game:
+        largest_exe = None
+        largest_size = 0
+        for root, _, files in os.walk(folder_path):
+            for file in files:
+                if file.lower().endswith('.exe'):
+                    file_path = os.path.join(root, file)
+                    file_size = os.path.getsize(file_path)
+                    if file_size > largest_size:
+                        largest_size = file_size
+                        largest_exe = file
+                        resolved_path = root
+        if largest_exe:
+            resolved_exe = largest_exe
+            log_messages.append(f"\033[33mNo se encontró en el manifest. Usando el ejecutable más grande: {resolved_exe}\033[0m")
+
+    # 7) Si tenemos juego resuelto o ejecutable más grande, movemos/guardamos
+    if resolved_game or largest_exe:
+        if resolved_game:
+            game_name, game_info = resolved_game
+            install_dir = next(iter(game_info.get("installDir", {}).keys()), game_name)
+            app_id = game_info.get("steam", {}).get("id", None)
+        else:
+            install_dir = os.path.basename(folder_path)
+            app_id = None
 
         target_folder = os.path.join(game_folder, install_dir)
         log_messages.append(f"\033[32mEjecutable encontrado: {resolved_exe} (AppID={app_id})\033[0m")
@@ -434,12 +472,12 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         if app_id:
             save_full_executable_path(target_folder, resolved_exe)
         else:
-            log_messages.append(f"No se encontró AppID para el juego {game_name}")
+            log_messages.append(f"No se encontró AppID para el juego {install_dir}")
 
         return True
 
-    # 7) Si no encontramos nada en el manifest
-    log_messages.append(f"No se encontró información en el manifest para ningún ejecutable en {folder_path}.")
+    # 8) Si no encontramos nada
+    log_messages.append(f"No se encontró información en el manifest ni un ejecutable válido en {folder_path}.")
     return False
 
 
