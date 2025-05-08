@@ -23,7 +23,8 @@ manifest_path = os.path.join(script_dir, "manifest.yaml")
 excluded_folders = [
     r"D:\Extracciones\Drive Cache",
     r"D:\Extracciones\Free Download Manager",
-    r"D:\Extracciones\IDM Temporal"
+    r"D:\Extracciones\IDM Temporal",
+    r"E:\Descargas\TempDownload"
 ]
 
 log_messages = []
