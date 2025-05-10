@@ -2,6 +2,7 @@ import os
 import sys
 import requests
 import shutil
+import time
 import subprocess
 from pathlib import Path
 from ruamel.yaml import YAML
@@ -43,21 +44,41 @@ def resource_path(relative_path):
 
 # Descargar manifest.yaml
 def download_manifest(update_progress):
-    try:
-        update_progress(10, "Descargando base de datos...", log_message="Descargando base de datos...")
-        print("Descargando manifest...")
-        response = requests.get(manifest_url, headers={'User-Agent': 'Mozilla/5.0'})
-        response.raise_for_status()
-        with open(manifest_path, 'wb') as file:
-            file.write(response.content)
-        print("\033[32mManifest descargado correctamente.\033[0m")
-        log_messages.append("\033[32mManifest descargado correctamente.\033[0m")
-    except Exception as e:
-        error_msg = f"Error al descargar el manifest: {e}"
-        update_progress(0, f"Error al descargar el manifest: {e}", log_message=f"Error al descargar el manifest: {e}")
-        print(error_msg)
-        log_messages.append(error_msg)
-        raise
+    retries = 5
+    delay = 5  # segundos
+
+    for attempt in range(retries):
+        try:
+            update_progress(10, "Descargando base de datos...", log_message="Descargando base de datos...")
+            print("Descargando manifest...")
+            response = requests.get(manifest_url, headers={'User-Agent': 'Mozilla/5.0'})
+            response.raise_for_status()
+            with open(manifest_path, 'wb') as file:
+                file.write(response.content)
+            print("\033[32mManifest descargado correctamente.\033[0m")
+            log_messages.append("\033[32mManifest descargado correctamente.\033[0m")
+            return
+        except requests.exceptions.HTTPError as e:
+            if response.status_code == 429 and attempt < retries - 1:
+                wait = delay * (2 ** attempt)
+                print(f"Demasiadas solicitudes. Reintentando en {wait} segundos...")
+                time.sleep(wait)
+            else:
+                print(f"Error al intentar descargar el manifest: {e}")
+                if os.path.exists(manifest_path):
+                    msg = "No se pudo descargar el manifest. Usando el archivo local existente."
+                    update_progress(10, msg, log_message=msg)
+                    print(f"\033[33m{msg}\033[0m")
+                    log_messages.append(f"\033[33m{msg}\033[0m")
+                    return
+                else:
+                    error_msg = f"Error crítico: No se pudo descargar el manifest y no existe uno local. {e}"
+                    update_progress(0, error_msg, log_message=error_msg)
+                    print(f"\033[31m{error_msg}\033[0m")
+                    log_messages.append(f"\033[31m{error_msg}\033[0m")
+                    raise
+
+
 
 # Verificar si una carpeta está excluida
 def is_excluded(folder_path):
