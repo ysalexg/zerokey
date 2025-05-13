@@ -1,6 +1,7 @@
 # Directorios de trabajo
 $downloadFolder = "E:\Descargas"
 $outputFolder = "D:\Extracciones"
+$excludedFolder = Join-Path $downloadFolder "TempDownload"
 
 # Ruta a handle.exe
 $handlePath = "D:\Programacion\Path\handle.exe"
@@ -27,7 +28,7 @@ function Is-FileInUseByHydra {
 
 # Función para verificar y extraer archivos
 function Extract-Files {
-    $filesToExtract = Get-ChildItem -Path $downloadFolder -Include *.rar, *.zip, *.7z -File -Recurse
+    $filesToExtract = Get-ChildItem -Path $downloadFolder -Include *.rar, *.zip, *.7z -File -Recurse | Where-Object { $_.FullName -notlike "$excludedFolder\*" }
     foreach ($archive in $filesToExtract) {
         $archiveName = [System.IO.Path]::GetFileNameWithoutExtension($archive.FullName)
         $extractionPath = Join-Path -Path $outputFolder -ChildPath $archiveName
@@ -109,7 +110,7 @@ while ($true) {
     Write-Output "IDM o archivo en uso por Hydra detectado. Comprobando archivos..."
 
     # Obtener todos los archivos
-    $allFiles = Get-ChildItem -Path $downloadFolder -File -Recurse
+    $allFiles = Get-ChildItem -Path $downloadFolder -File -Recurse | Where-Object { $_.FullName -notlike "$excludedFolder\*" }
 
     foreach ($file in $allFiles) {
         $extension = $file.Extension.ToLower()
@@ -136,7 +137,7 @@ while ($true) {
     
 
     # Verificar si hay archivos comprimidos para extraer
-    $filesToExtract = Get-ChildItem -Path $downloadFolder -Include *.rar, *.zip, *.7z -File -Recurse
+    $filesToExtract = Get-ChildItem -Path $downloadFolder -Include *.rar, *.zip, *.7z -File -Recurse | Where-Object { $_.FullName -notlike "$excludedFolder\*" }
 
     if ($filesToExtract.Count -gt 0) {
         # Extraer archivos

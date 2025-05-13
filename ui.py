@@ -25,7 +25,9 @@ excluded_folders = [
     r"D:\Extracciones\Drive Cache",
     r"D:\Extracciones\Free Download Manager",
     r"D:\Extracciones\IDM Temporal",
-    r"E:\Descargas\TempDownload"
+    r"E:\Descargas\TempDownload",
+    r"E:\Descargas\TempDownload\DwnlData",
+    r"E:\Descargas\TempDownload\DwnlData\Alex"
 ]
 
 log_messages = []
