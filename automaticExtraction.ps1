@@ -39,6 +39,9 @@ function Extract-Files {
         $7zOutput = & 7z.exe l "`"$($archive.FullName)`"" 2>&1
         if ($7zOutput -match "Method =.*(7zAES|AES)") {
             Write-Output "Archivo cifrado detectado (AES). Se omite: $($archive.FullName)"
+            $notifEncryptScript = Join-Path $PSScriptRoot "notificationEncrypted.py"
+            Write-Output "Ejecutando notificación de extracción: $notifEncryptScript"
+            & python $notifEncryptScript
             continue
         }
 
