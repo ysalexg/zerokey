@@ -1,4 +1,4 @@
-# Directorios de trabajo
+﻿# Directorios de trabajo
 $downloadFolder = "E:\Descargas"
 $outputFolder = "D:\Extracciones"
 $excludedFolder = Join-Path $downloadFolder "TempDownload"
@@ -112,7 +112,7 @@ function Is-HydraRunning {
 
 # Bucle principal
 while ($true) {
-    Write-Output "Esperando a que IDM este en ejecucion o que un archivo este en uso por Hydra..."
+    Write-Output "Esperando a que IDM esté en ejecucion o que un archivo esté en uso por Hydra..."
 
     while (-not (Is-IDManRunning) -and (Get-ChildItem -Path $downloadFolder -File -Recurse | Where-Object { Is-FileInUseByHydra -filePath $_.FullName }).Count -eq 0) {
         Start-Sleep -Seconds 3
