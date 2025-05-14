@@ -29,16 +29,25 @@ function Is-FileInUseByHydra {
 # Función para verificar y extraer archivos
 function Extract-Files {
     $filesToExtract = Get-ChildItem -Path $downloadFolder -Include *.rar, *.zip, *.7z -File -Recurse | Where-Object { $_.FullName -notlike "$excludedFolder\*" }
+
     foreach ($archive in $filesToExtract) {
         $archiveName = [System.IO.Path]::GetFileNameWithoutExtension($archive.FullName)
         $extractionPath = Join-Path -Path $outputFolder -ChildPath $archiveName
+
+        # Verificar si el archivo está protegido con contraseña (usando 7zAES o AES en el método)
+        Write-Output "Verificando cifrado en $($archive.FullName)..."
+        $7zOutput = & 7z.exe l "`"$($archive.FullName)`"" 2>&1
+        if ($7zOutput -match "Method =.*(7zAES|AES)") {
+            Write-Output "Archivo cifrado detectado (AES). Se omite: $($archive.FullName)"
+            continue
+        }
 
         # Crear carpeta para la extracción
         if (-not (Test-Path -Path $extractionPath)) {
             New-Item -Path $extractionPath -ItemType Directory | Out-Null
         }
 
-        # Esperar hasta que el archivo no esté en uso ni por IDMan.exe ni por Hydra.exe
+        # Esperar hasta que el archivo no esté en uso
         Write-Output "Verificando si $($archive.FullName) está en uso por IDM o Hydra..."
         while (Is-FileInUseByIDMan -filePath $archive.FullName -or Is-FileInUseByHydra -filePath $archive.FullName) {
             Write-Output "Archivo en uso por IDM o Hydra. Esperando..."
@@ -51,11 +60,11 @@ function Extract-Files {
             while (Is-FileInUseByHydra -filePath $archive.FullName) {
                 Write-Output "Archivo aún en uso por Hydra. Esperando..."
                 Start-Sleep -Seconds 5
-                cls
+                # cls
             }
-            cls
+            # cls
             Write-Output "Archivo ya no está en uso por Hydra. Ejecutando instalador..."
-            
+
             Start-Process -FilePath "python" -ArgumentList "`"D:\Programacion\Python\Automatic Game Instalation\ui.py`"" -NoNewWindow -Wait
             Write-Output "ui.py ejecutado para $($archive.FullName)"
         } else {
@@ -63,7 +72,7 @@ function Extract-Files {
             $arguments = "x `"$($archive.FullName)`" -o`"$extractionPath`" -aoa"
             Start-Process -FilePath "7z.exe" -ArgumentList $arguments -NoNewWindow -Wait
 
-            # --- Ejecutar notificationExtract.py justo después de extraer y antes de eliminar ---
+            # Ejecutar notificationExtract.py después de la extracción
             $notifScript = Join-Path $PSScriptRoot "notificationExtract.py"
             Write-Output "Ejecutando notificación de extracción: $notifScript"
             & python $notifScript
@@ -78,13 +87,15 @@ function Extract-Files {
 
 
 
+
+
 # Función para cerrar IDMan.exe
 function Close-IDMan {
     if (Get-Process -Name "IDMan" -ErrorAction SilentlyContinue) {
         Write-Output "Cerrando IDM..."
         Stop-Process -Name "IDMan" -Force
         Start-Sleep -Seconds 1  # Dar tiempo a que el proceso se cierre
-        cls  # Limpiar la pantalla de la consola
+        # cls  # Limpiar la pantalla de la consola
     }
 }
 
@@ -156,7 +167,7 @@ while ($true) {
     } else {
         Write-Output "No hay archivos comprimidos para extraer."
     }
-
+    cls
     Start-Sleep -Seconds 3
 }
 
