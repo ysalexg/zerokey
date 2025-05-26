@@ -28,21 +28,44 @@ function Is-FileInUseByHydra {
 
 # Función para verificar y extraer archivos
 function Extract-Files {
-    $filesToExtract = Get-ChildItem -Path $downloadFolder -Include *.rar, *.zip, *.7z -File -Recurse | Where-Object { $_.FullName -notlike "$excludedFolder\*" }
+    $filesToExtract = Get-ChildItem -Path $downloadFolder -Include *.rar, *.zip, *.7z -File -Recurse |
+                      Where-Object { $_.FullName -notlike "$excludedFolder\*" }
 
     foreach ($archive in $filesToExtract) {
-        $archiveName = [System.IO.Path]::GetFileNameWithoutExtension($archive.FullName)
-        $extractionPath = Join-Path -Path $outputFolder -ChildPath $archiveName
+        $archiveName     = [System.IO.Path]::GetFileNameWithoutExtension($archive.FullName)
+        $extractionPath  = Join-Path -Path $outputFolder -ChildPath $archiveName
+        $notifEncryptScript = Join-Path $PSScriptRoot "notificationEncrypted.py"
 
-        # Verificar si el archivo está protegido con contraseña (usando 7zAES o AES en el método)
         Write-Output "Verificando cifrado en $($archive.FullName)..."
-        $7zOutput = & 7z.exe l "`"$($archive.FullName)`"" 2>&1
-        if ($7zOutput -match "Method =.*(7zAES|AES)") {
-            Write-Output "Archivo cifrado detectado (AES). Se omite: $($archive.FullName)"
-            $notifEncryptScript = Join-Path $PSScriptRoot "notificationEncrypted.py"
-            Write-Output "Ejecutando notificación de extracción: $notifEncryptScript"
-            & python $notifEncryptScript
-            continue
+        $ext = $archive.Extension.ToLower()
+
+        # Para .rar usamos lista con contraseña dummy
+        if ($ext -eq ".rar") {
+            $listArgs = @("l", "-pDUMMY", "$($archive.FullName)")
+            $process = Start-Process -FilePath "7z.exe" `
+                                     -ArgumentList $listArgs `
+                                     -NoNewWindow `
+                                     -RedirectStandardOutput "$env:TEMP\7z_list_out.txt" `
+                                     -RedirectStandardError  "$env:TEMP\7z_list_out.txt" `
+                                     -PassThru -Wait
+            $sevenZipOutput = Get-Content "$env:TEMP\7z_list_out.txt" -Raw
+
+            if ($process.ExitCode -ne 0 -or $sevenZipOutput -match "Wrong password") {
+                Write-Output "Archivo cifrado detectado (requiere contraseña). Se omite: $($archive.FullName)"
+                Write-Output "Ejecutando notificación de extracción: $notifEncryptScript"
+                & python $notifEncryptScript
+                continue
+            }
+        }
+        else {
+            # Para otros formatos, se comprueba método de cifrado AES
+            $scanOutput = & 7z.exe l "`"$($archive.FullName)`"" 2>&1
+            if ($scanOutput -match "Method =.*(7zAES|AES)") {
+                Write-Output "Archivo cifrado detectado (AES). Se omite: $($archive.FullName)"
+                Write-Output "Ejecutando notificación de extracción: $notifEncryptScript"
+                & python $notifEncryptScript
+                continue
+            }
         }
 
         # Crear carpeta para la extracción
@@ -63,11 +86,8 @@ function Extract-Files {
             while (Is-FileInUseByHydra -filePath $archive.FullName) {
                 Write-Output "Archivo aún en uso por Hydra. Esperando..."
                 Start-Sleep -Seconds 5
-                # cls
             }
-            # cls
             Write-Output "Archivo ya no está en uso por Hydra. Ejecutando instalador..."
-
             Start-Process -FilePath "python" -ArgumentList "`"D:\Programacion\Python\Automatic Game Instalation\ui.py`"" -NoNewWindow -Wait
             Write-Output "ui.py ejecutado para $($archive.FullName)"
         } else {
@@ -86,6 +106,8 @@ function Extract-Files {
         }
     }
 }
+
+
 
 
 

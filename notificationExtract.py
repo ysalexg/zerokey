@@ -28,4 +28,4 @@ buttons = [
     {'activationType': 'protocol', 'arguments': folder_path, 'content': 'Abrir carpeta'}
 ]
 
-toast('Descarga completada', file, buttons=buttons, scenario='alarm', audio={'silent': 'true'}, app_id='{7C5A40EF-A0FB-4BFC-874A-C0F2E0B9FA8E}\\Internet Download Manager\\IDMan.exe')
+toast('🚀 Descarga completada', file, buttons=buttons, scenario='alarm', audio={'silent': 'true'}, app_id='{7C5A40EF-A0FB-4BFC-874A-C0F2E0B9FA8E}\\Internet Download Manager\\IDMan.exe')
