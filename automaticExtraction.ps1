@@ -32,80 +32,85 @@ function Extract-Files {
                       Where-Object { $_.FullName -notlike "$excludedFolder\*" }
 
     foreach ($archive in $filesToExtract) {
-        $archiveName     = [System.IO.Path]::GetFileNameWithoutExtension($archive.FullName)
-        $extractionPath  = Join-Path -Path $outputFolder -ChildPath $archiveName
-        $notifEncryptScript = Join-Path $PSScriptRoot "notificationEncrypted.py"
+        $archiveName    = [System.IO.Path]::GetFileNameWithoutExtension($archive.FullName)
+        $extractionPath = Join-Path -Path $outputFolder -ChildPath $archiveName
 
         Write-Output "Verificando cifrado en $($archive.FullName)..."
-        $ext = $archive.Extension.ToLower()
+        $extension    = $archive.Extension.ToLowerInvariant()
+        $isEncrypted  = $false
 
-        # Para .rar usamos lista con contraseña dummy
-        if ($ext -eq ".rar") {
-            $listArgs = @("l", "-pDUMMY", "$($archive.FullName)")
-            $process = Start-Process -FilePath "7z.exe" `
-                                     -ArgumentList $listArgs `
-                                     -NoNewWindow `
-                                     -RedirectStandardOutput "$env:TEMP\7z_list_out.txt" `
-                                     -RedirectStandardError  "$env:TEMP\7z_list_out.txt" `
-                                     -PassThru -Wait
-            $sevenZipOutput = Get-Content "$env:TEMP\7z_list_out.txt" -Raw
+        if ($extension -eq ".rar") {
+            # Para .rar: listar usando -p (vacío)
+            $outputLines = & 7z.exe l '-p' '' $archive.FullName 2>&1
+            $allOutput   = $outputLines -join "`n"
+            Write-Output ">> DEBUG 7z l -p output:`n$allOutput"
 
-            if ($process.ExitCode -ne 0 -or $sevenZipOutput -match "Wrong password") {
-                Write-Output "Archivo cifrado detectado (requiere contraseña). Se omite: $($archive.FullName)"
-                Write-Output "Ejecutando notificación de extracción: $notifEncryptScript"
-                & python $notifEncryptScript
-                continue
+            if ($allOutput -match "ERROR:.*Cannot open encrypted archive" `
+                -or $allOutput -match "Wrong password") {
+                $isEncrypted = $true
             }
         }
         else {
-            # Para otros formatos, se comprueba método de cifrado AES
-            $scanOutput = & 7z.exe l "`"$($archive.FullName)`"" 2>&1
-            if ($scanOutput -match "Method =.*(7zAES|AES)") {
-                Write-Output "Archivo cifrado detectado (AES). Se omite: $($archive.FullName)"
-                Write-Output "Ejecutando notificación de extracción: $notifEncryptScript"
-                & python $notifEncryptScript
-                continue
+            # Para .zip y .7z: comprobar método AES
+            $outputLines = & 7z.exe l $archive.FullName 2>&1
+            $allOutput   = $outputLines -join "`n"
+            Write-Output ">> DEBUG 7z l output:`n$allOutput"
+
+            if ($allOutput -match "Method\s*=\s*.*(7zAES|AES)") {
+                $isEncrypted = $true
             }
         }
 
-        # Crear carpeta para la extracción
+        if ($isEncrypted) {
+            Write-Output "🚫 Archivo cifrado detectado. Se omite: $($archive.FullName)"
+            $notifEncryptScript = Join-Path $PSScriptRoot "notificationEncrypted.py"
+            Write-Output "Ejecutando notificación de extracción: $notifEncryptScript"
+            & python $notifEncryptScript
+            continue
+        }
+
+        # --- Extracción normal ---
         if (-not (Test-Path -Path $extractionPath)) {
             New-Item -Path $extractionPath -ItemType Directory | Out-Null
         }
 
-        # Esperar hasta que el archivo no esté en uso
         Write-Output "Verificando si $($archive.FullName) está en uso por IDM o Hydra..."
-        while (Is-FileInUseByIDMan -filePath $archive.FullName -or Is-FileInUseByHydra -filePath $archive.FullName) {
-            Write-Output "Archivo en uso por IDM o Hydra. Esperando..."
+        while (Is-FileInUseByIDMan -filePath $archive.FullName `
+               -or Is-FileInUseByHydra -filePath $archive.FullName) {
+            Write-Output "Archivo en uso. Esperando..."
             Start-Sleep -Seconds 5
         }
 
-        # Verificar si el archivo fue usado por Hydra.exe
         if (Is-FileInUseByHydra -filePath $archive.FullName) {
-            Write-Output "Archivo usado por Hydra. Esperando a que termine de descargar..."
+            Write-Output "Archivo usado por Hydra. Esperando descarga..."
             while (Is-FileInUseByHydra -filePath $archive.FullName) {
-                Write-Output "Archivo aún en uso por Hydra. Esperando..."
+                Write-Output "... aún en uso por Hydra."
                 Start-Sleep -Seconds 5
             }
-            Write-Output "Archivo ya no está en uso por Hydra. Ejecutando instalador..."
-            Start-Process -FilePath "python" -ArgumentList "`"D:\Programacion\Python\Automatic Game Instalation\ui.py`"" -NoNewWindow -Wait
+            Write-Output "Ya no está en uso por Hydra. Ejecutando instalador..."
+            Start-Process -FilePath "python" `
+                          -ArgumentList "`"D:\Programacion\Python\Automatic Game Instalation\ui.py`"" `
+                          -NoNewWindow -Wait
             Write-Output "ui.py ejecutado para $($archive.FullName)"
-        } else {
+        }
+        else {
             Write-Output "Extrayendo $($archive.FullName) a $extractionPath..."
-            $arguments = "x `"$($archive.FullName)`" -o`"$extractionPath`" -aoa"
-            Start-Process -FilePath "7z.exe" -ArgumentList $arguments -NoNewWindow -Wait
+            Start-Process -FilePath "7z.exe" `
+                          -ArgumentList @('x', $archive.FullName, "-o$extractionPath", '-aoa') `
+                          -NoNewWindow -Wait
 
-            # Eliminar archivo después de la extracción
             Remove-Item -Path $archive.FullName -Force
             Write-Output "Archivo eliminado: $($archive.FullName)"
 
-            # Ejecutar notificationExtract.py después de la extracción
             $notifScript = Join-Path $PSScriptRoot "notificationExtract.py"
             Write-Output "Ejecutando notificación de extracción: $notifScript"
             & python $notifScript
         }
     }
 }
+
+
+
 
 
 
