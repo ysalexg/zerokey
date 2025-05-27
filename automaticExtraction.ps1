@@ -68,40 +68,38 @@ function Extract-Files {
             & python $notifEncryptScript
             continue
         }
-
-        # --- Extracción normal ---
+        # Crear carpeta para la extracción
         if (-not (Test-Path -Path $extractionPath)) {
             New-Item -Path $extractionPath -ItemType Directory | Out-Null
         }
 
+        # Esperar hasta que el archivo no esté en uso
         Write-Output "Verificando si $($archive.FullName) está en uso por IDM o Hydra..."
-        while (Is-FileInUseByIDMan -filePath $archive.FullName `
-               -or Is-FileInUseByHydra -filePath $archive.FullName) {
-            Write-Output "Archivo en uso. Esperando..."
+        while (Is-FileInUseByIDMan -filePath $archive.FullName -or Is-FileInUseByHydra -filePath $archive.FullName) {
+            Write-Output "Archivo en uso por IDM o Hydra. Esperando..."
             Start-Sleep -Seconds 5
         }
 
+        # Verificar si el archivo fue usado por Hydra.exe
         if (Is-FileInUseByHydra -filePath $archive.FullName) {
-            Write-Output "Archivo usado por Hydra. Esperando descarga..."
+            Write-Output "Archivo usado por Hydra. Esperando a que termine de descargar..."
             while (Is-FileInUseByHydra -filePath $archive.FullName) {
-                Write-Output "... aún en uso por Hydra."
+                Write-Output "Archivo aún en uso por Hydra. Esperando..."
                 Start-Sleep -Seconds 5
             }
-            Write-Output "Ya no está en uso por Hydra. Ejecutando instalador..."
-            Start-Process -FilePath "python" `
-                          -ArgumentList "`"D:\Programacion\Python\Automatic Game Instalation\ui.py`"" `
-                          -NoNewWindow -Wait
+            Write-Output "Archivo ya no está en uso por Hydra. Ejecutando instalador..."
+            Start-Process -FilePath "python" -ArgumentList "`"D:\Programacion\Python\Automatic Game Instalation\ui.py`"" -NoNewWindow -Wait
             Write-Output "ui.py ejecutado para $($archive.FullName)"
-        }
-        else {
+        } else {
             Write-Output "Extrayendo $($archive.FullName) a $extractionPath..."
-            Start-Process -FilePath "7z.exe" `
-                          -ArgumentList @('x', $archive.FullName, "-o$extractionPath", '-aoa') `
-                          -NoNewWindow -Wait
+            $arguments = "x `"$($archive.FullName)`" -o`"$extractionPath`" -aoa"
+            Start-Process -FilePath "7z.exe" -ArgumentList $arguments -NoNewWindow -Wait
 
+            # Eliminar archivo después de la extracción
             Remove-Item -Path $archive.FullName -Force
             Write-Output "Archivo eliminado: $($archive.FullName)"
 
+            # Ejecutar notificationExtract.py después de la extracción
             $notifScript = Join-Path $PSScriptRoot "notificationExtract.py"
             Write-Output "Ejecutando notificación de extracción: $notifScript"
             & python $notifScript
