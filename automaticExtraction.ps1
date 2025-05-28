@@ -185,6 +185,6 @@ while ($true) {
     } else {
         Write-Output "No hay archivos comprimidos para extraer."
     }
-    cls
+    # cls
     Start-Sleep -Seconds 3
 }
