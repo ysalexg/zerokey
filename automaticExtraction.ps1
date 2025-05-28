@@ -2,18 +2,31 @@
 $downloadFolder = "E:\Descargas"
 $outputFolder = "D:\Extracciones"
 $excludedFolder = Join-Path $downloadFolder "TempDownload"
+$folderToCheck = "E:\Descargas\TempDownload\DwnlData\Alex"
 
 # Ruta a handle.exe
 $handlePath = "D:\Programacion\Path\handle.exe"
 
 # Función para verificar si un archivo está en uso por IDMan.exe
-function Is-FileInUseByIDMan {
+function Is-CompressedFileInUseByIDMan {
     param (
         [string]$filePath
     )
 
     $handleOutput = & $handlePath $filePath
     return $handleOutput -match "IDMan.exe"
+}
+
+function Get-FoldersInUseByIDMan {
+    $foldersInUse = @()
+    $subFolders = Get-ChildItem -Path $folderToCheck -Directory -ErrorAction SilentlyContinue
+    foreach ($subFolder in $subFolders) {
+        $handleOutput = & $handlePath $subFolder.FullName
+        if ($handleOutput -match "IDMan.exe") {
+            $foldersInUse += $subFolder.FullName
+        }
+    }
+    return $foldersInUse
 }
 
 # Función para verificar si un archivo está en uso por Hydra.exe
@@ -75,7 +88,7 @@ function Extract-Files {
 
         # Esperar hasta que el archivo no esté en uso
         Write-Output "Verificando si $($archive.FullName) está en uso por IDM o Hydra..."
-        while (Is-FileInUseByIDMan -filePath $archive.FullName -or Is-FileInUseByHydra -filePath $archive.FullName) {
+        while (Is-CompressedFileInUseByIDMan -filePath $archive.FullName -or Is-FileInUseByHydra -filePath $archive.FullName) {
             Write-Output "Archivo en uso por IDM o Hydra. Esperando..."
             Start-Sleep -Seconds 5
         }
@@ -129,7 +142,53 @@ function Is-HydraRunning {
 }
 
 # Bucle principal
+# Variables para rastrear carpetas en uso y sus archivos
+$prevFoldersInUse = @{}
+$prevFoldersList  = @()
+
 while ($true) {
+    Write-Output "Verificando carpetas en uso por IDM..."
+
+    # Obtener carpetas actualmente en uso por IDM
+    $currentFoldersInUse = @{}
+    $foldersInUseList = Get-FoldersInUseByIDMan
+
+    foreach ($folder in $foldersInUseList) {
+        $files = Get-ChildItem -Path $folder -File -ErrorAction SilentlyContinue
+        $currentFoldersInUse[$folder] = $files.FullName
+    }
+
+    # Detectar carpetas que ya no están en uso (estaban antes, pero no ahora)
+    $releasedFolders = @()
+    foreach ($prevFolder in $prevFoldersList) {
+        if ($foldersInUseList -notcontains $prevFolder) {
+            $releasedFolders += $prevFolder
+        }
+    }
+
+    # Procesar archivos de carpetas liberadas
+    foreach ($releasedFolder in $releasedFolders) {
+        $prevFiles = $prevFoldersInUse[$releasedFolder]
+        foreach ($filePath in $prevFiles) {
+            $fileName = [System.IO.Path]::GetFileName($filePath)
+            $downloadedFile = Join-Path $downloadFolder $fileName
+            if (Test-Path $downloadedFile) {
+                $destination = Join-Path $outputFolder $fileName
+                Write-Output "Moviendo archivo liberado de IDM: $downloadedFile -> $destination"
+                Move-Item -Path $downloadedFile -Destination $destination -Force
+
+                # Ejecutar notificación para archivo movido
+                $notifScript = Join-Path $PSScriptRoot "notificationExtract.py"
+                Write-Output "Ejecutando notificación de archivo movido: $notifScript"
+                & python $notifScript
+            }
+        }
+    }
+
+    # Actualizar estado previo
+    $prevFoldersInUse = $currentFoldersInUse.Clone()
+    $prevFoldersList  = $foldersInUseList
+
     Write-Output "Esperando a que IDM esté en ejecucion o que un archivo esté en uso por Hydra..."
 
     while (-not (Is-IDManRunning) -and (Get-ChildItem -Path $downloadFolder -File -Recurse | Where-Object { Is-FileInUseByHydra -filePath $_.FullName }).Count -eq 0) {
@@ -144,26 +203,32 @@ while ($true) {
     foreach ($file in $allFiles) {
         $extension = $file.Extension.ToLower()
     
-        # Ignorar archivos .tmp, .temp, .aria2
+        # Ignorar archivos .tmp, .temp, .aria2, .crdownload
         if ($extension -eq ".tmp" -or $extension -eq ".temp" -or $extension -eq ".aria2" -or $extension -eq ".crdownload") {
             Write-Output "Ignorando archivo temporal: $($file.FullName)"
             continue
         }
     
         if ($extension -ne ".rar" -and $extension -ne ".zip" -and $extension -ne ".7z") {
+            # Si hay carpetas en uso por IDM, saltear este archivo para procesarlo en una siguiente iteración
+            if ((Get-FoldersInUseByIDMan).Count -gt 0) {
+                Write-Output "Carpetas en uso por IDM para $($file.FullName). Se procesará después."
+                continue
+            }
+    
             # Archivo NO es comprimido, mover a Extracciones
             $destination = Join-Path -Path $outputFolder -ChildPath $file.Name
             Write-Output "Moviendo archivo no comprimido: $($file.FullName) -> $destination"
             Move-Item -Path $file.FullName -Destination $destination -Force
-    
-            Close-IDMan
-            # Ejecutar notificationExtract.py
+            
+            # Ejecutar notificación para archivo movido
             $notifScript = Join-Path $PSScriptRoot "notificationExtract.py"
             Write-Output "Ejecutando notificación de archivo movido: $notifScript"
             & python $notifScript
+            
+            Close-IDMan
         }
     }
-    
 
     # Verificar si hay archivos comprimidos para extraer
     $filesToExtract = Get-ChildItem -Path $downloadFolder -Include *.rar, *.zip, *.7z -File -Recurse | Where-Object { $_.FullName -notlike "$excludedFolder\*" }
