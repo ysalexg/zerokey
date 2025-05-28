@@ -5,3 +5,4 @@ executable.txt
 Playnite Plugin/
 manifest.yaml
 .vs/
+test/

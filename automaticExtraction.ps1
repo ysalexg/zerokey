@@ -26,19 +26,6 @@ function Is-FileInUseByHydra {
     return $handleOutput -match "aria2c.exe"
 }
 
-# Función para verificar si hay descargas activas de IDM o Hydra
-function Has-ActiveDownloads {
-    $allFiles = Get-ChildItem -Path $downloadFolder -Include *.rar, *.zip, *.7z -File -Recurse |
-                Where-Object { $_.FullName -notlike "$excludedFolder\*" }
-    
-    foreach ($file in $allFiles) {
-        if (Is-FileInUseByIDMan -filePath $file.FullName -or Is-FileInUseByHydra -filePath $file.FullName) {
-            return $true
-        }
-    }
-    return $false
-}
-
 # Función para verificar y extraer archivos
 function Extract-Files {
     $filesToExtract = Get-ChildItem -Path $downloadFolder -Include *.rar, *.zip, *.7z -File -Recurse |
@@ -118,14 +105,7 @@ function Extract-Files {
             & python $notifScript
         }
     }
-    
-    # Verificar si hay más descargas activas antes de terminar
-    if (Has-ActiveDownloads) {
-        Write-Output "Detectadas descargas activas adicionales. Continuando monitoreo..."
-        Extract-Files
-    } else {
-        Write-Output "No hay más descargas activas. El script ha terminado."
-    }
+
 }
 # Función para cerrar IDMan.exe
 function Close-IDMan {
