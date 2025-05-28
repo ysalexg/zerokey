@@ -181,6 +181,11 @@ while ($true) {
                 $notifScript = Join-Path $PSScriptRoot "notificationExtract.py"
                 Write-Output "Ejecutando notificación de archivo movido: $notifScript"
                 & python $notifScript
+                # Cerrar IDM solo si no hay carpetas en "E:\Descargas\TempDownload\DwnlData\Alex"
+                $alexFolders = Get-ChildItem -Path "E:\Descargas\TempDownload\DwnlData\Alex" -Directory -ErrorAction SilentlyContinue
+                if ($alexFolders.Count -eq 0) {
+                    Close-IDMan
+                }
             }
         }
     }
@@ -235,8 +240,11 @@ while ($true) {
         # Extraer archivos
         Extract-Files
 
-        # Cerrar IDMan.exe si está en ejecución
-        #Close-IDMan
+        # Cerrar IDM solo si no hay carpetas en "E:\Descargas\TempDownload\DwnlData\Alex"
+        $alexFolders = Get-ChildItem -Path "E:\Descargas\TempDownload\DwnlData\Alex" -Directory -ErrorAction SilentlyContinue
+        if ($alexFolders.Count -eq 0) {
+            Close-IDMan
+        }
 
         # Esperar a que IDMan.exe o Hydra.exe se vuelva a ejecutar
         Write-Output "Esperando a que IDM o Hydra se vuelvan a iniciar..."
