@@ -3,6 +3,10 @@ $downloadFolder = "E:\Descargas"
 $outputFolder = "D:\Extracciones"
 $excludedFolder = Join-Path $downloadFolder "TempDownload"
 $folderToCheck = "E:\Descargas\TempDownload\DwnlData\Alex"
+# Borrar todas las subcarpetas dentro de $folderToCheck, pero no la carpeta principal
+Get-ChildItem -Path $folderToCheck -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+    Remove-Item -Path $_.FullName -Recurse -Force -ErrorAction SilentlyContinue
+}
 
 # Ruta a handle.exe
 $handlePath = "D:\Programacion\Path\handle.exe"
