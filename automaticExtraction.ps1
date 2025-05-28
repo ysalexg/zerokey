@@ -8,6 +8,10 @@ Get-ChildItem -Path $folderToCheck -Directory -ErrorAction SilentlyContinue | Fo
     Remove-Item -Path $_.FullName -Recurse -Force -ErrorAction SilentlyContinue
 }
 
+# Eliminar claves de registro de DownloadManager con nombre numérico
+$key = '\d+'
+Get-ItemProperty 'HKCU:\SOFTWARE\DownloadManager\*' | Where-Object { $_.PSChildName -match $key } | Select-Object -ExpandProperty PSPath | Remove-Item -Recurse -Verbose -ErrorAction SilentlyContinue
+
 # Ruta a handle.exe
 $handlePath = "D:\Programacion\Path\handle.exe"
 
