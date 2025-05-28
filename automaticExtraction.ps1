@@ -210,12 +210,6 @@ while ($true) {
         }
     
         if ($extension -ne ".rar" -and $extension -ne ".zip" -and $extension -ne ".7z") {
-            # Si hay carpetas en uso por IDM, saltear este archivo para procesarlo en una siguiente iteración
-            if ((Get-FoldersInUseByIDMan).Count -gt 0) {
-                Write-Output "Carpetas en uso por IDM para $($file.FullName). Se procesará después."
-                continue
-            }
-    
             # Archivo NO es comprimido, mover a Extracciones
             $destination = Join-Path -Path $outputFolder -ChildPath $file.Name
             Write-Output "Moviendo archivo no comprimido: $($file.FullName) -> $destination"
@@ -226,7 +220,11 @@ while ($true) {
             Write-Output "Ejecutando notificación de archivo movido: $notifScript"
             & python $notifScript
             
-            Close-IDMan
+            # Cerrar IDM solo si no hay carpetas en "E:\Descargas\TempDownload\DwnlData\Alex"
+            $alexFolders = Get-ChildItem -Path "E:\Descargas\TempDownload\DwnlData\Alex" -Directory -ErrorAction SilentlyContinue
+            if ($alexFolders.Count -eq 0) {
+                Close-IDMan
+            }
         }
     }
 
@@ -238,7 +236,7 @@ while ($true) {
         Extract-Files
 
         # Cerrar IDMan.exe si está en ejecución
-        Close-IDMan
+        #Close-IDMan
 
         # Esperar a que IDMan.exe o Hydra.exe se vuelva a ejecutar
         Write-Output "Esperando a que IDM o Hydra se vuelvan a iniciar..."
