@@ -3,12 +3,10 @@ $downloadFolder = "E:\Descargas"
 $outputFolder = "D:\Extracciones"
 $excludedFolder = Join-Path $downloadFolder "TempDownload"
 $folderToCheck = "E:\Descargas\TempDownload\DwnlData\Alex"
-# Borrar todas las subcarpetas dentro de $folderToCheck, pero no la carpeta principal
+# Esto elimina todos los archivos temporales y sus respectivas claves de registro, ya no se puede reanudar descargas
 Get-ChildItem -Path $folderToCheck -Directory -ErrorAction SilentlyContinue | ForEach-Object {
     Remove-Item -Path $_.FullName -Recurse -Force -ErrorAction SilentlyContinue
 }
-
-# Eliminar claves de registro de DownloadManager con nombre numérico
 $key = '\d+'
 Get-ItemProperty 'HKCU:\SOFTWARE\DownloadManager\*' | Where-Object { $_.PSChildName -match $key } | Select-Object -ExpandProperty PSPath | Remove-Item -Recurse -Verbose -ErrorAction SilentlyContinue
 
