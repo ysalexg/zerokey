@@ -241,7 +241,7 @@ def handle_crack_files(original_exe_path, crack_exe_path):
                 
                 # Copiar el archivo
                 shutil.copy2(source_path, target_path)
-                log_message(f"\033[32mCopiado archivo de crack: {file} a {target_path}\033[0m")
+                log_message(f"Copiado archivo de crack: {file} a {target_path}")
         
         return True
     except Exception as e:
@@ -255,7 +255,7 @@ def process_games(update_progress):
         print("Cargando manifest...")
         update_progress(85, "Cargando base de datos...", log_message="Cargando base de datos...")
         manifest_data = load_manifest()
-        log_message("\033[32mManifest cargado correctamente.\033[0m")
+        log_message("Manifest cargado correctamente.")
         extracted_folders = [
             f.path for f in os.scandir(extraction_folder)
             if f.is_dir() and not is_excluded(f.path)
