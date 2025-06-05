@@ -58,7 +58,8 @@ excluded_executables = [
     "createdump.exe",
     "EAAntiCheat.GameServiceLauncher.exe",
     "EAAntiCheat.Installer.exe",
-    "Cleanup.exe"
+    "Cleanup.exe",
+    "start_protected_game.exe"
 ]
 
 log_messages = []
@@ -271,7 +272,11 @@ def process_games(update_progress):
                 if is_excluded(root):
                     continue
                 for file in files:
-                    if file.endswith(".exe") and file not in excluded_executables:
+                    if (
+                        file.endswith(".exe")
+                        and file not in excluded_executables
+                        and "soundtrack" not in file.lower()
+                    ):
                         full_path = os.path.join(root, file)
                         if file not in duplicate_executables:
                             duplicate_executables[file] = []
@@ -287,7 +292,11 @@ def process_games(update_progress):
                 if is_excluded(root):
                     continue
                 for file in files:
-                    if file.endswith(".exe") and file not in excluded_executables:
+                    if (
+                        file.endswith(".exe")
+                        and file not in excluded_executables
+                        and "soundtrack" not in file.lower()
+                    ):
                         full_path = os.path.join(root, file)
                         # Verificar si es un ejecutable duplicado
                         if len(duplicate_executables.get(file, [])) > 1:
@@ -474,7 +483,11 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         largest_size = 0
         for root, _, files in os.walk(folder_path):
             for file in files:
-                if file.lower().endswith('.exe') and file not in excluded_executables:
+                if (
+                    file.lower().endswith('.exe')
+                    and file not in excluded_executables
+                    and "soundtrack" not in file.lower()
+                ):
                     file_path = os.path.join(root, file)
                     file_size = os.path.getsize(file_path)
                     if file_size > largest_size:
