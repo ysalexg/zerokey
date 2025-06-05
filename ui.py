@@ -44,6 +44,16 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
+def log_message(msg):
+    """Agrega el mensaje al log en memoria y lo guarda en logs/logs.txt."""
+    global log_messages
+    log_messages.append(msg)
+    logs_dir = os.path.join(script_dir, "logs")
+    os.makedirs(logs_dir, exist_ok=True)
+    log_file = os.path.join(logs_dir, "logs.txt")
+    with open(log_file, "a", encoding="utf-8") as f:
+        f.write(msg + "\n")
+
 # Descargar manifest.yaml
 def download_manifest(update_progress):
     retries = 5
@@ -58,7 +68,7 @@ def download_manifest(update_progress):
             with open(manifest_path, 'wb') as file:
                 file.write(response.content)
             print("\033[32mManifest descargado correctamente.\033[0m")
-            log_messages.append("\033[32mManifest descargado correctamente.\033[0m")
+            log_message("Manifest descargado correctamente.")
             return
         except requests.exceptions.HTTPError as e:
             if response.status_code == 429 and attempt < retries - 1:
@@ -71,16 +81,14 @@ def download_manifest(update_progress):
                     msg = "No se pudo descargar el manifest. Usando el archivo local existente."
                     update_progress(10, msg, log_message=msg)
                     print(f"\033[33m{msg}\033[0m")
-                    log_messages.append(f"\033[33m{msg}\033[0m")
+                    log_message(f"\033[33m{msg}\033[0m")
                     return
                 else:
                     error_msg = f"Error crítico: No se pudo descargar el manifest y no existe uno local. {e}"
                     update_progress(0, error_msg, log_message=error_msg)
                     print(f"\033[31m{error_msg}\033[0m")
-                    log_messages.append(f"\033[31m{error_msg}\033[0m")
+                    log_message(f"\033[31m{error_msg}\033[0m")
                     raise
-
-
 
 # Verificar si una carpeta está excluida
 def is_excluded(folder_path):
@@ -156,25 +164,13 @@ def extract_archives(update_progress):
             progress += file_progress_range
             os.remove(file)  # Descomentar al finalizar desarrollo si es exitoso
 
-        log_messages.append("\033[32mArchivos extraídos correctamente.\033[0m")
+        log_message("Archivos extraídos correctamente.")
     except Exception as e:
         error_msg = f"Error durante la extracción: {e}"
         update_progress(0, error_msg, log_message=error_msg)
         print(error_msg)
-        log_messages.append(error_msg)
+        log_message(error_msg)
         raise
-
-# Eliminar las carpetas de extracción específicas   
-def cleanup_extraction_paths(update_progress):
-    try:
-        # Solo eliminamos las carpetas que fueron procesadas exitosamente
-        for path in successful_paths:
-            if os.path.exists(path):
-                shutil.rmtree(path)
-                print(f"Eliminada carpeta de extracción: {path}")
-        update_progress(100, "Instalación completada.", log_message="Instalación completada.")
-    except Exception as e:
-        update_progress(0, f"Error al limpiar las carpetas: {e}", log_message=f"Error al limpiar las carpetas: {e}")
 
 # Leer manifest.yaml
 def load_manifest():
@@ -213,13 +209,13 @@ def handle_crack_files(original_exe_path, crack_exe_path):
                 
                 # Copiar el archivo
                 shutil.copy2(source_path, target_path)
-                log_messages.append(f"\033[32mCopiado archivo de crack: {file} a {target_path}\033[0m")
+                log_message(f"\033[32mCopiado archivo de crack: {file} a {target_path}\033[0m")
         
         return True
     except Exception as e:
         error_msg = f"Error al manejar archivos de crack: {e}"
         print(error_msg)
-        log_messages.append(error_msg)
+        log_message(error_msg)
         return False
 
 def process_games(update_progress):
@@ -227,7 +223,7 @@ def process_games(update_progress):
         print("Cargando manifest...")
         update_progress(85, "Cargando base de datos...", log_message="Cargando base de datos...")
         manifest_data = load_manifest()
-        log_messages.append("\033[32mManifest cargado correctamente.\033[0m")
+        log_message("\033[32mManifest cargado correctamente.\033[0m")
         extracted_folders = [
             f.path for f in os.scandir(extraction_folder)
             if f.is_dir() and not is_excluded(f.path)
@@ -240,6 +236,7 @@ def process_games(update_progress):
         "vcredist_2015-2019_x86.exe",
         "vcredist_x64.exe",
         "vcredist_x86.exe",
+        "UnityCrashHandler64.exe",
         "xnafx40_redist.msi",
         "Setup.exe",
         "setup.exe",
@@ -300,14 +297,14 @@ def process_games(update_progress):
                                 original_path = next(p for p in duplicate_executables[file] if "crack" not in p.lower())
                                 # Manejar los archivos de crack
                                 if handle_crack_files(original_path, full_path):
-                                    log_messages.append(f"\033[32mArchivos de crack aplicados correctamente para {file}\033[0m")
+                                    log_message(f"\033[32mArchivos de crack aplicados correctamente para {file}\033[0m")
                                 continue
                         executables.append((file, root))
 
             if not executables:
                 no_exec_msg = f"No se encontró ejecutable en: {folder}"
                 print(no_exec_msg)
-                log_messages.append(no_exec_msg)
+                log_message(no_exec_msg)
                 if folder in extracted_paths:
                     extracted_paths.remove(folder)
                 continue
@@ -322,7 +319,7 @@ def process_games(update_progress):
     except Exception as e:
         error_msg = f"Error procesando juegos: {e}"
         print(error_msg)
-        log_messages.append(error_msg)
+        log_message(error_msg)
 
 def save_full_executable_path(target_folder, matching_exe, output_file="full_executable_path.txt"):
     # Ruta específica donde quieres guardar el archivo
@@ -358,7 +355,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
     resolved_exe = executable
     resolved_path = folder_path
 
-    # 1) Buscar recursivamente los archivos de AppId
+    # Buscar recursivamente los archivos de AppId
     ini_paths = []
     cream_paths = []
     steam_txt_paths = []
@@ -375,7 +372,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             elif name == "cpy.ini":
                 cpy_paths.append(os.path.join(root, f))
 
-    # 2) Recolectar posibles AppIds
+    # Recolectar posibles AppIds
     appid_candidates = []
 
     # steam_emu.ini
@@ -428,7 +425,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         except UnicodeDecodeError:
             continue
 
-    # 3) Determinar AppId válido
+    # Determinar AppId válido
     from collections import Counter
     counts = Counter(appid_candidates)
     appid = None
@@ -442,7 +439,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         if appid is None and len(counts) == 1:
             appid = next(iter(counts))
 
-    # 4) Si tenemos AppId, intentamos resolver por manifest
+    # 1) Si tenemos AppId, intentamos resolver por manifest
     if appid:
         for game_name, game_info in manifest_data.items():
             if str(game_info.get("steam", {}).get("id", "")) == appid:
@@ -455,21 +452,23 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
                             resolved_path = root
                             resolved_game = (game_name, game_info)
                             print("Juego encontrado con método 4 (AppId en manifest)")
+                            log_message(f"Juego encontrado: {game_name} (AppID={appid})")
                             break
                 break
 
-    # 5) Si no se resolvió vía AppId, matching por nombre de exe
+    # 2) Si no se resolvió vía AppId, matching por nombre de exe
     if not resolved_game:
         for game_name, game_info in manifest_data.items():
             for launch_path in game_info.get("launch", {}):
                 if os.path.basename(launch_path).lower() == executable.lower():
                     resolved_game = (game_name, game_info)
                     print("Juego encontrado con método 5 (matching por nombre de exe)")
+                    log_message(f"Juego encontrado con método 5 (matching por nombre de exe): {game_name} (exe={executable})")
                     break
             if resolved_game:
                 break
 
-    # 6) Si no se encontró en el manifest, usar el .exe más grande
+    # 3) Si no se encontró en el manifest, usar el .exe más grande
     if not resolved_game:
         largest_exe = None
         largest_size = 0
@@ -485,9 +484,9 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         if largest_exe:
             resolved_exe = largest_exe
             print("Juego encontrado con método 6 (exe más grande)")
-            log_messages.append(f"\033[33mNo se encontró en el manifest. Usando el ejecutable más grande: {resolved_exe}\033[0m")
+            log_message(f"Juego encontrado con método 6 (exe más grande): {resolved_exe}")
 
-    # 7) Si tenemos juego resuelto o ejecutable más grande, movemos/guardamos
+    # Si tenemos juego resuelto o ejecutable más grande, movemos/guardamos
     if resolved_game or largest_exe:
         if resolved_game:
             game_name, game_info = resolved_game
@@ -498,7 +497,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             app_id = None
 
         target_folder = os.path.join(game_folder, install_dir)
-        log_messages.append(f"\033[32mEjecutable encontrado: {resolved_exe} (AppID={app_id})\033[0m")
+        log_message(f"Ejecutable encontrado: {resolved_exe} (AppID={app_id})")
 
         out_dir = r"D:\Programacion\Python\Automatic Game Instalation"
         os.makedirs(out_dir, exist_ok=True)
@@ -510,21 +509,21 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         if not os.path.exists(target_folder):
             save_game_name(install_dir)
             shutil.move(resolved_path, target_folder)
-            log_messages.append(f"\033[32mMovido {resolved_path} a {target_folder}\033[0m")
+            log_message(f"Movido {resolved_path} a {target_folder}")
         else:
-            log_messages.append(f"La carpeta destino ya existe: {target_folder}")
+            log_message(f"La carpeta destino ya existe: {target_folder}")
 
         # Guardar la ruta del ejecutable independientemente de si hay AppID o no
         save_full_executable_path(target_folder, resolved_exe)
         if app_id:
-            log_messages.append(f"AppID encontrado: {app_id}")
+            log_message(f"AppID encontrado: {app_id}")
         else:
-            log_messages.append(f"No se encontró AppID para el juego {install_dir}")
+            log_message(f"No se encontró AppID para el juego {install_dir}")
 
         return True
 
-    # 8) Si no encontramos nada
-    log_messages.append(f"No se encontró información en el manifest ni un ejecutable válido en {folder_path}.")
+    # Si no encontramos nada
+    log_message(f"No se encontró información en el manifest ni un ejecutable válido en {folder_path}.")
     return False
 
 
@@ -541,14 +540,88 @@ def save_game_name(folder_name, output_file="game_name.txt"):
         with open(output_file_path, "w", encoding="utf-8") as file:
             file.write(folder_name)
         # Agregar mensaje al log además de imprimirlo
-        mensaje = f"\033[32mNombre del juego guardado en {output_file_path}.\033[0m"
+        mensaje = f"Nombre del juego guardado en {output_file_path}"
         print(mensaje)
-        log_messages.append(mensaje)
+        log_message(mensaje)
     except Exception as e:
         error_msg = f"Error al guardar el nombre del juego: {e}"
         print(error_msg)
-        log_messages.append(error_msg)
+        log_message(error_msg)
 
+# Eliminar las carpetas de extracción específicas   
+def cleanup_extraction_paths(update_progress):
+    try:
+        # Solo eliminamos las carpetas que fueron procesadas exitosamente
+        for path in successful_paths:
+            if os.path.exists(path):
+                shutil.rmtree(path)
+                print(f"Eliminada carpeta de extracción: {path}")
+        detect_crack()  # Detectar cracks después de la limpieza
+        update_progress(100, "Instalación completada.", log_message="Instalación completada.")
+        # Renombrar el archivo de log con el nombre del juego
+        try:
+            game_name_file = os.path.join(script_dir, "game_name.txt")
+            logs_dir = os.path.join(script_dir, "logs")
+            old_log = os.path.join(logs_dir, "logs.txt")
+            if os.path.exists(game_name_file) and os.path.exists(old_log):
+                with open(game_name_file, "r", encoding="utf-8") as f:
+                    game_name = f.read().strip()
+                if game_name:
+                    # Limpiar el nombre del juego para usarlo como nombre de archivo
+                    safe_game_name = "".join(c for c in game_name if c.isalnum() or c in (' ', '_', '-')).rstrip()
+                    new_log = os.path.join(logs_dir, f"{safe_game_name}.txt")
+                    if not os.path.exists(new_log):
+                        os.rename(old_log, new_log)
+        except Exception as e:
+            print(f"Error al renombrar el archivo de log: {e}")
+    except Exception as e:
+        update_progress(0, f"Error al limpiar las carpetas: {e}", log_message=f"Error al limpiar las carpetas: {e}")
+    
+def detect_crack():
+    """
+    Detecta si existen archivos de crack conocidos en la ruta del juego.
+    Busca: steam_api64.rne, steam_api64.cdx, onlinefix64.dll o la carpeta steam_settings.
+    Retorna un diccionario con los resultados.
+    Si encuentra alguno, agrega al log el tipo de crack detectado.
+    """
+    crack_files = ["steam_api64.rne", "steam_api64.cdx", "onlinefix64.dll"]
+    crack_folder = "steam_settings"
+    result = {
+        "steam_api64.rne": False,
+        "steam_api64.cdx": False,
+        "onlinefix64.dll": False,
+        "steam_settings": False
+    }
+
+    # Leer la ruta del juego desde game_path.txt
+    game_path_file = os.path.join(script_dir, "game_path.txt")
+    if not os.path.exists(game_path_file):
+        print("No se encontró game_path.txt")
+        return result
+
+    with open(game_path_file, "r", encoding="utf-8") as f:
+        game_path = f.read().strip()
+
+    if not os.path.isdir(game_path):
+        print(f"La ruta del juego no existe: {game_path}")
+        return result
+
+    # Buscar archivos de crack
+    for root, dirs, files in os.walk(game_path):
+        for crack_file in crack_files:
+            if crack_file in files:
+                result[crack_file] = True
+                if crack_file == "steam_api64.rne":
+                    log_message("Crack usado: RUNE")
+                elif crack_file == "steam_api64.cdx":
+                    log_message("Crack usado: CODEX")
+                elif crack_file == "onlinefix64.dll":
+                    log_message("Crack usado: Online-Fix")
+        if crack_folder in dirs:
+            result[crack_folder] = True
+            log_message("Crack usado: Goldberg")
+
+    return result
 
 class GameInstallationThread(QThread):
     progress_update = pyqtSignal(int)
