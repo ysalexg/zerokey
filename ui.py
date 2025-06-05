@@ -30,6 +30,37 @@ excluded_folders = [
     r"E:\Descargas\TempDownload\DwnlData\Alex"
 ]
 
+excluded_executables = [
+    "dotNetFx40_Full_setup.exe",
+    "dxwebsetup.exe",
+    "oalinst.exe",
+    "vcredist_2015-2019_x64.exe",
+    "vcredist_2015-2019_x86.exe",
+    "vcredist_x64.exe",
+    "vcredist_x86.exe",
+    "xnafx40_redist.msi",
+    "Setup.exe",
+    "setup.exe",
+    "Language Selector.exe",
+    "UEPrereqSetup_x64.exe",
+    "crashpad_handler.exe",
+    "SteamworksExample.exe",
+    "Common.ExtProtocolExecutor.exe",
+    "ezTransXP.ExtProtocol.exe",
+    "Lec.ExtProtocol.exe",
+    "UnityCrashHandler64.exe",
+    "crs-video.exe",
+    "crs-uploader.exe",
+    "crs-handler.exe",
+    "CrashReportClient.exe",
+    "UnrealCEFSubProcess.exe",
+    "unins000.exe",
+    "createdump.exe",
+    "EAAntiCheat.GameServiceLauncher.exe",
+    "EAAntiCheat.Installer.exe",
+    "Cleanup.exe"
+]
+
 log_messages = []
 extracted_paths = []
 successful_paths = []
@@ -227,37 +258,6 @@ def process_games(update_progress):
         extracted_folders = [
             f.path for f in os.scandir(extraction_folder)
             if f.is_dir() and not is_excluded(f.path)
-        ]
-        excluded_executables = [
-        "dotNetFx40_Full_setup.exe",
-        "dxwebsetup.exe",
-        "oalinst.exe",
-        "vcredist_2015-2019_x64.exe",
-        "vcredist_2015-2019_x86.exe",
-        "vcredist_x64.exe",
-        "vcredist_x86.exe",
-        "UnityCrashHandler64.exe",
-        "xnafx40_redist.msi",
-        "Setup.exe",
-        "setup.exe",
-        "Language Selector.exe",
-        "UEPrereqSetup_x64.exe",
-        "crashpad_handler.exe",
-        "SteamworksExample.exe",
-        "Common.ExtProtocolExecutor.exe",
-        "ezTransXP.ExtProtocol.exe",
-        "Lec.ExtProtocol.exe",
-        "UnityCrashHandler64.exe",
-        "crs-video.exe",
-        "crs-uploader.exe",
-        "crs-handler.exe",
-        "CrashReportClient.exe",
-        "UnrealCEFSubProcess.exe",
-        "unins000.exe",
-        "createdump.exe",
-        "EAAntiCheat.GameServiceLauncher.exe",
-        "EAAntiCheat.Installer.exe",
-        "Cleanup.exe"
         ]
 
         # Diccionario para almacenar ejecutables duplicados
@@ -468,13 +468,13 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             if resolved_game:
                 break
 
-    # 3) Si no se encontró en el manifest, usar el .exe más grande
+    # 3) Si no se encontró en el manifest, usar el .exe más grande (excluyendo los de la lista)
     if not resolved_game:
         largest_exe = None
         largest_size = 0
         for root, _, files in os.walk(folder_path):
             for file in files:
-                if file.lower().endswith('.exe'):
+                if file.lower().endswith('.exe') and file not in excluded_executables:
                     file_path = os.path.join(root, file)
                     file_size = os.path.getsize(file_path)
                     if file_size > largest_size:
