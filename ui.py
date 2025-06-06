@@ -17,6 +17,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 # Variables globales
 download_folder = "E:\\Descargas"
 extraction_folder = "D:\\Extracciones"
+steamautocrack = r"D:\Programacion\How to\SteamAutoCrackCLI\SteamAutoCrack.CLI.exe"
 game_folder = "D:\\Juegos"
 manifest_url = "https://raw.githubusercontent.com/mtkennerly/ludusavi-manifest/refs/heads/master/data/manifest.yaml"
 manifest_path = os.path.join(script_dir, "manifest.yaml")
@@ -166,7 +167,7 @@ def extract_archives(update_progress):
                         nested_archive = os.path.join(root, file)
                         nested_destination = os.path.join(destination_folder, Path(file).stem)
                         extract_recursive(nested_archive, nested_destination, update_progress, is_main=False)
-                        os.remove(nested_archive)  # Descomentar al finalizar desarrollo si es exitoso
+                        # os.remove(nested_archive)  # Descomentar al finalizar desarrollo si es exitoso
 
         # Recolectar archivos comprimidos
         compressed_files = []
@@ -194,7 +195,7 @@ def extract_archives(update_progress):
             )
             extract_recursive(file, extraction_path, progress, file_progress_range, is_main=True)
             progress += file_progress_range
-            os.remove(file)  # Descomentar al finalizar desarrollo si es exitoso
+            # os.remove(file)  # Descomentar al finalizar desarrollo si es exitoso
 
         log_message("Archivos extraídos correctamente.")
     except Exception as e:
@@ -461,7 +462,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
                             resolved_path = root
                             resolved_game = (game_name, game_info)
                             print("Juego encontrado con método 4 (AppId en manifest)")
-                            log_message(f"Juego encontrado: {game_name} (AppID={appid})")
+                            log_message(f"Juego encontrado con método 4 (AppId en manifest): {game_name} (AppID={appid})")
                             break
                 break
 
@@ -530,6 +531,11 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         save_full_executable_path(target_folder, resolved_exe)
         if app_id:
             log_message(f"AppID encontrado: {app_id}")
+            # Guardar el AppID en appid.txt en la misma ruta que el script
+            out_dir = script_dir
+            os.makedirs(out_dir, exist_ok=True)
+            with open(os.path.join(out_dir, "appid.txt"), "w", encoding="utf-8") as f:
+                f.write(str(app_id))
         else:
             log_message(f"No se encontró AppID para el juego {install_dir}")
 
@@ -562,7 +568,7 @@ def save_game_name(folder_name, output_file="game_name.txt"):
         log_message(error_msg)
 
 # Eliminar las carpetas de extracción específicas   
-def cleanup_extraction_paths(update_progress):
+def cleanup_extraction_paths_and_crack(update_progress):
     try:
         # Solo eliminamos las carpetas que fueron procesadas exitosamente
         for path in successful_paths:
@@ -570,6 +576,7 @@ def cleanup_extraction_paths(update_progress):
                 shutil.rmtree(path)
                 print(f"Eliminada carpeta de extracción: {path}")
         detect_crack()  # Detectar cracks después de la limpieza
+        apply_crack() # Aplicar crack si es necesario
         update_progress(100, "Instalación completada.", log_message="Instalación completada.")
         # Renombrar el archivo de log con el nombre del juego
         try:
@@ -594,8 +601,10 @@ def detect_crack():
     """
     Detecta si existen archivos de crack conocidos en la ruta del juego.
     Busca: steam_api64.rne, steam_api64.cdx, onlinefix64.dll o la carpeta steam_settings.
-    Retorna un diccionario con los resultados.
-    Si encuentra alguno, agrega al log el tipo de crack detectado.
+    Si encuentra onlinefix64.dll, solo considera Online-Fix (ignora RUNE y CODEX).
+    Si no, detecta RUNE o CODEX según corresponda.
+    Si encuentra steam_settings, detecta Goldberg.
+    Guarda el tipo de crack detectado en crack.txt y lo agrega al log.
     """
     crack_files = ["steam_api64.rne", "steam_api64.cdx", "onlinefix64.dll"]
     crack_folder = "steam_settings"
@@ -605,6 +614,7 @@ def detect_crack():
         "onlinefix64.dll": False,
         "steam_settings": False
     }
+    detected_cracks = []
 
     # Leer la ruta del juego desde game_path.txt
     game_path_file = os.path.join(script_dir, "game_path.txt")
@@ -619,22 +629,124 @@ def detect_crack():
         print(f"La ruta del juego no existe: {game_path}")
         return result
 
+    found_onlinefix = False
+    found_rune = False
+    found_codex = False
+    found_goldberg = False
+
     # Buscar archivos de crack
     for root, dirs, files in os.walk(game_path):
-        for crack_file in crack_files:
-            if crack_file in files:
-                result[crack_file] = True
-                if crack_file == "steam_api64.rne":
-                    log_message("Crack usado: RUNE")
-                elif crack_file == "steam_api64.cdx":
-                    log_message("Crack usado: CODEX")
-                elif crack_file == "onlinefix64.dll":
-                    log_message("Crack usado: Online-Fix")
+        if "onlinefix64.dll" in files:
+            result["onlinefix64.dll"] = True
+            found_onlinefix = True
+        if "steam_api64.rne" in files:
+            result["steam_api64.rne"] = True
+            found_rune = True
+        if "steam_api64.cdx" in files:
+            result["steam_api64.cdx"] = True
+            found_codex = True
         if crack_folder in dirs:
             result[crack_folder] = True
-            log_message("Crack usado: Goldberg")
+            found_goldberg = True
+
+    # Lógica de prioridad: Online-Fix > RUNE > CODEX
+    if found_onlinefix:
+        log_message("Crack usado: Online-Fix")
+        detected_cracks.append("Online-Fix")
+    else:
+        if found_rune:
+            log_message("Crack usado: RUNE")
+            detected_cracks.append("RUNE")
+        elif found_codex:
+            log_message("Crack usado: CODEX")
+            detected_cracks.append("CODEX")
+    if found_goldberg:
+        log_message("Crack usado: Goldberg")
+        detected_cracks.append("Goldberg")
+
+    # Guardar el crack detectado en crack.txt (si se detectó alguno)
+    if detected_cracks:
+        crack_file_path = os.path.join(script_dir, "crack.txt")
+        try:
+            with open(crack_file_path, "w", encoding="utf-8") as f:
+                f.write(", ".join(detected_cracks))
+        except Exception as e:
+            print(f"Error al guardar crack.txt: {e}")
 
     return result
+
+def apply_crack():
+    """
+    Aplica el crack usando SteamAutoCrack.CLI.exe solo si crack.txt existe y contiene 'RUNE' o 'CODEX'.
+    Si es CODEX, primero reemplaza todos los steam_api64.dll por el de la ruta Codex.
+    Lee la ruta del juego de game_path.txt y el appid de appid.txt,
+    ambos ubicados en el mismo directorio que el script.
+    """
+    try:
+        crack_file = os.path.join(script_dir, "crack.txt")
+        if not os.path.exists(crack_file):
+            log_message("No se encontró crack.txt, no se aplicará el crack.")
+            return False
+
+        with open(crack_file, "r", encoding="utf-8") as f:
+            crack_type = f.read().strip().upper()
+
+        # Solo aplicar si es RUNE o CODEX
+        if crack_type not in ("RUNE", "CODEX"):
+            log_message(f"El crack detectado es '{crack_type}', no se aplicará SteamAutoCrack.")
+            return False
+
+        # Leer la ruta del juego y el appid
+        game_path_file = os.path.join(script_dir, "game_path.txt")
+        appid_file = os.path.join(script_dir, "appid.txt")
+        if not os.path.exists(game_path_file) or not os.path.exists(appid_file):
+            log_message("No se encontró game_path.txt o appid.txt para aplicar el crack.")
+            return False
+
+        with open(game_path_file, "r", encoding="utf-8") as f:
+            game_path = f.read().strip()
+        with open(appid_file, "r", encoding="utf-8") as f:
+            appid = f.read().strip()
+
+        if not game_path or not appid:
+            log_message("game_path.txt o appid.txt están vacíos.")
+            return False
+
+        # Si es CODEX, reemplazar todos los steam_api64.dll por el de Codex
+        if crack_type == "CODEX":
+            codex_dll = r"D:\Programacion\How to\SteamClient\Codex\steam_api64.dll"
+            if not os.path.exists(codex_dll):
+                log_message("No se encontró el steam_api64.dll de CODEX.")
+                return False
+            replaced = False
+            for root, _, files in os.walk(game_path):
+                for file in files:
+                    if file.lower() == "steam_api64.dll":
+                        target = os.path.join(root, file)
+                        try:
+                            shutil.copy2(codex_dll, target)
+                            log_message(f"Reemplazado steam_api64.dll en: {target}")
+                            replaced = True
+                        except Exception as e:
+                            log_message(f"Error al reemplazar steam_api64.dll en {target}: {e}")
+            if not replaced:
+                log_message("No se encontró ningún steam_api64.dll para reemplazar en el juego.")
+
+        # Construir el comando
+        command = [steamautocrack, "crack", game_path, "--appid", appid]
+        log_message(f"Ejecutando comando: {' '.join(command)}")
+
+        # Ejecutar el comando
+        result = subprocess.run(command, capture_output=True, text=True)
+        if result.returncode == 0:
+            log_message("Crack aplicado correctamente con SteamAutoCrack.")
+            return True
+        else:
+            log_message(f"Error al aplicar el crack: {result.stderr}")
+            return False
+    except Exception as e:
+        log_message(f"Excepción al aplicar el crack: {e}")
+        return False
 
 class GameInstallationThread(QThread):
     progress_update = pyqtSignal(int)
@@ -650,7 +762,7 @@ class GameInstallationThread(QThread):
             download_manifest(update_progress)
             extract_archives(update_progress)
             process_games(update_progress)
-            cleanup_extraction_paths(update_progress)
+            cleanup_extraction_paths_and_crack(update_progress)
 
             self.installation_complete.emit()
         except Exception as e:
