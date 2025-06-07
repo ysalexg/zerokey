@@ -473,7 +473,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
                 if os.path.basename(launch_path).lower() == executable.lower():
                     resolved_game = (game_name, game_info)
                     print("Juego encontrado con método 5 (matching por nombre de exe)")
-                    log_message(f"Juego encontrado con método 5 (matching por nombre de exe): {game_name} (exe={executable})")
+                    log_message(f"Juego encontrado con método 5 (matching por nombre de exe): {game_name}")
                     break
             if resolved_game:
                 break
