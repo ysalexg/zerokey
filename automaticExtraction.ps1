@@ -70,13 +70,23 @@ function Extract-Files {
             }
         }
         else {
-            # Para .zip y .7z: comprobar método AES
+            # Para .zip y .7z: primero intentar listar con -p (vacío) como en .rar
+            $outputLines = & 7z.exe l '-p' '' $archive.FullName 2>&1
+            $allOutput   = $outputLines -join "`n"
+            Write-Output ">> DEBUG 7z l -p output:`n$allOutput"
+
+            if ($allOutput -match "ERROR:.*Cannot open encrypted archive" `
+            -or $allOutput -match "Wrong password") {
+            $isEncrypted = $true
+            } else {
+            # Si no hay error de cifrado, comprobar método AES
             $outputLines = & 7z.exe l $archive.FullName 2>&1
             $allOutput   = $outputLines -join "`n"
             Write-Output ">> DEBUG 7z l output:`n$allOutput"
 
             if ($allOutput -match "Method\s*=\s*.*(7zAES|AES)") {
                 $isEncrypted = $true
+            }
             }
         }
 
