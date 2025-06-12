@@ -1,0 +1,19 @@
+# 1 test - make 2 passes
+1 large bin
+3 little bin files
+1 big zip file
+3 little zip
+then closing idm
+
+# 2 test
+download a game in hydra
+
+bin test files
+https://ash-speed.hetzner.com/
+
+zip test files
+https://www.examplefile.com/compressed/7z/100-mb-7z
+https://www.examplefile.com/compressed/7z/20-mb-7z
+
+mp4 test files
+https://drive.google.com/drive/folders/1jV6RlAWAGnvm93IpH5CpuIn7v0QMn1nC
