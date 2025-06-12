@@ -18,7 +18,7 @@ assets = os.path.join(script_dir, "assets")
 # Variables globales
 download_folder = "E:\\Descargas"
 extraction_folder = "D:\\Extracciones"
-steamautocrack = r"D:\Programacion\How to\SteamAutoCrackCLI\SteamAutoCrack.CLI.exe"
+steamautocrack = os.path.join(assets, "autocrack", "SteamAutoCrack.CLI.exe")
 game_folder = "D:\\Juegos"
 manifest_url = "https://raw.githubusercontent.com/mtkennerly/ludusavi-manifest/refs/heads/master/data/manifest.yaml"
 manifest_path = os.path.join(script_dir, "manifest.yaml")
