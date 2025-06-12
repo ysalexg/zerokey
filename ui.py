@@ -13,6 +13,7 @@ from PyQt5.QtCore import QThread, pyqtSignal, Qt, QPoint, QTimer
 from PyQt5.QtGui import QFont, QIcon
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
+assets = os.path.join(script_dir, "assets")
 
 # Variables globales
 download_folder = "E:\\Descargas"
@@ -21,6 +22,11 @@ steamautocrack = r"D:\Programacion\How to\SteamAutoCrackCLI\SteamAutoCrack.CLI.e
 game_folder = "D:\\Juegos"
 manifest_url = "https://raw.githubusercontent.com/mtkennerly/ludusavi-manifest/refs/heads/master/data/manifest.yaml"
 manifest_path = os.path.join(script_dir, "manifest.yaml")
+executableTXT = os.path.join(assets, "executable.txt")
+gamePathTXT = os.path.join(assets, "game_path.txt")
+gameNameTXT = os.path.join(assets, "game_name.txt")
+crackTXT = os.path.join(assets, "crack.txt")
+appidTXT = os.path.join(assets, "appid.txt")
 
 excluded_folders = [
     r"D:\Extracciones\Drive Cache",
@@ -513,11 +519,10 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         target_folder = os.path.join(game_folder, install_dir)
         log_message(f"Ejecutable encontrado: {resolved_exe} (AppID={app_id})")
 
-        out_dir = r"D:\Programacion\Python\Automatic Game Instalation"
-        os.makedirs(out_dir, exist_ok=True)
-        with open(os.path.join(out_dir, "executable.txt"), "w", encoding="utf-8") as f:
+
+        with open(executableTXT, "w", encoding="utf-8") as f:
             f.write(resolved_exe)
-        with open(os.path.join(out_dir, "game_path.txt"), "w", encoding="utf-8") as f:
+        with open(gamePathTXT, "w", encoding="utf-8") as f:
             f.write(target_folder)
 
         if not os.path.exists(target_folder):
@@ -531,10 +536,8 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         save_full_executable_path(target_folder, resolved_exe)
         if app_id:
             log_message(f"AppID encontrado: {app_id}")
-            # Guardar el AppID en appid.txt en la misma ruta que el script
-            out_dir = script_dir
-            os.makedirs(out_dir, exist_ok=True)
-            with open(os.path.join(out_dir, "appid.txt"), "w", encoding="utf-8") as f:
+
+            with open(os.path.join(appidTXT, "w", encoding="utf-8")) as f:
                 f.write(str(app_id))
         else:
             log_message(f"No se encontró AppID para el juego {install_dir}")
@@ -546,20 +549,11 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
     return False
 
 
-def save_game_name(folder_name, output_file="game_name.txt"):
-    # Definir el directorio de salida
-    output_directory = r"D:\Programacion\Python\Automatic Game Instalation"
-    output_file_path = os.path.join(output_directory, output_file)
-
+def save_game_name(folder_name):
     try:
-        # Crear el directorio si no existe
-        os.makedirs(output_directory, exist_ok=True)
-        
-        # Guardar el nombre del juego en la ruta especificada
-        with open(output_file_path, "w", encoding="utf-8") as file:
+        with open(gameNameTXT, "w", encoding="utf-8") as file:
             file.write(folder_name)
-        # Agregar mensaje al log además de imprimirlo
-        mensaje = f"Nombre del juego guardado en {output_file_path}"
+        mensaje = f"Nombre del juego guardado en {gameNameTXT}"
         print(mensaje)
         log_message(mensaje)
     except Exception as e:
@@ -569,22 +563,24 @@ def save_game_name(folder_name, output_file="game_name.txt"):
 
 # Eliminar las carpetas de extracción específicas   
 def cleanup_extraction_paths_and_crack(update_progress):
+    """
+    Elimina las carpetas de extracción exitosas.
+    Si se detecta un crack, guarda el tipo de crack y lo agrega al log.
+    Por último renombra el archivo de log con el nombre del juego.
+    """
     try:
-        # Solo eliminamos las carpetas que fueron procesadas exitosamente
         for path in successful_paths:
             if os.path.exists(path):
                 shutil.rmtree(path)
                 print(f"Eliminada carpeta de extracción: {path}")
-        detect_crack()  # Detectar cracks después de la limpieza
-        apply_crack() # Aplicar crack si es necesario
+        detect_crack()
+        apply_crack()
         update_progress(100, "Instalación completada.", log_message="Instalación completada.")
-        # Renombrar el archivo de log con el nombre del juego
         try:
-            game_name_file = os.path.join(script_dir, "game_name.txt")
             logs_dir = os.path.join(script_dir, "logs")
             old_log = os.path.join(logs_dir, "logs.txt")
-            if os.path.exists(game_name_file) and os.path.exists(old_log):
-                with open(game_name_file, "r", encoding="utf-8") as f:
+            if os.path.exists(gameNameTXT) and os.path.exists(old_log):
+                with open(gameNameTXT, "r", encoding="utf-8") as f:
                     game_name = f.read().strip()
                 if game_name:
                     # Limpiar el nombre del juego para usarlo como nombre de archivo
@@ -604,7 +600,7 @@ def detect_crack():
     Si encuentra onlinefix64.dll, solo considera Online-Fix (ignora RUNE y CODEX).
     Si no, detecta RUNE o CODEX según corresponda.
     Si encuentra steam_settings, detecta Goldberg.
-    Guarda el tipo de crack detectado en crack.txt y lo agrega al log.
+    Guarda el tipo de crack detectado y lo agrega al log.
     """
     crack_files = ["steam_api64.rne", "steam_api64.cdx", "onlinefix64.dll"]
     crack_folder = "steam_settings"
@@ -617,12 +613,12 @@ def detect_crack():
     detected_cracks = []
 
     # Leer la ruta del juego desde game_path.txt
-    game_path_file = os.path.join(script_dir, "game_path.txt")
-    if not os.path.exists(game_path_file):
+
+    if not os.path.exists(gamePathTXT):
         print("No se encontró game_path.txt")
         return result
 
-    with open(game_path_file, "r", encoding="utf-8") as f:
+    with open(gamePathTXT, "r", encoding="utf-8") as f:
         game_path = f.read().strip()
 
     if not os.path.isdir(game_path):
@@ -664,11 +660,9 @@ def detect_crack():
         log_message("Crack usado: Goldberg")
         detected_cracks.append("Goldberg")
 
-    # Guardar el crack detectado en crack.txt (si se detectó alguno)
     if detected_cracks:
-        crack_file_path = os.path.join(script_dir, "crack.txt")
         try:
-            with open(crack_file_path, "w", encoding="utf-8") as f:
+            with open(crackTXT, "w", encoding="utf-8") as f:
                 f.write(", ".join(detected_cracks))
         except Exception as e:
             print(f"Error al guardar crack.txt: {e}")
@@ -677,18 +671,17 @@ def detect_crack():
 
 def apply_crack():
     """
-    Aplica el crack usando SteamAutoCrack.CLI.exe solo si crack.txt existe y contiene 'RUNE' o 'CODEX'.
+    Aplica el crack usando SteamAutoCrack.CLI.exe solo si se contiene 'RUNE' o 'CODEX'.
     Si es CODEX, primero reemplaza todos los steam_api64.dll por el de la ruta Codex.
     Lee la ruta del juego de game_path.txt y el appid de appid.txt,
     ambos ubicados en el mismo directorio que el script.
     """
     try:
-        crack_file = os.path.join(script_dir, "crack.txt")
-        if not os.path.exists(crack_file):
+        if not os.path.exists(crackTXT):
             log_message("No se encontró crack.txt, no se aplicará el crack.")
             return False
 
-        with open(crack_file, "r", encoding="utf-8") as f:
+        with open(crackTXT, "r", encoding="utf-8") as f:
             crack_type = f.read().strip().upper()
 
         # Solo aplicar si es RUNE o CODEX
@@ -697,15 +690,13 @@ def apply_crack():
             return False
 
         # Leer la ruta del juego y el appid
-        game_path_file = os.path.join(script_dir, "game_path.txt")
-        appid_file = os.path.join(script_dir, "appid.txt")
-        if not os.path.exists(game_path_file) or not os.path.exists(appid_file):
+        if not os.path.exists(gamePathTXT) or not os.path.exists(appidTXT):
             log_message("No se encontró game_path.txt o appid.txt para aplicar el crack.")
             return False
 
-        with open(game_path_file, "r", encoding="utf-8") as f:
+        with open(gamePathTXT, "r", encoding="utf-8") as f:
             game_path = f.read().strip()
-        with open(appid_file, "r", encoding="utf-8") as f:
+        with open(appidTXT, "r", encoding="utf-8") as f:
             appid = f.read().strip()
 
         if not game_path or not appid:
@@ -917,32 +908,25 @@ class GameInstallationProgress(QMainWindow):
             self.log_text.append(log_message)
     
     def on_installation_complete(self):
-        # Construimos la ruta relativa al directorio del script
-        game_name_file = os.path.join(script_dir, "game_name.txt")
-
         # Texto por defecto
         status_text = "Instalación completada"
 
-        # Intentamos leer el nombre del juego
         try:
-            with open(game_name_file, "r", encoding="utf-8") as f:
+            with open(gameNameTXT, "r", encoding="utf-8") as f:
                 content = f.read().strip()
                 if content:
                     status_text = content
         except Exception as e:
             # Opcional: loguear el error
-            print(f"Error al leer {game_name_file}: {e}")
+            print(f"Error al leer {gameNameTXT}: {e}")
 
-        # ÚNICO cambio: actualizar sólo el status_label
         self.status_label.setText(status_text)
-
-        # El resto de la UI queda igual
         self.progress_bar.setValue(100)
         self.title.setText("Instalado")
         self.cancelar_button.setVisible(False)
         self.finish_button.setVisible(True)
         # Iniciar el temporizador para cerrar la ventana después de 5 segundos
-        # self.close_timer.start(5000)  # 5000 milisegundos = 5 segundos
+        # self.close_timer.start(5000)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -956,7 +940,6 @@ class GameInstallationProgress(QMainWindow):
     def mouseReleaseEvent(self, event):
         self.is_dragging = False
 
-# Inicio del programa
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     icon = QIcon(resource_path("icon.png"))
