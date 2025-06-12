@@ -32,9 +32,9 @@ namespace AddGames
         public override IEnumerable<GameMetadata> GetGames(LibraryGetGamesArgs args)
         {
             // Rutas de los archivos
-            string nameFile = @"D:\Programacion\Python\Automatic Game Instalation\assets\game_name.txt";
-            string executableFile = @"D:\Programacion\Python\Automatic Game Instalation\assets\full_executable_path.txt";
-            string pathFile = @"D:\Programacion\Python\Automatic Game Instalation\assets\game_path.txt";
+            string nameFile = @"D:\Programacion\Python\zerokey\assets\game_name.txt";
+            string executableFile = @"D:\Programacion\Python\zerokey\assets\full_executable_path.txt";
+            string pathFile = @"D:\Programacion\Python\zerokey\assets\game_path.txt";
 
             // Validar que los archivos existen
             if (!File.Exists(nameFile) || !File.Exists(executableFile) || !File.Exists(pathFile))
@@ -54,9 +54,9 @@ namespace AddGames
             File.Delete(pathFile);
 
             // Borrar archivos adicionales si existen
-            string extra1 = @"D:\Programacion\Python\Automatic Game Instalation\assets\executable.txt";
-            string extra2 = @"D:\Programacion\Python\Automatic Game Instalation\assets\crack.txt";
-            string extra3 = @"D:\Programacion\Python\Automatic Game Instalation\assets\appid.txt";
+            string extra1 = @"D:\Programacion\Python\zerokey\assets\executable.txt";
+            string extra2 = @"D:\Programacion\Python\zerokey\assets\crack.txt";
+            string extra3 = @"D:\Programacion\Python\zerokey\assets\appid.txt";
 
             if (File.Exists(extra1)) File.Delete(extra1);
             if (File.Exists(extra2)) File.Delete(extra2);
