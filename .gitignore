@@ -10,3 +10,5 @@ manifest.yaml
 .vs/
 test/
 logs/
+info/
+assets/

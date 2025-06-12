@@ -1,4 +1,4 @@
-﻿# Directorios de trabajo
+# Directorios de trabajo
 $downloadFolder = "E:\Descargas"
 $outputFolder = "D:\Extracciones"
 $excludedFolder = Join-Path $downloadFolder "TempDownload"
@@ -11,7 +11,7 @@ $key = '\d+'
 Get-ItemProperty 'HKCU:\SOFTWARE\DownloadManager\*' | Where-Object { $_.PSChildName -match $key } | Select-Object -ExpandProperty PSPath | Remove-Item -Recurse -Verbose -ErrorAction SilentlyContinue
 
 # Ruta a handle.exe
-$handlePath = "D:\Programacion\Path\handle.exe"
+$handlePath = "handle.exe"
 
 # Función para verificar si un archivo está en uso por IDMan.exe
 function Is-CompressedFileInUseByIDMan {
@@ -117,7 +117,8 @@ function Extract-Files {
                 Start-Sleep -Seconds 5
             }
             Write-Output "Archivo ya no está en uso por Hydra. Ejecutando instalador..."
-            Start-Process -FilePath "python" -ArgumentList "`"D:\Programacion\Python\Automatic Game Instalation\ui.py`"" -NoNewWindow -Wait
+            $uiScript = Join-Path $PSScriptRoot "ui.py"
+            Start-Process -FilePath "python" -ArgumentList "`"$uiScript`"" -NoNewWindow -Wait
             Write-Output "ui.py ejecutado para $($archive.FullName)"
         } else {
             Write-Output "Extrayendo $($archive.FullName) a $extractionPath..."
@@ -129,7 +130,7 @@ function Extract-Files {
             Write-Output "Archivo eliminado: $($archive.FullName)"
 
             # Ejecutar notificationExtract.py después de la extracción
-            $notifScript = Join-Path $PSScriptRoot "notificationExtract.py"
+            $notifScript = Join-Path $PSScriptRoot "notifications\notificationExtract.py"
             Write-Output "Ejecutando notificación de extracción: $notifScript"
             & python $notifScript
         }
@@ -194,7 +195,7 @@ while ($true) {
                 Move-Item -Path $downloadedFile -Destination $destination -Force
 
                 # Ejecutar notificación para archivo movido
-                $notifScript = Join-Path $PSScriptRoot "notificationExtract.py"
+                $notifScript = Join-Path $PSScriptRoot "notifications\notificationExtract.py"
                 Write-Output "Ejecutando notificación de archivo movido: $notifScript"
                 & python $notifScript
                 # Cerrar IDM solo si no hay carpetas en "E:\Descargas\TempDownload\DwnlData\Alex"
@@ -214,6 +215,7 @@ while ($true) {
 
     while (-not (Is-IDManRunning) -and (Get-ChildItem -Path $downloadFolder -File -Recurse | Where-Object { Is-FileInUseByHydra -filePath $_.FullName }).Count -eq 0) {
         Start-Sleep -Seconds 3
+        Start-Process -FilePath "soundvolumeview.exe" -ArgumentList '/SetVolume "System Sounds" 20' -NoNewWindow
     }
 
     Write-Output "IDM o archivo en uso por Hydra detectado. Comprobando archivos..."
@@ -272,6 +274,6 @@ while ($true) {
     } else {
         Write-Output "No hay archivos comprimidos para extraer."
     }
-    # cls
+    cls
     Start-Sleep -Seconds 3
 }
