@@ -1,0 +1,7 @@
+﻿Id: AddGames_6e5d15ac-c88d-4433-8b49-45b0c1a7ed02
+Name: Custom Library Importer
+Author: John Doe
+Version: 1.0
+Module: AddGames.dll
+Type: GameLibrary
+Icon: icon.png
