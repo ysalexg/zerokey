@@ -15,18 +15,21 @@ from PyQt5.QtGui import QFont, QIcon
 script_dir = os.path.dirname(os.path.abspath(__file__))
 assets = os.path.join(script_dir, "assets")
 
-# Variables globales
+manifest_url = "https://raw.githubusercontent.com/mtkennerly/ludusavi-manifest/refs/heads/master/data/manifest.yaml"
 download_folder = "E:\\Descargas"
 extraction_folder = "D:\\Extracciones"
-steamautocrack = os.path.join(assets, "autocrack", "SteamAutoCrack.CLI.exe")
 game_folder = "D:\\Juegos"
-manifest_url = "https://raw.githubusercontent.com/mtkennerly/ludusavi-manifest/refs/heads/master/data/manifest.yaml"
 manifest_path = os.path.join(script_dir, "manifest.yaml")
 executableTXT = os.path.join(assets, "executable.txt")
 gamePathTXT = os.path.join(assets, "game_path.txt")
 gameNameTXT = os.path.join(assets, "game_name.txt")
 crackTXT = os.path.join(assets, "crack.txt")
 appidTXT = os.path.join(assets, "appid.txt")
+
+autocrack_dir = os.path.join(assets, "autocrack")
+if not os.path.exists(autocrack_dir):
+    os.makedirs(autocrack_dir, exist_ok=True)
+steamautocrack = os.path.join(autocrack_dir, "SteamAutoCrack.CLI.exe")
 
 excluded_folders = [
     r"D:\Extracciones\Drive Cache",
