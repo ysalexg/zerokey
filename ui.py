@@ -25,6 +25,7 @@ gamePathTXT = os.path.join(assets, "game_path.txt")
 gameNameTXT = os.path.join(assets, "game_name.txt")
 crackTXT = os.path.join(assets, "crack.txt")
 appidTXT = os.path.join(assets, "appid.txt")
+fullExecutablePathTXT = os.path.join(assets, "full_executable_path.txt")
 
 autocrack_dir = os.path.join(assets, "autocrack")
 if not os.path.exists(autocrack_dir):
@@ -342,7 +343,7 @@ def process_games(update_progress):
 
 def save_full_executable_path(target_folder, matching_exe, output_file="full_executable_path.txt"):
     # Ruta específica donde quieres guardar el archivo
-    output_directory = r"D:\Programacion\Python\Automatic Game Instalation"
+    output_directory = os.path.join(script_dir, "assets")
     output_file_path = os.path.join(output_directory, output_file)
 
     try:
