@@ -198,9 +198,7 @@ while ($true) {
                 $notifScript = Join-Path $PSScriptRoot "notifications\notificationExtract.py"
                 Write-Output "Ejecutando notificación de archivo movido: $notifScript"
                 & python $notifScript
-                # Cerrar IDM solo si no hay carpetas en "E:\Descargas\TempDownload\DwnlData\Alex"
-                $alexFolders = Get-ChildItem -Path "E:\Descargas\TempDownload\DwnlData\Alex" -Directory -ErrorAction SilentlyContinue
-                if ($alexFolders.Count -eq 0) {
+                if ($folderToCheck.Count -eq 0) {
                     Close-IDMan
                 }
             }
@@ -244,8 +242,7 @@ while ($true) {
             & python $notifScript
             
             # Cerrar IDM solo si no hay carpetas en "E:\Descargas\TempDownload\DwnlData\Alex"
-            $alexFolders = Get-ChildItem -Path "E:\Descargas\TempDownload\DwnlData\Alex" -Directory -ErrorAction SilentlyContinue
-            if ($alexFolders.Count -eq 0) {
+            if ($folderToCheck.Count -eq 0) {
                 Close-IDMan
             }
         }
@@ -259,8 +256,7 @@ while ($true) {
         Extract-Files
 
         # Cerrar IDM solo si no hay carpetas en "E:\Descargas\TempDownload\DwnlData\Alex"
-        $alexFolders = Get-ChildItem -Path "E:\Descargas\TempDownload\DwnlData\Alex" -Directory -ErrorAction SilentlyContinue
-        if ($alexFolders.Count -eq 0) {
+        if ($folderToCheck.Count -eq 0) {
             Close-IDMan
         }
 
