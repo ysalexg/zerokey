@@ -528,9 +528,8 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             f.write(resolved_exe)
         with open(gamePathTXT, "w", encoding="utf-8") as f:
             f.write(target_folder)
-
+        save_game_name(install_dir)
         if not os.path.exists(target_folder):
-            save_game_name(install_dir)
             shutil.move(resolved_path, target_folder)
             log_message(f"Movido {resolved_path} a {target_folder}")
         else:
@@ -541,7 +540,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         if app_id:
             log_message(f"AppID encontrado: {app_id}")
 
-            with open(os.path.join(appidTXT, "w", encoding="utf-8")) as f:
+            with open(appidTXT, "w", encoding="utf-8") as f:
                 f.write(str(app_id))
         else:
             log_message(f"No se encontró AppID para el juego {install_dir}")
@@ -559,7 +558,6 @@ def save_game_name(folder_name):
             file.write(folder_name)
         mensaje = f"Nombre del juego guardado en {gameNameTXT}"
         print(mensaje)
-        log_message(mensaje)
     except Exception as e:
         error_msg = f"Error al guardar el nombre del juego: {e}"
         print(error_msg)
@@ -580,6 +578,7 @@ def cleanup_extraction_paths_and_crack(update_progress):
         detect_crack()
         apply_crack()
         update_progress(100, "Instalación completada.", log_message="Instalación completada.")
+        log_message("Instalación completada.")
         try:
             logs_dir = os.path.join(script_dir, "logs")
             old_log = os.path.join(logs_dir, "logs.txt")
@@ -606,7 +605,6 @@ def detect_crack():
     Si encuentra steam_settings, detecta Goldberg.
     Guarda el tipo de crack detectado y lo agrega al log.
     """
-    crack_files = ["steam_api64.rne", "steam_api64.cdx", "onlinefix64.dll"]
     crack_folder = "steam_settings"
     result = {
         "steam_api64.rne": False,
@@ -707,9 +705,9 @@ def apply_crack():
             log_message("game_path.txt o appid.txt están vacíos.")
             return False
 
-        # Si es CODEX, reemplazar todos los steam_api64.dll por el de Codex
+        # Si el crack es CODEX, reemplazar steam_api64.dll, copiar archivos de assets/steamclient, y modificar archivos de configuración
         if crack_type == "CODEX":
-            codex_dll = r"D:\Programacion\How to\SteamClient\Codex\steam_api64.dll"
+            codex_dll = os.path.join(os.path.dirname(__file__), "assets", "codex", "steam_api64.dll")
             if not os.path.exists(codex_dll):
                 log_message("No se encontró el steam_api64.dll de CODEX.")
                 return False
@@ -719,26 +717,101 @@ def apply_crack():
                     if file.lower() == "steam_api64.dll":
                         target = os.path.join(root, file)
                         try:
+                            # Copiar el DLL de CODEX sobre el original
                             shutil.copy2(codex_dll, target)
-                            log_message(f"Reemplazado steam_api64.dll en: {target}")
+                            log_message(f"Reemplazado steam_api64.dll en: {target} (CODEX)")
                             replaced = True
+
+                            command = [steamautocrack, "crack", root, "--appid", appid]
+                            log_message(f"Ejecutando comando: {' '.join(command)}")
+                            result = subprocess.run(command, capture_output=True, text=True)
+                            if result.returncode == 0:
+                                log_message("Crack aplicado correctamente con SteamAutoCrack.")
+                            else:
+                                log_message(f"Error aplicando crack con SteamAutoCrack: {result.stderr.strip()}")
+                            try:
+                                os.remove(target)
+                                bak_path = os.path.join(root, "steam_api64.dll.bak")
+                                os.rename(bak_path, target)
+                                log_message(f"Restaurado steam_api64.dll original en: {root}")
+                            except Exception as e:
+                                log_message(f"Error al restaurar steam_api64.dll en {root}: {e}")
+
+                            # Copiar todos los archivos de assets/steamclient al mismo directorio
+                            steamclient_dir = resource_path("assets/steamclient")
+                            if os.path.isdir(steamclient_dir):
+                                for item in os.listdir(steamclient_dir):
+                                    source_item = os.path.join(steamclient_dir, item)
+                                    dest_item = os.path.join(root, item)
+                                    if os.path.isfile(source_item):
+                                        shutil.copy2(source_item, dest_item)
+
                         except Exception as e:
                             log_message(f"Error al reemplazar steam_api64.dll en {target}: {e}")
             if not replaced:
                 log_message("No se encontró ningún steam_api64.dll para reemplazar en el juego.")
 
-        # Construir el comando
-        command = [steamautocrack, "crack", game_path, "--appid", appid]
-        log_message(f"Ejecutando comando: {' '.join(command)}")
+            
+            # Buscar y modificar ColdClientLoader.ini en cualquier subcarpeta del juego
+            ini_found = False
+            for root, _, files in os.walk(game_path):
+                if "ColdClientLoader.ini" in files:
+                    ini_path = os.path.join(root, "ColdClientLoader.ini")
+                    ini_found = True
+                    try:
+                        with open(ini_path, "r", encoding="utf-8") as f:
+                            lines = f.readlines()
+                        # Obtener el nombre del ejecutable desde executableTXT
+                        with open(executableTXT, "r", encoding="utf-8") as f:
+                            exe_name = f.read().strip()
+                        # Obtener el AppId desde appidTXT
+                        with open(appidTXT, "r", encoding="utf-8") as f:
+                            appid_content = f.read().strip()
+                        new_lines = []
+                        for line in lines:
+                            if line.startswith("Exe="):
+                                new_lines.append(f"Exe={exe_name}\n")
+                            elif line.startswith("AppId="):
+                                new_lines.append(f"AppId={appid_content}\n")
+                            else:
+                                new_lines.append(line)
+                        with open(ini_path, "w", encoding="utf-8") as f:
+                            f.writelines(new_lines)
+                        log_message(f"Modificado ColdClientLoader.ini.")
+                    except Exception as e:
+                        log_message(f"Error al modificar ColdClientLoader.ini en {ini_path}: {e}")
+            if not ini_found:
+                log_message("ColdClientLoader.ini no encontrado en la ruta del juego.")
 
-        # Ejecutar el comando
-        result = subprocess.run(command, capture_output=True, text=True)
-        if result.returncode == 0:
-            log_message("Crack aplicado correctamente con SteamAutoCrack.")
+            # Modificar full_executable_path: reemplazar el nombre del ejecutable por steamclient_loader_x64.exe
+            try:
+                if os.path.exists(fullExecutablePathTXT):
+                    with open(fullExecutablePathTXT, "r", encoding="utf-8") as f:
+                        content = f.read().strip()
+                    if content:
+                        dir_part = os.path.dirname(content)
+                        new_path = os.path.join(dir_part, "steamclient_loader_x64.exe")
+                        with open(fullExecutablePathTXT, "w", encoding="utf-8") as f:
+                            f.write(new_path)
+                        log_message(f"Aplicado SteamClient correctamente.")
+                else:
+                    log_message("El archivo full_executable_path.txt no existe.")
+            except Exception as e:
+                log_message(f"Error al modificar full_executable_path.txt: {e}")
+
             return True
+
+        # Si el crack es RUNE, ejecutar SteamAutoCrack sin modificaciones adicionales
         else:
-            log_message(f"Error al aplicar el crack: {result.stderr}")
-            return False
+            command = [steamautocrack, "crack", game_path, "--appid", appid]
+            log_message(f"Ejecutando comando: {' '.join(command)}")
+            result = subprocess.run(command, capture_output=True, text=True)
+            if result.returncode == 0:
+                log_message("Crack aplicado correctamente con SteamAutoCrack.")
+                return True
+            else:
+                log_message(f"Error al aplicar el crack: {result.stderr}")
+                return False
     except Exception as e:
         log_message(f"Excepción al aplicar el crack: {e}")
         return False

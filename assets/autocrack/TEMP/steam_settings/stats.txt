@@ -1,0 +1,3 @@
+Parries=int=0
+ARanks=int=0
+BossesDefeatedNormal=int=0
