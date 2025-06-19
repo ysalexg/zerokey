@@ -214,6 +214,7 @@ while ($true) {
     while (-not (Is-IDManRunning) -and (Get-ChildItem -Path $downloadFolder -File -Recurse | Where-Object { Is-FileInUseByHydra -filePath $_.FullName }).Count -eq 0) {
         Start-Sleep -Seconds 3
         Start-Process -FilePath "soundvolumeview.exe" -ArgumentList '/SetVolume "System Sounds" 20' -NoNewWindow
+	    Start-Process -FilePath "soundvolumeview.exe" -ArgumentList '/SetVolume "Playnite" 30' -NoNewWindow
     }
 
     Write-Output "IDM o archivo en uso por Hydra detectado. Comprobando archivos..."

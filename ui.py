@@ -50,8 +50,8 @@ excluded_executables = [
     "vcredist_x64.exe",
     "vcredist_x86.exe",
     "xnafx40_redist.msi",
-    "Setup.exe",
-    "setup.exe",
+    # "Setup.exe",
+    # "setup.exe",
     "Language Selector.exe",
     "UEPrereqSetup_x64.exe",
     "crashpad_handler.exe",
@@ -86,6 +86,15 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
+
+# Eliminar logs.txt si existe al inicio
+logs_dir = os.path.join(script_dir, "logs")
+log_file = os.path.join(logs_dir, "logs.txt")
+if os.path.exists(log_file):
+    try:
+        os.remove(log_file)
+    except Exception as e:
+        print(f"Error al eliminar logs.txt: {e}")
 
 def log_message(msg):
     """Agrega el mensaje al log en memoria y lo guarda en logs/logs.txt."""
@@ -177,7 +186,7 @@ def extract_archives(update_progress):
                         nested_archive = os.path.join(root, file)
                         nested_destination = os.path.join(destination_folder, Path(file).stem)
                         extract_recursive(nested_archive, nested_destination, update_progress, is_main=False)
-                        # os.remove(nested_archive)  # Descomentar al finalizar desarrollo si es exitoso
+                        os.remove(nested_archive)  # Descomentar al finalizar desarrollo si es exitoso
 
         # Recolectar archivos comprimidos
         compressed_files = []
@@ -205,7 +214,7 @@ def extract_archives(update_progress):
             )
             extract_recursive(file, extraction_path, progress, file_progress_range, is_main=True)
             progress += file_progress_range
-            # os.remove(file)  # Descomentar al finalizar desarrollo si es exitoso
+            os.remove(file)  # Descomentar al finalizar desarrollo si es exitoso
 
         log_message("Archivos extraídos correctamente.")
     except Exception as e:
@@ -471,24 +480,27 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
                             resolved_exe = next(f for f in files if f.lower() == desired_exe.lower())
                             resolved_path = root
                             resolved_game = (game_name, game_info)
-                            print("Juego encontrado con método 4 (AppId en manifest)")
-                            log_message(f"Juego encontrado con método 4 (AppId en manifest): {game_name} (AppID={appid})")
+                            print("Juego encontrado con método 1 (AppId en manifest)")
+                            log_message(f"Juego encontrado con método 1 (AppId en manifest): {game_name} (AppID={appid})")
                             break
                 break
 
     # 2) Si no se resolvió vía AppId, matching por nombre de exe
-    if not resolved_game:
+    if not resolved_game and executable.lower() not in ("setup.exe"):
         for game_name, game_info in manifest_data.items():
             for launch_path in game_info.get("launch", {}):
                 if os.path.basename(launch_path).lower() == executable.lower():
                     resolved_game = (game_name, game_info)
-                    print("Juego encontrado con método 5 (matching por nombre de exe)")
-                    log_message(f"Juego encontrado con método 5 (matching por nombre de exe): {game_name}")
+                    print("Juego encontrado con método 2 (matching por nombre de exe)")
+                    log_message(f"Juego encontrado con método 2 (matching por nombre de exe): {game_name}")
                     break
             if resolved_game:
                 break
 
     # 3) Si no se encontró en el manifest, usar el .exe más grande (excluyendo los de la lista)
+    fitgirl_found = False
+    dodi_found = False
+    repack_detected = False
     if not resolved_game:
         largest_exe = None
         largest_size = 0
@@ -507,11 +519,58 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
                         resolved_path = root
         if largest_exe:
             resolved_exe = largest_exe
-            print("Juego encontrado con método 6 (exe más grande)")
-            log_message(f"Juego encontrado con método 6 (exe más grande): {resolved_exe}")
+            # Si el exe encontrado es setup.exe o Setup.exe, buscar repack
+            if resolved_exe.lower() == "setup.exe":
+                # Buscar indicadores FitGirl
+                for root, _, files in os.walk(folder_path):
+                    for file in files:
+                        if file.lower().startswith("fg-") and file.lower().endswith(".bin"):
+                            fitgirl_found = True
+                            break
+                    if fitgirl_found:
+                        break
 
+                # Si no se encontró FitGirl, buscar indicador Dodi
+                if not fitgirl_found:
+                    for root, _, files in os.walk(folder_path):
+                        for file in files:
+                            if file.lower().endswith(".doi"):
+                                dodi_found = True
+                                break
+                        if dodi_found:
+                            break
+
+                # Si no se encontró ninguno, se marca repack
+                if not fitgirl_found and not dodi_found:
+                    repack_detected = True
+
+                if fitgirl_found:
+                    log_message("FitGirl Repack detectado.")
+                    with open(executableTXT, "w", encoding="utf-8") as f:
+                        f.write("fitgirl")
+                    log_message(f"No se encontró información en el manifest ni un ejecutable válido en {folder_path}.")
+                    resolved_game = None
+                    return False
+                elif dodi_found:
+                    log_message("Dodi Repack detectado.")
+                    with open(executableTXT, "w", encoding="utf-8") as f:
+                        f.write("dodi")
+                    log_message(f"No se encontró información en el manifest ni un ejecutable válido en {folder_path}.")
+                    resolved_game = None
+                    return False
+                elif repack_detected:
+                    log_message("Repack detectado.")
+                    with open(executableTXT, "w", encoding="utf-8") as f:
+                        f.write("repack")
+                    log_message(f"No se encontró información en el manifest ni un ejecutable válido en {folder_path}.")
+                    resolved_game = None
+                    return False
+            else:
+                print("Juego encontrado con método 3 (exe más grande)")
+                log_message(f"Juego encontrado con método 3 (exe más grande): {resolved_exe}")
     # Si tenemos juego resuelto o ejecutable más grande, movemos/guardamos
-    if resolved_game or largest_exe:
+    # Solo continuar si NO se detectó fitgirl, dodi o repack
+    if (resolved_game or (largest_exe and not (fitgirl_found or dodi_found or repack_detected))):
         if resolved_game:
             game_name, game_info = resolved_game
             install_dir = next(iter(game_info.get("installDir", {}).keys()), game_name)
@@ -522,7 +581,6 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
 
         target_folder = os.path.join(game_folder, install_dir)
         log_message(f"Ejecutable encontrado: {resolved_exe} (AppID={app_id})")
-
 
         with open(executableTXT, "w", encoding="utf-8") as f:
             f.write(resolved_exe)
@@ -544,13 +602,11 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
                 f.write(str(app_id))
         else:
             log_message(f"No se encontró AppID para el juego {install_dir}")
-
         return True
 
     # Si no encontramos nada
     log_message(f"No se encontró información en el manifest ni un ejecutable válido en {folder_path}.")
     return False
-
 
 def save_game_name(folder_name):
     try:
@@ -562,39 +618,6 @@ def save_game_name(folder_name):
         error_msg = f"Error al guardar el nombre del juego: {e}"
         print(error_msg)
         log_message(error_msg)
-
-# Eliminar las carpetas de extracción específicas   
-def cleanup_extraction_paths_and_crack(update_progress):
-    """
-    Elimina las carpetas de extracción exitosas.
-    Si se detecta un crack, guarda el tipo de crack y lo agrega al log.
-    Por último renombra el archivo de log con el nombre del juego.
-    """
-    try:
-        for path in successful_paths:
-            if os.path.exists(path):
-                shutil.rmtree(path)
-                print(f"Eliminada carpeta de extracción: {path}")
-        detect_crack()
-        apply_crack()
-        update_progress(100, "Instalación completada.", log_message="Instalación completada.")
-        log_message("Instalación completada.")
-        try:
-            logs_dir = os.path.join(script_dir, "logs")
-            old_log = os.path.join(logs_dir, "logs.txt")
-            if os.path.exists(gameNameTXT) and os.path.exists(old_log):
-                with open(gameNameTXT, "r", encoding="utf-8") as f:
-                    game_name = f.read().strip()
-                if game_name:
-                    # Limpiar el nombre del juego para usarlo como nombre de archivo
-                    safe_game_name = "".join(c for c in game_name if c.isalnum() or c in (' ', '_', '-')).rstrip()
-                    new_log = os.path.join(logs_dir, f"{safe_game_name}.txt")
-                    if not os.path.exists(new_log):
-                        os.rename(old_log, new_log)
-        except Exception as e:
-            print(f"Error al renombrar el archivo de log: {e}")
-    except Exception as e:
-        update_progress(0, f"Error al limpiar las carpetas: {e}", log_message=f"Error al limpiar las carpetas: {e}")
     
 def detect_crack():
     """
@@ -816,10 +839,49 @@ def apply_crack():
         log_message(f"Excepción al aplicar el crack: {e}")
         return False
 
+def cleanup_extraction_paths_and_crack(update_progress):
+    """
+    Elimina las carpetas de extracción exitosas.
+    Si se detecta un crack, guarda el tipo de crack y lo agrega al log.
+    Por último renombra el archivo de log con el nombre del juego.
+    """
+    try:
+        for path in successful_paths:
+            if os.path.exists(path):
+                shutil.rmtree(path)
+                print(f"Eliminada carpeta de extracción: {path}")
+        detect_crack()
+        apply_crack()
+        try:
+            logs_dir = os.path.join(script_dir, "logs")
+            old_log = os.path.join(logs_dir, "logs.txt")
+            if os.path.exists(gameNameTXT) and os.path.exists(old_log):
+                with open(gameNameTXT, "r", encoding="utf-8") as f:
+                    game_name = f.read().strip()
+                if game_name:
+                    # Limpiar el nombre del juego para usarlo como nombre de archivo
+                    safe_game_name = "".join(c for c in game_name if c.isalnum() or c in (' ', '_', '-')).rstrip()
+                    new_log = os.path.join(logs_dir, f"{safe_game_name}.txt")
+                    if not os.path.exists(new_log):
+                        os.rename(old_log, new_log)
+        except Exception as e:
+            print(f"Error al renombrar el archivo de log: {e}")
+    except Exception as e:
+        update_progress(0, f"Error al limpiar las carpetas: {e}", log_message=f"Error al limpiar las carpetas: {e}")
+
+def success_installation_status(update_progress):
+    """
+    Reporta el estado de la instalación.
+    Si log_message es proporcionado, lo agrega al log.
+    """
+    update_progress(100, "Instalación completada.", log_message="Instalación completada.")
+    log_message("Instalación completada.")
+
 class GameInstallationThread(QThread):
     progress_update = pyqtSignal(int)
     status_update = pyqtSignal(tuple)
     installation_complete = pyqtSignal()
+    installation_canceled = pyqtSignal()
 
     def run(self):
         try:
@@ -830,9 +892,21 @@ class GameInstallationThread(QThread):
             download_manifest(update_progress)
             extract_archives(update_progress)
             process_games(update_progress)
-            cleanup_extraction_paths_and_crack(update_progress)
-
-            self.installation_complete.emit()
+            with open(executableTXT, "r", encoding="utf-8") as f:
+                exe_name = f.read().strip()
+            if exe_name.lower() == "fitgirl":
+                update_progress(100, "FitGirl no tiene soporte.", log_message="FitGirl no tiene soporte.")
+                self.installation_canceled.emit()
+            elif exe_name.lower() == "dodi":
+                update_progress(100, "Dodi no tiene soporte.", log_message="Dodi no tiene soporte.")
+                self.installation_canceled.emit()
+            elif exe_name.lower() == "repack":
+                update_progress(100, "Repack no tiene soporte.", log_message="Repack no tiene soporte.")
+                self.installation_canceled.emit()
+            else:
+                cleanup_extraction_paths_and_crack(update_progress)
+                success_installation_status(update_progress)
+                self.installation_complete.emit()
         except Exception as e:
             self.status_update.emit((f"Error crítico: {str(e)}", f"Error crítico: {str(e)}"))
 
@@ -921,9 +995,10 @@ class GameInstallationProgress(QMainWindow):
         self.log_text.setMaximumHeight(100)
         layout.addWidget(self.log_text)
 
-        self.cancelar_button = QPushButton("Cancelar")
-        self.cancelar_button.setFixedHeight(30)
-        self.cancelar_button.setStyleSheet("""
+        def create_button(text, visible=False, on_click=None):
+            button = QPushButton(text)
+            button.setFixedHeight(30)
+            button.setStyleSheet("""
             QPushButton {
                 background-color: #F3F3F3;
                 color: #202020;
@@ -935,29 +1010,16 @@ class GameInstallationProgress(QMainWindow):
             QPushButton:hover {
                 background-color: #D8DEE9;
             }
-        """)
-        self.cancelar_button.clicked.connect(lambda: sys.exit(0))
-        self.cancelar_button.setVisible(True)  # Inicialmente oculto
-        layout.addWidget(self.cancelar_button) 
+            """)
+            if on_click:
+                button.clicked.connect(on_click)
+                button.setVisible(visible)
+                layout.addWidget(button)
+            return button
 
-        self.finish_button = QPushButton("Finalizar")
-        self.finish_button.setFixedHeight(30)
-        self.finish_button.setStyleSheet("""
-            QPushButton {
-                background-color: #F3F3F3;
-                color: #202020;
-                border-radius: 6px;
-                font-weight: bold;
-                font-family: 'Segoe UI', sans-serif;
-                font-size: 14px;
-            }
-            QPushButton:hover {
-                background-color: #D8DEE9;
-            }
-        """)
-        self.finish_button.clicked.connect(lambda: sys.exit(0))
-        self.finish_button.setVisible(False)  # Inicialmente oculto
-        layout.addWidget(self.finish_button)   
+        self.cancelar_button = create_button("Cancelar", visible=True, on_click=lambda: sys.exit(0))
+        self.finish_button = create_button("Finalizar", visible=False, on_click=lambda: sys.exit(0))
+        self.close_button = create_button("Cerrar", visible=False, on_click=lambda: sys.exit(0))
 
         self.is_dragging = False
         self.drag_position = QPoint()
@@ -967,7 +1029,7 @@ class GameInstallationProgress(QMainWindow):
         self.installation_thread.progress_update.connect(self.update_progress)
         self.installation_thread.status_update.connect(self.update_status)
         self.installation_thread.installation_complete.connect(self.on_installation_complete)
-        
+        self.installation_thread.installation_canceled.connect(self.on_installation_canceled)
         
         self.installation_thread.start()
 
@@ -1002,6 +1064,15 @@ class GameInstallationProgress(QMainWindow):
         self.title.setText("Instalado")
         self.cancelar_button.setVisible(False)
         self.finish_button.setVisible(True)
+        # Iniciar el temporizador para cerrar la ventana después de 5 segundos
+        # self.close_timer.start(5000)
+
+    def on_installation_canceled(self):
+        self.status_label.setText("Instalación cancelada")
+        self.progress_bar.setValue(0)
+        self.title.setText("Cancelada")
+        self.cancelar_button.setVisible(False)
+        self.close_button.setVisible(True)
         # Iniciar el temporizador para cerrar la ventana después de 5 segundos
         # self.close_timer.start(5000)
 
