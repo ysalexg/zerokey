@@ -1,3 +1,6 @@
+# Dependencias: 7z
+# Config: delete files, achievements # Probar
+# Quitar spawneo de consola
 import os
 import sys
 import requests
@@ -12,24 +15,35 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QLabel,
 from PyQt5.QtCore import QThread, pyqtSignal, Qt, QPoint, QTimer
 from PyQt5.QtGui import QFont, QIcon
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
+if getattr(sys, "frozen", False):
+    # Si está empaquetado por PyInstaller, buscar config junto al ejecutable
+    # sys.argv[0] apunta al path del exe lanzado
+    base_path = os.path.dirname(os.path.abspath(sys.argv[0]))
+else:
+    # En desarrollo
+    base_path = os.path.dirname(os.path.abspath(__file__))
+
+script_dir = base_path
+config_path = os.path.join(script_dir, "config.yaml")
 assets = os.path.join(script_dir, "assets")
 
 # Cargar configuración desde config.yaml
-config_path = os.path.join(script_dir, "config.yaml")
 yaml = YAML(typ="safe")
 
 try:
     with open(config_path, "r", encoding="utf-8") as f:
         config = yaml.load(f)
     
-    # Obtener rutas desde la configuración
+    # Obtener rutas y opciones desde la configuración
     download_folder = config["paths"]["download_folder"]
     extraction_folder = config["paths"]["extraction_folder"]
     game_folder = config["paths"]["game_folder"]
     excluded_folders = config["paths"]["excluded_folders"]
+    achievements = config.get("achievements", True)
+    delete_files = config.get("delete_files", True)
 except Exception as e:
     print(f"Error al cargar config.yaml: {e}")
+
 
 manifest_url = "https://raw.githubusercontent.com/mtkennerly/ludusavi-manifest/refs/heads/master/data/manifest.yaml"
 manifest_path = os.path.join(assets, "manifest.yaml")
@@ -85,7 +99,7 @@ def resource_path(relative_path):
     """Obtiene la ruta absoluta del recurso, funciona tanto para desarrollo como para el ejecutable"""
     try:
         # PyInstaller crea una carpeta temporal y almacena la ruta en _MEIPASS
-        base_path = sys._MEIPASS
+        base_path = os.path.dirname(os.path.abspath(sys.argv[0]))
     except Exception:
         base_path = os.path.abspath(".")
 
@@ -111,24 +125,33 @@ def log_message(msg):
         f.write(msg + "\n")
 
 def create_default_config():
-    """Crea el archivo config.yaml con valores por defecto si no existe, usando dobles \\ en las rutas."""
+    """
+    Crea el archivo config.yaml con valores por defecto si no existe.
+    Usa rutas de ejemplo y formato YAML estándar.
+    """
     default_config = {
         "paths": {
-            "download_folder": "A:\\\\Ejemplo",
-            "extraction_folder": "D:\\\\Ejemplo",
-            "game_folder": "D:\\\\Ejemplo",
+            "download_folder": "E:\\Descargas",
+            "extraction_folder": "D:\\Extracciones",
+            "game_folder": "D:\\Juegos",
             "excluded_folders": [
-                "D:\\\\Ejemplo",
-                "D:\\\\Ejemplo\\\\Ejemplo2"
+                "D:\\Extracciones\\Drive Cache",
+                "D:\\Extracciones\\Free Download Manager",
+                "D:\\Extracciones\\IDM Temporal",
+                "E:\\Descargas\\TempDownload",
+                "E:\\Descargas\\TempDownload\\DwnlData",
+                "E:\\Descargas\\TempDownload\\DwnlData\\Alex"
             ]
-        }
+        },
+        "achievements": True,
+        "delete_files": True
     }
 
     try:
         if not os.path.exists(config_path):
             with open(config_path, "w", encoding="utf-8") as f:
                 yaml.dump(default_config, f)
-            print("Archivo config.yaml creado con valores por defecto (dobles \\)")
+            print("Archivo config.yaml creado con valores por defecto.")
     except Exception as e:
         print(f"Error al crear config.yaml: {e}")
 
@@ -212,7 +235,8 @@ def extract_archives(update_progress):
                         nested_archive = os.path.join(root, file)
                         nested_destination = os.path.join(destination_folder, Path(file).stem)
                         extract_recursive(nested_archive, nested_destination, update_progress, is_main=False)
-                        os.remove(nested_archive)  # Descomentar al finalizar desarrollo si es exitoso
+                        if delete_files:
+                            os.remove(nested_archive)  # Solo borrar si delete_files es True
 
         # Recolectar archivos comprimidos
         compressed_files = []
@@ -240,7 +264,8 @@ def extract_archives(update_progress):
             )
             extract_recursive(file, extraction_path, progress, file_progress_range, is_main=True)
             progress += file_progress_range
-            os.remove(file)  # Descomentar al finalizar desarrollo si es exitoso
+            if delete_files:
+                os.remove(file)  # Solo borrar si delete_files es True
 
         log_message("Archivos extraídos correctamente.")
     except Exception as e:
@@ -756,7 +781,10 @@ def apply_crack():
 
         # Si el crack es CODEX, reemplazar steam_api64.dll, copiar archivos de assets/steamclient, y modificar archivos de configuración
         if crack_type == "CODEX":
-            codex_dll = os.path.join(os.path.dirname(__file__), "assets", "codex", "steam_api64.dll")
+            if getattr(sys, "frozen", False):
+                codex_dll = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "assets", "codex", "steam_api64.dll")
+            else:
+                codex_dll = os.path.join(os.path.dirname(__file__), "assets", "codex", "steam_api64.dll")
             if not os.path.exists(codex_dll):
                 log_message("No se encontró el steam_api64.dll de CODEX.")
                 return False
@@ -877,7 +905,8 @@ def cleanup_extraction_paths_and_crack(update_progress):
                 shutil.rmtree(path)
                 print(f"Eliminada carpeta de extracción: {path}")
         detect_crack()
-        apply_crack()
+        if achievements:
+            apply_crack()
         try:
             logs_dir = os.path.join(script_dir, "logs")
             old_log = os.path.join(logs_dir, "logs.txt")
@@ -901,7 +930,12 @@ def success_installation_status(update_progress):
     Si log_message es proporcionado, lo agrega al log.
     """
     update_progress(100, "Instalación completada.", log_message="Instalación completada.")
-    log_message("Instalación completada.")
+
+def config_flags():
+    log_message(f"Achievements: {achievements}")
+    print(f"Achievements: {achievements}")
+    log_message(f"Delete files: {delete_files}")
+    print(f"Delete files: {delete_files}")
 
 class GameInstallationThread(QThread):
     progress_update = pyqtSignal(int)
@@ -915,6 +949,7 @@ class GameInstallationThread(QThread):
                 self.status_update.emit((message, log_message))
                 self.progress_update.emit(progress)
 
+            config_flags()
             download_manifest(update_progress)
             extract_archives(update_progress)
             process_games(update_progress)

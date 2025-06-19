@@ -9,3 +9,5 @@ paths:
     - "E:\\Descargas\\TempDownload"
     - "E:\\Descargas\\TempDownload\\DwnlData"
     - "E:\\Descargas\\TempDownload\\DwnlData\\Alex"
+achievements: false
+delete_files: false
