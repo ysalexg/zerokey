@@ -131,16 +131,12 @@ def create_default_config():
     """
     default_config = {
         "paths": {
-            "download_folder": "E:\\Descargas",
-            "extraction_folder": "D:\\Extracciones",
-            "game_folder": "D:\\Juegos",
+            "download_folder": "A:\\Ejemplo",
+            "extraction_folder": "D:\\Ejemplo",
+            "game_folder": "D:\\Ejemplo",
             "excluded_folders": [
-                "D:\\Extracciones\\Drive Cache",
-                "D:\\Extracciones\\Free Download Manager",
-                "D:\\Extracciones\\IDM Temporal",
-                "E:\\Descargas\\TempDownload",
-                "E:\\Descargas\\TempDownload\\DwnlData",
-                "E:\\Descargas\\TempDownload\\DwnlData\\Alex"
+                "D:\\Ejemplo",
+                "D:\\Ejemplo\\Ejemplo2",
             ]
         },
         "achievements": True,
