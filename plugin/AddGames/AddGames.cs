@@ -32,15 +32,38 @@ namespace AddGames
         public override IEnumerable<GameMetadata> GetGames(LibraryGetGamesArgs args)
         {
             // Rutas de los archivos
-            string nameFile = @"D:\Programacion\Python\zerokey\assets\game_name.txt";
-            string executableFile = @"D:\Programacion\Python\zerokey\assets\full_executable_path.txt";
-            string pathFile = @"D:\Programacion\Python\zerokey\assets\game_path.txt";
+            string pluginDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string assetsDir = Path.Combine(pluginDir, "..", "assets");
+            string fallbackAssetsDir = @"D:\Programacion\Python\zerokey\assets";
+            string nameFile = Path.Combine(assetsDir, "game_name.txt");
+            string executableFile = Path.Combine(assetsDir, "full_executable_path.txt");
+            string pathFile = Path.Combine(assetsDir, "game_path.txt");
 
-            // Validar que los archivos existen
+            // Si los archivos principales no existen, intentar obtenerlos de la ruta alternativa
             if (!File.Exists(nameFile) || !File.Exists(executableFile) || !File.Exists(pathFile))
             {
-                logger.Error("Uno o más archivos necesarios no existen.");
-                return new List<GameMetadata>();
+                string fallbackNameFile = Path.Combine(fallbackAssetsDir, "game_name.txt");
+                string fallbackExecutableFile = Path.Combine(fallbackAssetsDir, "full_executable_path.txt");
+                string fallbackPathFile = Path.Combine(fallbackAssetsDir, "game_path.txt");
+
+                if (File.Exists(fallbackNameFile) && File.Exists(fallbackExecutableFile) && File.Exists(fallbackPathFile))
+                {
+                    nameFile = fallbackNameFile;
+                    executableFile = fallbackExecutableFile;
+                    pathFile = fallbackPathFile;
+                }
+                else
+                {
+                    logger.Error("No se encuentran los archivos necesarios: game_name.txt, full_executable_path.txt o game_path.txt.");
+                    // Borrar archivos adicionales si existen
+                    string extra1 = Path.Combine(assetsDir, "executable.txt");
+                    string extra2 = Path.Combine(assetsDir, "crack.txt");
+                    string extra3 = Path.Combine(assetsDir, "appid.txt");
+                    if (File.Exists(extra1)) File.Delete(extra1);
+                    if (File.Exists(extra2)) File.Delete(extra2);
+                    if (File.Exists(extra3)) File.Delete(extra3);
+                    return new List<GameMetadata>();
+                }
             }
 
             // Leer datos de los archivos
@@ -54,13 +77,12 @@ namespace AddGames
             File.Delete(pathFile);
 
             // Borrar archivos adicionales si existen
-            string extra1 = @"D:\Programacion\Python\zerokey\assets\executable.txt";
-            string extra2 = @"D:\Programacion\Python\zerokey\assets\crack.txt";
-            string extra3 = @"D:\Programacion\Python\zerokey\assets\appid.txt";
-
-            if (File.Exists(extra1)) File.Delete(extra1);
-            if (File.Exists(extra2)) File.Delete(extra2);
-            if (File.Exists(extra3)) File.Delete(extra3);
+            string extra1Del = Path.Combine(assetsDir, "executable.txt");
+            string extra2Del = Path.Combine(assetsDir, "crack.txt");
+            string extra3Del = Path.Combine(assetsDir, "appid.txt");
+            if (File.Exists(extra1Del)) File.Delete(extra1Del);
+            if (File.Exists(extra2Del)) File.Delete(extra2Del);
+            if (File.Exists(extra3Del)) File.Delete(extra3Del);
 
             // Generar GameId a partir del nombre del juego
             string gameId = gameName.Replace(" ", "").ToLower();
