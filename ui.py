@@ -1,6 +1,6 @@
-# Dependencias: 7z
-# Config: delete files, achievements # Probar
-# Quitar spawneo de consola
+# 1. Añadiur dependencias a instalar: 7z
+# 2. Empaquetar y subir a github.
+
 import os
 import sys
 import requests
@@ -44,7 +44,7 @@ try:
 except Exception as e:
     print(f"Error al cargar config.yaml: {e}")
 
-
+CREATE_NO_WINDOW = 0x08000000
 manifest_url = "https://raw.githubusercontent.com/mtkennerly/ludusavi-manifest/refs/heads/master/data/manifest.yaml"
 manifest_path = os.path.join(assets, "manifest.yaml")
 executableTXT = os.path.join(assets, "executable.txt")
@@ -202,7 +202,8 @@ def extract_archives(update_progress):
                     ["7z", "x", file_path, f"-o{destination_folder}", "-aoa", "-bsp1"],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
-                    text=True
+                    text=True,
+                    creationflags=CREATE_NO_WINDOW
                 )
                 for line in process.stdout:
                     if "%" in line:
@@ -222,7 +223,7 @@ def extract_archives(update_progress):
                     raise subprocess.CalledProcessError(process.returncode, process.args)
             else:
                 # Extracción anidada sin monitoreo de progreso
-                subprocess.run(["7z", "x", file_path, f"-o{destination_folder}", "-aoa"], check=True)
+                subprocess.run(["7z", "x", file_path, f"-o{destination_folder}", "-aoa"], check=True, creationflags=CREATE_NO_WINDOW)
 
             # Buscar archivos comprimidos anidados
             for root, dirs, files in os.walk(destination_folder):
@@ -797,7 +798,7 @@ def apply_crack():
 
                             command = [steamautocrack, "crack", root, "--appid", appid]
                             log_message(f"Ejecutando comando: {' '.join(command)}")
-                            result = subprocess.run(command, capture_output=True, text=True)
+                            result = subprocess.run(command, capture_output=True, text=True, creationflags=CREATE_NO_WINDOW)
                             if result.returncode == 0:
                                 log_message("Crack aplicado correctamente con SteamAutoCrack.")
                             else:
@@ -878,7 +879,7 @@ def apply_crack():
         else:
             command = [steamautocrack, "crack", game_path, "--appid", appid]
             log_message(f"Ejecutando comando: {' '.join(command)}")
-            result = subprocess.run(command, capture_output=True, text=True)
+            result = subprocess.run(command, capture_output=True, text=True, creationflags=CREATE_NO_WINDOW)
             if result.returncode == 0:
                 log_message("Crack aplicado correctamente con SteamAutoCrack.")
                 return True
