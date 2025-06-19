@@ -15,11 +15,24 @@ from PyQt5.QtGui import QFont, QIcon
 script_dir = os.path.dirname(os.path.abspath(__file__))
 assets = os.path.join(script_dir, "assets")
 
+# Cargar configuración desde config.yaml
+config_path = os.path.join(script_dir, "config.yaml")
+yaml = YAML(typ="safe")
+
+try:
+    with open(config_path, "r", encoding="utf-8") as f:
+        config = yaml.load(f)
+    
+    # Obtener rutas desde la configuración
+    download_folder = config["paths"]["download_folder"]
+    extraction_folder = config["paths"]["extraction_folder"]
+    game_folder = config["paths"]["game_folder"]
+    excluded_folders = config["paths"]["excluded_folders"]
+except Exception as e:
+    print(f"Error al cargar config.yaml: {e}")
+
 manifest_url = "https://raw.githubusercontent.com/mtkennerly/ludusavi-manifest/refs/heads/master/data/manifest.yaml"
-download_folder = "E:\\Descargas"
-extraction_folder = "D:\\Extracciones"
-game_folder = "D:\\Juegos"
-manifest_path = os.path.join(script_dir, "manifest.yaml")
+manifest_path = os.path.join(assets, "manifest.yaml")
 executableTXT = os.path.join(assets, "executable.txt")
 gamePathTXT = os.path.join(assets, "game_path.txt")
 gameNameTXT = os.path.join(assets, "game_name.txt")
@@ -31,15 +44,6 @@ autocrack_dir = os.path.join(assets, "autocrack")
 if not os.path.exists(autocrack_dir):
     os.makedirs(autocrack_dir, exist_ok=True)
 steamautocrack = os.path.join(autocrack_dir, "SteamAutoCrack.CLI.exe")
-
-excluded_folders = [
-    r"D:\Extracciones\Drive Cache",
-    r"D:\Extracciones\Free Download Manager",
-    r"D:\Extracciones\IDM Temporal",
-    r"E:\Descargas\TempDownload",
-    r"E:\Descargas\TempDownload\DwnlData",
-    r"E:\Descargas\TempDownload\DwnlData\Alex"
-]
 
 excluded_executables = [
     "dotNetFx40_Full_setup.exe",
@@ -105,6 +109,28 @@ def log_message(msg):
     log_file = os.path.join(logs_dir, "logs.txt")
     with open(log_file, "a", encoding="utf-8") as f:
         f.write(msg + "\n")
+
+def create_default_config():
+    """Crea el archivo config.yaml con valores por defecto si no existe, usando dobles \\ en las rutas."""
+    default_config = {
+        "paths": {
+            "download_folder": "A:\\\\Ejemplo",
+            "extraction_folder": "D:\\\\Ejemplo",
+            "game_folder": "D:\\\\Ejemplo",
+            "excluded_folders": [
+                "D:\\\\Ejemplo",
+                "D:\\\\Ejemplo\\\\Ejemplo2"
+            ]
+        }
+    }
+
+    try:
+        if not os.path.exists(config_path):
+            with open(config_path, "w", encoding="utf-8") as f:
+                yaml.dump(default_config, f)
+            print("Archivo config.yaml creado con valores por defecto (dobles \\)")
+    except Exception as e:
+        print(f"Error al crear config.yaml: {e}")
 
 # Descargar manifest.yaml
 def download_manifest(update_progress):
@@ -892,21 +918,25 @@ class GameInstallationThread(QThread):
             download_manifest(update_progress)
             extract_archives(update_progress)
             process_games(update_progress)
-            with open(executableTXT, "r", encoding="utf-8") as f:
-                exe_name = f.read().strip()
-            if exe_name.lower() == "fitgirl":
-                update_progress(100, "FitGirl no tiene soporte.", log_message="FitGirl no tiene soporte.")
-                self.installation_canceled.emit()
-            elif exe_name.lower() == "dodi":
-                update_progress(100, "Dodi no tiene soporte.", log_message="Dodi no tiene soporte.")
-                self.installation_canceled.emit()
-            elif exe_name.lower() == "repack":
-                update_progress(100, "Repack no tiene soporte.", log_message="Repack no tiene soporte.")
+            if not os.path.exists(executableTXT):
+                update_progress(100, "No se encontró ejecutable.", log_message="No se encontró ejecutable.")
                 self.installation_canceled.emit()
             else:
-                cleanup_extraction_paths_and_crack(update_progress)
-                success_installation_status(update_progress)
-                self.installation_complete.emit()
+                with open(executableTXT, "r", encoding="utf-8") as f:
+                    exe_name = f.read().strip()
+                if exe_name.lower() == "fitgirl":
+                    update_progress(100, "FitGirl no tiene soporte.", log_message="FitGirl no tiene soporte.")
+                    self.installation_canceled.emit()
+                elif exe_name.lower() == "dodi":
+                    update_progress(100, "Dodi no tiene soporte.", log_message="Dodi no tiene soporte.")
+                    self.installation_canceled.emit()
+                elif exe_name.lower() == "repack":
+                    update_progress(100, "Repack no tiene soporte.", log_message="Repack no tiene soporte.")
+                    self.installation_canceled.emit()
+                else:
+                    cleanup_extraction_paths_and_crack(update_progress)
+                    success_installation_status(update_progress)
+                    self.installation_complete.emit()
         except Exception as e:
             self.status_update.emit((f"Error crítico: {str(e)}", f"Error crítico: {str(e)}"))
 
@@ -1089,6 +1119,7 @@ class GameInstallationProgress(QMainWindow):
         self.is_dragging = False
 
 if __name__ == "__main__":
+    create_default_config()
     app = QApplication(sys.argv)
     icon = QIcon(resource_path("icon.png"))
     app.setWindowIcon(icon)

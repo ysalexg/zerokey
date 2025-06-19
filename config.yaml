@@ -1,0 +1,11 @@
+paths:
+  download_folder: "E:\\Descargas"
+  extraction_folder: "D:\\Extracciones"
+  game_folder: "D:\\Juegos"
+  excluded_folders:
+    - "D:\\Extracciones\\Drive Cache"
+    - "D:\\Extracciones\\Free Download Manager"
+    - "D:\\Extracciones\\IDM Temporal"
+    - "E:\\Descargas\\TempDownload"
+    - "E:\\Descargas\\TempDownload\\DwnlData"
+    - "E:\\Descargas\\TempDownload\\DwnlData\\Alex"
