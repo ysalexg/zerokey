@@ -1,5 +1,4 @@
-# 1. Añadiur dependencias a instalar: 7z
-# 2. Empaquetar y subir a github.
+# 1. Empaquetar y subir a github.
 
 import os
 import sys
@@ -94,6 +93,35 @@ excluded_executables = [
 log_messages = []
 extracted_paths = []
 successful_paths = []
+
+def ensure_7z_installed():
+    try:
+        # Try to run '7z' to check if it's available
+        result = subprocess.run(["7z"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=CREATE_NO_WINDOW)
+        if result.returncode == 0 or b"7-Zip" in result.stdout or b"7-Zip" in result.stderr:
+            return  # 7z is present
+    except Exception:
+        pass  # Not present or not callable
+
+    # Not found, try to silently install from compiler\7z.exe (assume it's a 7-Zip installer)
+    # Use base_path for the executable location
+    if getattr(sys, "frozen", False):
+        base_path = os.path.dirname(os.path.abspath(sys.argv[0]))
+    else:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+
+    installer_path = os.path.join(base_path, "assets", "7z.exe")
+    if os.path.isfile(installer_path):
+        try:
+            # Silent install: /S for 7-Zip installer
+            subprocess.run([installer_path, "/S"], check=True, creationflags=CREATE_NO_WINDOW)
+            print("7-Zip instalado silenciosamente.")
+        except Exception as e:
+            print(f"Error instalando 7-Zip: {e}")
+    else:
+        print(f"No se encontró {installer_path}. 7z.exe es requerido.")
+
+ensure_7z_installed()
 
 def resource_path(relative_path):
     """Obtiene la ruta absoluta del recurso, funciona tanto para desarrollo como para el ejecutable"""
