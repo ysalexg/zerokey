@@ -92,7 +92,7 @@ function Extract-Files {
 
         if ($isEncrypted) {
             Write-Output "🚫 Archivo cifrado detectado. Se omite: $($archive.FullName)"
-            $notifEncryptScript = Join-Path $PSScriptRoot "notificationEncrypted.py"
+            $notifEncryptScript = Join-Path $PSScriptRoot "notifications\notificationEncrypted.py"
             Write-Output "Ejecutando notificación de extracción: $notifEncryptScript"
             & python $notifEncryptScript
             continue
@@ -238,7 +238,7 @@ while ($true) {
             Move-Item -Path $file.FullName -Destination $destination -Force
             
             # Ejecutar notificación para archivo movido
-            $notifScript = Join-Path $PSScriptRoot "notificationExtract.py"
+            $notifScript = Join-Path $PSScriptRoot "notifications\notificationExtract.py"
             Write-Output "Ejecutando notificación de archivo movido: $notifScript"
             & python $notifScript
             
