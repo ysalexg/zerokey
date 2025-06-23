@@ -16,7 +16,8 @@ PyInstaller.__main__.run([
     '--name=zerokey',
     '--noconsole',
     '--clean',
-    f'--distpath={releases_dir}'
+    f'--distpath={releases_dir}',
+    f'--add-data={icon_path};.'
 ])
 
 build_dir = os.path.join(root_dir, 'build')

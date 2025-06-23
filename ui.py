@@ -6,11 +6,11 @@ import requests
 import shutil
 import time
 import subprocess
+import tempfile
 from pathlib import Path
 from ruamel.yaml import YAML
-import subprocess
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QLabel, 
-                             QProgressBar, QWidget, QTextEdit, QDesktopWidget, QPushButton)
+                             QProgressBar, QWidget, QTextEdit, QDesktopWidget, QPushButton, QSystemTrayIcon, QMenu, QAction)
 from PyQt5.QtCore import QThread, pyqtSignal, Qt, QPoint, QTimer
 from PyQt5.QtGui import QFont, QIcon
 
@@ -40,6 +40,7 @@ try:
     excluded_folders = config["paths"]["excluded_folders"]
     achievements = config.get("achievements", True)
     delete_files = config.get("delete_files", True)
+    show_tray = config.get("show_tray", True)
 except Exception as e:
     print(f"Error al cargar config.yaml: {e}")
 
@@ -47,11 +48,13 @@ CREATE_NO_WINDOW = 0x08000000
 manifest_url = "https://raw.githubusercontent.com/mtkennerly/ludusavi-manifest/refs/heads/master/data/manifest.yaml"
 manifest_path = os.path.join(assets, "manifest.yaml")
 executableTXT = os.path.join(assets, "executable.txt")
-gamePathTXT = os.path.join(assets, "game_path.txt")
-gameNameTXT = os.path.join(assets, "game_name.txt")
 crackTXT = os.path.join(assets, "crack.txt")
 appidTXT = os.path.join(assets, "appid.txt")
-fullExecutablePathTXT = os.path.join(assets, "full_executable_path.txt")
+# Necesarios para el plugin
+temp_dir = tempfile.gettempdir()
+gamePathTXT = os.path.join(temp_dir, "game_path.txt")
+gameNameTXT = os.path.join(temp_dir, "game_name.txt")
+fullExecutablePathTXT = os.path.join(temp_dir, "full_executable_path.txt")
 
 autocrack_dir = os.path.join(assets, "autocrack")
 if not os.path.exists(autocrack_dir):
@@ -139,7 +142,8 @@ def create_default_config():
             ]
         },
         "achievements": True,
-        "delete_files": True
+        "delete_files": True,
+        "show_tray": True
     }
 
     try:
@@ -398,8 +402,8 @@ def process_games(update_progress):
         log_message(error_msg)
 
 def save_full_executable_path(target_folder, matching_exe, output_file="full_executable_path.txt"):
-    # Ruta específica donde quieres guardar el archivo
-    output_directory = os.path.join(script_dir, "assets")
+    # Usar el directorio temporal del sistema
+    output_directory = tempfile.gettempdir()
     output_file_path = os.path.join(output_directory, output_file)
 
     try:
@@ -407,7 +411,7 @@ def save_full_executable_path(target_folder, matching_exe, output_file="full_exe
         for root, _, files in os.walk(target_folder):
             if matching_exe in files:
                 full_path = os.path.join(root, matching_exe)
-                # Crear el directorio si no existe
+                # Crear el directorio si no existe (normalmente innecesario para temp, pero por seguridad)
                 os.makedirs(output_directory, exist_ok=True)
                 # Guardar el archivo en la ruta deseada
                 with open(output_file_path, "w", encoding="utf-8") as file:
@@ -949,7 +953,7 @@ class GameInstallationThread(QThread):
             download_manifest(update_progress)
             extract_archives(update_progress)
             process_games(update_progress)
-            if not os.path.exists(executableTXT):
+            if not os.path.exists(executableTXT) or not os.path.exists(gamePathTXT):
                 update_progress(100, "No se encontró ejecutable.", log_message="No se encontró ejecutable.")
                 self.installation_canceled.emit()
             else:
@@ -1097,6 +1101,69 @@ class GameInstallationProgress(QMainWindow):
         self.close_timer = QTimer(self)
         self.close_timer.setSingleShot(True)
         self.close_timer.timeout.connect(self.close)
+
+        self.tray_icon = None
+        if show_tray:
+            self.tray_icon = QSystemTrayIcon(self)
+            self.tray_icon.setIcon(QIcon(resource_path("zerokey.ico")))
+
+            tray_menu = QMenu()
+            tray_menu.setStyleSheet("""
+            QMenu {
+            background-color: #202020;
+            color: #D8DEE9;
+            border: 1px solid #444;
+            border-radius: 6px;
+            }
+            QMenu::item {
+            background-color: transparent;
+            color: #D8DEE9;
+            padding: 6px 20px;
+            }
+            QMenu::item:selected {
+            background-color: #2D2D2D;
+            color: #88C0D0;
+            border-radius: 4px;
+            }
+            QMenu::separator {
+            height: 1px;
+            background: #444;
+            margin: 4px 0;
+            }
+            """)
+
+            show_action = QAction("Mostrar", self)
+            show_action.triggered.connect(self.showNormal)
+            tray_menu.addAction(show_action)
+
+            hide_action = QAction("Minimizar", self)
+            hide_action.triggered.connect(self.hide)
+            tray_menu.addAction(hide_action)
+
+            exit_action = QAction("Salir", self)
+            exit_action.triggered.connect(lambda: sys.exit(0))
+            tray_menu.addAction(exit_action)
+
+            self.tray_icon.setContextMenu(tray_menu)
+            self.tray_icon.setToolTip("Zerokey")
+            self.tray_icon.show()
+
+            self.tray_icon.activated.connect(self.on_tray_activated)
+
+    def closeEvent(self, event):
+        event.ignore()
+        self.hide()
+        # self.tray_icon.showMessage(
+        #     "Zerokey",
+        #     "El programa sigue ejecutándose en el área de notificación.",
+        #     QSystemTrayIcon.Information,
+        #     2000
+        # )
+
+    def on_tray_activated(self, reason):
+        if reason == QSystemTrayIcon.Trigger:
+            self.showNormal()
+            self.activateWindow()
 
     def update_progress(self, value):
         self.progress_bar.setValue(value)

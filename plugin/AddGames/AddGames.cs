@@ -31,39 +31,28 @@ namespace AddGames
 
         public override IEnumerable<GameMetadata> GetGames(LibraryGetGamesArgs args)
         {
-            // Rutas de los archivos
+            // Rutas de los archivos principales en el directorio Temp de Windows
+            string tempDir = Path.GetTempPath();
+            string nameFile = Path.Combine(tempDir, "game_name.txt");
+            string executableFile = Path.Combine(tempDir, "full_executable_path.txt");
+            string pathFile = Path.Combine(tempDir, "game_path.txt");
+
+            // Directorio de assets para los archivos adicionales
             string pluginDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             string assetsDir = Path.Combine(pluginDir, "..", "assets");
-            string fallbackAssetsDir = @"D:\Programacion\Python\zerokey\assets";
-            string nameFile = Path.Combine(assetsDir, "game_name.txt");
-            string executableFile = Path.Combine(assetsDir, "full_executable_path.txt");
-            string pathFile = Path.Combine(assetsDir, "game_path.txt");
 
-            // Si los archivos principales no existen, intentar obtenerlos de la ruta alternativa
+            // Verificar existencia de los archivos principales
             if (!File.Exists(nameFile) || !File.Exists(executableFile) || !File.Exists(pathFile))
             {
-                string fallbackNameFile = Path.Combine(fallbackAssetsDir, "game_name.txt");
-                string fallbackExecutableFile = Path.Combine(fallbackAssetsDir, "full_executable_path.txt");
-                string fallbackPathFile = Path.Combine(fallbackAssetsDir, "game_path.txt");
-
-                if (File.Exists(fallbackNameFile) && File.Exists(fallbackExecutableFile) && File.Exists(fallbackPathFile))
-                {
-                    nameFile = fallbackNameFile;
-                    executableFile = fallbackExecutableFile;
-                    pathFile = fallbackPathFile;
-                }
-                else
-                {
-                    logger.Error("No se encuentran los archivos necesarios: game_name.txt, full_executable_path.txt o game_path.txt.");
-                    // Borrar archivos adicionales si existen
-                    string extra1 = Path.Combine(assetsDir, "executable.txt");
-                    string extra2 = Path.Combine(assetsDir, "crack.txt");
-                    string extra3 = Path.Combine(assetsDir, "appid.txt");
-                    if (File.Exists(extra1)) File.Delete(extra1);
-                    if (File.Exists(extra2)) File.Delete(extra2);
-                    if (File.Exists(extra3)) File.Delete(extra3);
-                    return new List<GameMetadata>();
-                }
+                logger.Error("No se encuentran los archivos necesarios en Temp: game_name.txt, full_executable_path.txt o game_path.txt.");
+                // Borrar archivos adicionales si existen
+                string extra1 = Path.Combine(assetsDir, "executable.txt");
+                string extra2 = Path.Combine(assetsDir, "crack.txt");
+                string extra3 = Path.Combine(assetsDir, "appid.txt");
+                if (File.Exists(extra1)) File.Delete(extra1);
+                if (File.Exists(extra2)) File.Delete(extra2);
+                if (File.Exists(extra3)) File.Delete(extra3);
+                return new List<GameMetadata>();
             }
 
             // Leer datos de los archivos
