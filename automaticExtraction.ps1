@@ -95,6 +95,9 @@ function Extract-Files {
             $notifEncryptScript = Join-Path $PSScriptRoot "notifications\notificationEncrypted.py"
             Write-Output "Ejecutando notificación de extracción: $notifEncryptScript"
             & python $notifEncryptScript
+            if ((Get-ChildItem -Path $folderToCheck -Directory -ErrorAction SilentlyContinue).Count -eq 0){
+                Close-IDMan
+            }
             continue
         }
         # Crear carpeta para la extracción
@@ -131,8 +134,13 @@ function Extract-Files {
 
             # Ejecutar notificationExtract.py después de la extracción
             $notifScript = Join-Path $PSScriptRoot "notifications\notificationExtract.py"
+            $Count = (Get-ChildItem -Path $folderToCheck -Directory -ErrorAction SilentlyContinue).Count
+            Write-Output "$Count archivos en $folderToCheck"
             Write-Output "Ejecutando notificación de extracción: $notifScript"
             & python $notifScript
+            if ((Get-ChildItem -Path $folderToCheck -Directory -ErrorAction SilentlyContinue).Count -eq 0){
+                Close-IDMan
+            }
         }
     }
 
@@ -198,7 +206,7 @@ while ($true) {
                 $notifScript = Join-Path $PSScriptRoot "notifications\notificationExtract.py"
                 Write-Output "Ejecutando notificación de archivo movido: $notifScript"
                 & python $notifScript
-                if ($folderToCheck.Count -eq 0) {
+                if ((Get-ChildItem -Path $folderToCheck -Directory -ErrorAction SilentlyContinue).Count -eq 0){
                     Close-IDMan
                 }
             }
@@ -243,7 +251,7 @@ while ($true) {
             & python $notifScript
             
             # Cerrar IDM solo si no hay carpetas en "E:\Descargas\TempDownload\DwnlData\Alex"
-            if ($folderToCheck.Count -eq 0) {
+            if ((Get-ChildItem -Path $folderToCheck -Directory -ErrorAction SilentlyContinue).Count -eq 0){
                 Close-IDMan
             }
         }
@@ -257,7 +265,7 @@ while ($true) {
         Extract-Files
 
         # Cerrar IDM solo si no hay carpetas en "E:\Descargas\TempDownload\DwnlData\Alex"
-        if ($folderToCheck.Count -eq 0) {
+        if ((Get-ChildItem -Path $folderToCheck -Directory -ErrorAction SilentlyContinue).Count -eq 0){
             Close-IDMan
         }
 
