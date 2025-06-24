@@ -5,6 +5,7 @@ import sys
 import requests
 import shutil
 import time
+import psutil
 import subprocess
 import tempfile
 from pathlib import Path
@@ -506,6 +507,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
 
     # Determinar AppId válido
     from collections import Counter
+
     counts = Counter(appid_candidates)
     appid = None
     if counts:
@@ -1081,7 +1083,17 @@ class GameInstallationProgress(QMainWindow):
                 layout.addWidget(button)
             return button
 
-        self.cancelar_button = create_button("Cancelar", visible=True, on_click=lambda: sys.exit(0))
+        def cancelar_instalacion():
+            # Finalizar procesos 7z.exe y NanaZip.Core.Console.exe antes de salir
+            for proc in psutil.process_iter(['name']):
+                if proc.info['name'] in ("7z.exe", "NanaZip.Core.Console.exe"):
+                    try:
+                        proc.terminate()
+                    except Exception:
+                        pass
+            sys.exit(0)
+
+        self.cancelar_button = create_button("Cancelar", visible=True, on_click=cancelar_instalacion)
         self.finish_button = create_button("Finalizar", visible=False, on_click=lambda: sys.exit(0))
         self.close_button = create_button("Cerrar", visible=False, on_click=lambda: sys.exit(0))
 

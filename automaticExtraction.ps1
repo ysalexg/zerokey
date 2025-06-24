@@ -279,6 +279,6 @@ while ($true) {
     } else {
         Write-Output "No hay archivos comprimidos para extraer."
     }
-    cls
+    Clear-Host
     Start-Sleep -Seconds 3
 }

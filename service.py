@@ -1,13 +1,12 @@
-import win32serviceutil
-import win32service
-import win32event
-import servicemanager
-import subprocess
 import os
 import sys
 import threading
-import yaml
+import subprocess
 import time
+import yaml
+import logging
+import signal
+
 
 def resource_path(relative_path):
     """Obtiene la ruta absoluta del recurso, funciona tanto para desarrollo como para el ejecutable"""
@@ -17,113 +16,47 @@ def resource_path(relative_path):
         base_path = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(base_path, relative_path)
 
-class Zerokey(win32serviceutil.ServiceFramework):
-    _svc_name_ = "zerokey"
-    _svc_display_name_ = "Zerokey"
-    _svc_description_ = "Servicio de monitorización de Zerokey"
 
-    def __init__(self, args):
-        super().__init__(args)
-        self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
-        self.running = True
+class ZerokeyMonitor:
+    def __init__(self, config_file='config.yaml'):
+        self.running = False
         self.monitor_thread = None
-        # Variables de configuración
         self.download_folder = None
         self.excluded_folder = None
         self.handle_path = None
         self.ui_script = None
-
-    def SvcStop(self):
-        # Señalar al sistema que el servicio está deteniéndose
-        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
-        servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                              servicemanager.PYS_SERVICE_STOPPED,
-                              (self._svc_name_, 'Service stop pending...'))
-        # Señalar al hilo de monitor que pare
-        self.running = False
-        win32event.SetEvent(self.hWaitStop)
-        # Esperar que el hilo termine
-        if self.monitor_thread and self.monitor_thread.is_alive():
-            self.monitor_thread.join(timeout=5)
-        servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                              servicemanager.PYS_SERVICE_STOPPED,
-                              (self._svc_name_, 'Service stopped.'))
-
-    def SvcDoRun(self):
-        servicemanager.LogMsg(
-            servicemanager.EVENTLOG_INFORMATION_TYPE,
-            servicemanager.PYS_SERVICE_STARTED,
-            (self._svc_name_, 'Service starting...'))
-        try:
-            self.main()
-        except Exception as e:
-            servicemanager.LogErrorMsg(f"Exception in main: {e}")
-            # En caso de excepción, esperar señal de stop para no terminar abruptamente
-            win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
-
-    def main(self):
-        """
-        Carga config y arranca lógica de monitor sin PowerShell.
-        """
-        # 1) Cargar configuración
-        if not self.load_config():
-            servicemanager.LogErrorMsg("No se pudo cargar la configuración. El servicio finalizará.")
-            return
-
-        # 2) Determinar rutas:
-        # handle.exe
-        self.handle_path = resource_path(os.path.join("assets", "handle.exe"))
-        if not os.path.exists(self.handle_path):
-            # Intentar si está en PATH
-            self.handle_path = "handle.exe"
-        servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                              servicemanager.PYS_SERVICE_STARTED,
-                              (self._svc_name_, f'Usando handle.exe en: {self.handle_path}'))
-
-        # zerokey.exe
-        self.ui_script = resource_path("zerokey.exe")
-        if not os.path.exists(self.ui_script):
-            servicemanager.LogErrorMsg(f"zerokey.exe no encontrado en: {self.ui_script}. Asegúrate de empacarlo junto al servicio.")
-        else:
-            servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                  servicemanager.PYS_SERVICE_STARTED,
-                                  (self._svc_name_, f'Encontrado zerokey.exe en: {self.ui_script}'))
-
-        # 3) Arrancar hilo de monitor
-        self.monitor_thread = threading.Thread(target=self.monitor_loop, daemon=True)
-        self.monitor_thread.start()
-
-        # 4) Esperar señal de parada
-        win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
+        self.config_file = config_file
+        # Configure logging to console
+        logging.basicConfig(
+            level=logging.INFO,
+            format='[%(asctime)s] %(levelname)s: %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
 
     def load_config(self):
         """
-        Lee config.yaml y extrae download_folder y excluded_folder.
+        Lee config.yaml y extrae download_folder.
         Devuelve True si se carga correctamente.
         """
         try:
-            config_path = resource_path("config.yaml")
-            servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                  servicemanager.PYS_SERVICE_STARTED,
-                                  (self._svc_name_, f'Leyendo configuración en: {config_path}'))
+            config_path = resource_path(self.config_file)
+            logging.info(f'Leyendo configuración en: {config_path}')
             if not os.path.exists(config_path):
-                servicemanager.LogErrorMsg(f"config.yaml no encontrado en: {config_path}")
+                logging.error(f'config.yaml no encontrado en: {config_path}')
                 return False
             with open(config_path, "r", encoding="utf-8") as f:
                 cfg = yaml.safe_load(f)
             download_folder = cfg.get("paths", {}).get("download_folder")
             if not download_folder:
-                servicemanager.LogErrorMsg("En config.yaml no se encontró paths.download_folder")
+                logging.error("En config.yaml no se encontró paths.download_folder")
                 return False
             download_folder = os.path.normpath(download_folder)
             self.download_folder = download_folder
             self.excluded_folder = os.path.join(self.download_folder, "TempDownload")
-            servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                  servicemanager.PYS_SERVICE_STARTED,
-                                  (self._svc_name_, f'Download folder: {self.download_folder}, Excluded: {self.excluded_folder}'))
+            logging.info(f'Download folder: {self.download_folder}, Excluded: {self.excluded_folder}')
             return True
         except Exception as e:
-            servicemanager.LogErrorMsg(f"Error al leer config.yaml: {e}")
+            logging.error(f"Error al leer config.yaml: {e}")
             return False
 
     def is_process_running(self, name):
@@ -142,7 +75,7 @@ class Zerokey(win32serviceutil.ServiceFramework):
                 return False
             return f"{name}.exe" in output
         except Exception as e:
-            servicemanager.LogErrorMsg(f"Error comprobando proceso {name}: {e}")
+            logging.error(f"Error comprobando proceso {name}: {e}")
             return False
 
     def is_file_in_use_by_hydra(self, file_path):
@@ -159,110 +92,90 @@ class Zerokey(win32serviceutil.ServiceFramework):
         except subprocess.CalledProcessError:
             return False
         except Exception as e:
-            servicemanager.LogErrorMsg(f"Error invocando handle.exe para {file_path}: {e}")
+            logging.error(f"Error invocando handle.exe para {file_path}: {e}")
             return False
 
     def monitor_loop(self):
-        """
-        Bucle principal: espera archivo en uso o proceso Hydra, procesa archivos, espera reinicio.
-        Sólo verifica Hydra, no IDMan.
-        """
-        servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                              servicemanager.PYS_SERVICE_STARTED,
-                              (self._svc_name_, "Hilo de monitor arrancado."))
-
+        """Bucle principal de monitorización"""
+        logging.info("Hilo de monitor arrancado.")
+        prev_in_use = set()
         while self.running:
             try:
-                servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                      servicemanager.PYS_SERVICE_STARTED,
-                                      (self._svc_name_, "Esperando a que un archivo esté en uso por Hydra..."))
-                # Esperar hasta que detecte Hydra en ejecución o algún archivo en uso
+                # logging.info("Esperando a que un archivo esté en uso por Hydra o proceso Hydra corriendo...")
+                # Esperar hasta que Hydra corra o algún archivo en uso
                 while self.running:
                     hydra_running = self.is_process_running("Hydra")
-                    in_use_found = False
+                    in_use_now = set()
                     for root, dirs, files in os.walk(self.download_folder):
-                        # Saltar carpeta excluida
                         try:
                             if os.path.commonpath([root, self.excluded_folder]) == self.excluded_folder:
                                 continue
                         except ValueError:
-                            # Paths en diferentes drives, skip check
                             pass
                         for fname in files:
                             if not fname.lower().endswith((".rar", ".zip", ".7z")):
                                 continue
                             fullpath = os.path.join(root, fname)
                             if self.is_file_in_use_by_hydra(fullpath):
-                                in_use_found = True
-                                break
-                        if in_use_found:
-                            break
-                    if hydra_running or in_use_found:
+                                in_use_now.add(fullpath)
+                    if hydra_running or in_use_now:
                         break
                     time.sleep(3)
                 if not self.running:
                     break
 
-                servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                      servicemanager.PYS_SERVICE_STARTED,
-                                      (self._svc_name_, "Detección de Hydra o archivo en uso. Verificando archivos..."))
-                # Verificar archivos .rar/.zip/.7z
-                files_to_process = []
-                for root, dirs, files in os.walk(self.download_folder):
-                    try:
-                        if os.path.commonpath([root, self.excluded_folder]) == self.excluded_folder:
-                            continue
-                    except ValueError:
-                        pass
-                    for fname in files:
-                        if fname.lower().endswith((".rar", ".zip", ".7z")):
-                            files_to_process.append(os.path.join(root, fname))
+                # logging.info("Detección de Hydra o archivo en uso. Verificando archivos...")
 
-                if files_to_process:
-                    self.process_archives(files_to_process)
-                    servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                          servicemanager.PYS_SERVICE_STARTED,
-                                          (self._svc_name_, "Esperando a que Hydra se reinicie para siguiente ciclo..."))
-                    # Esperar reinicio de Hydra
-                    while self.running:
-                        if self.is_process_running("Hydra"):
-                            break
-                        time.sleep(3)
-                    servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                          servicemanager.PYS_SERVICE_STARTED,
-                                          (self._svc_name_, "Hydra detectado de nuevo. Volviendo a esperar archivos..."))
-                else:
-                    servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                          servicemanager.PYS_SERVICE_STARTED,
-                                          (self._svc_name_, "No hay archivos .rar/.zip/.7z en download_folder."))
+                # Esperar a que archivos dejen de estar en uso
+                while self.running:
+                    in_use_now = set()
+                    candidates = []
+                    for root, dirs, files in os.walk(self.download_folder):
+                        try:
+                            if os.path.commonpath([root, self.excluded_folder]) == self.excluded_folder:
+                                continue
+                        except ValueError:
+                            pass
+                        for fname in files:
+                            if not fname.lower().endswith((".rar", ".zip", ".7z")):
+                                continue
+                            fullpath = os.path.join(root, fname)
+                            if self.is_file_in_use_by_hydra(fullpath):
+                                in_use_now.add(fullpath)
+                            elif fullpath in prev_in_use:
+                                candidates.append(fullpath)
+                    if candidates:
+                        self.process_archives(candidates)
+                        prev_in_use -= set(candidates)
+                    prev_in_use = in_use_now
+                    if not in_use_now:
+                        break
+                    time.sleep(3)
+
+                # logging.info("Esperando reinicio de Hydra para siguiente ciclo...")
+                while self.running:
+                    if self.is_process_running("Hydra"):
+                        break
+                    time.sleep(3)
+                # logging.info("Hydra detectado de nuevo. Volviendo a esperar archivos...")
                 time.sleep(3)
             except Exception as e:
-                servicemanager.LogErrorMsg(f"Error en monitor_loop: {e}")
+                logging.error(f"Error en monitor_loop: {e}")
                 time.sleep(5)
-        servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                              servicemanager.PYS_SERVICE_STARTED,
-                              (self._svc_name_, "Hilo de monitor finalizado."))
+        logging.info("Hilo de monitor finalizado.")
 
     def process_archives(self, files_list):
-        """
-        Procesa cada archivo: espera a que no esté en uso y ejecuta zerokey.exe
-        """
+        """Procesa cada archivo: espera a que no esté en uso y ejecuta zerokey.exe o ui.py"""
         for archive_path in files_list:
             if not self.running:
                 break
-            servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                  servicemanager.PYS_SERVICE_STARTED,
-                                  (self._svc_name_, f"Verificando si {archive_path} está en uso por Hydra..."))
+            logging.info(f"Verificando si {archive_path} está en uso por Hydra...")
             while self.running and self.is_file_in_use_by_hydra(archive_path):
-                servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                      servicemanager.PYS_SERVICE_STARTED,
-                                      (self._svc_name_, f"Archivo en uso por Hydra. Esperando: {archive_path}"))
+                logging.info(f"Archivo en uso por Hydra. Esperando: {archive_path}")
                 time.sleep(5)
             if not self.running:
                 break
-            servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                  servicemanager.PYS_SERVICE_STARTED,
-                                  (self._svc_name_, f"Archivo libre: {archive_path}. Ejecutando zerokey.exe..."))
+            logging.info(f"Archivo libre: {archive_path}. Ejecutando zerokey...")
             try:
                 if os.path.exists(self.ui_script):
                     proc = subprocess.Popen(
@@ -276,20 +189,84 @@ class Zerokey(win32serviceutil.ServiceFramework):
                     )
                     out, err = proc.communicate()
                     if proc.returncode == 0:
-                        servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                                              servicemanager.PYS_SERVICE_STARTED,
-                                              (self._svc_name_, f"zerokey.exe ejecutado correctamente para {archive_path}"))
+                        logging.info(f"zerokey.exe ejecutado correctamente para {archive_path}")
                     else:
-                        servicemanager.LogErrorMsg(f"zerokey.exe retornó código {proc.returncode} para {archive_path}. STDERR: {err.strip()}")
+                        logging.error(f"zerokey.exe retornó código {proc.returncode} para {archive_path}. STDERR: {err.strip()}")
                 else:
-                    servicemanager.LogErrorMsg(f"No existe zerokey.exe en: {self.ui_script}. No se puede ejecutar instalador.")
+                    # Ejecutar ui.py si zerokey.exe no existe
+                    ui_py_path = resource_path("ui.py")
+                    if os.path.exists(ui_py_path):
+                        proc = subprocess.Popen(
+                            [sys.executable, ui_py_path],
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE,
+                            bufsize=0,
+                            text=True,
+                            encoding='utf-8',
+                            errors='ignore'
+                        )
+                        out, err = proc.communicate()
+                        if proc.returncode == 0:
+                            logging.info(f"ui.py ejecutado correctamente para {archive_path}")
+                        else:
+                            logging.error(f"ui.py retornó código {proc.returncode} para {archive_path}. STDERR: {err.strip()}")
+                    else:
+                        logging.error(f"No existe zerokey.exe en: {self.ui_script} ni ui.py en: {ui_py_path}. No se puede ejecutar instalador.")
             except Exception as e:
-                servicemanager.LogErrorMsg(f"Error ejecutando zerokey.exe para {archive_path}: {e}")
+                logging.error(f"Error ejecutando instalador para {archive_path}: {e}")
+
+    def start(self):
+        if not self.load_config():
+            logging.error("No se pudo cargar la configuración. El monitor finalizará.")
+            return
+        # Determinar rutas:
+        self.handle_path = resource_path(os.path.join("assets", "handle.exe"))
+        if not os.path.exists(self.handle_path):
+            self.handle_path = "handle.exe"
+        logging.info(f'Usando handle.exe en: {self.handle_path}')
+
+        self.ui_script = resource_path("zerokey.exe")
+        if not os.path.exists(self.ui_script):
+            logging.warning(f"zerokey.exe no encontrado en: {self.ui_script}. Asegúrate de empacarlo junto al script.")
+        else:
+            logging.info(f'Encontrado zerokey.exe en: {self.ui_script}')
+
+        self.running = True
+        self.monitor_thread = threading.Thread(target=self.monitor_loop, daemon=True)
+        self.monitor_thread.start()
+
+    def stop(self):
+        logging.info("Señal de parada recibida. Deteniendo monitor...")
+        self.running = False
+        if self.monitor_thread and self.monitor_thread.is_alive():
+            self.monitor_thread.join(timeout=10)
+        logging.info("Monitor detenido.")
+
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Monitor Zerokey standalone (sin servicio de Windows)")
+    parser.add_argument('-c', '--config', default='config.yaml', help='Ruta al archivo de configuración YAML')
+    args = parser.parse_args()
+
+    monitor = ZerokeyMonitor(config_file=args.config)
+
+    # Manejo de señales para parada limpia
+    def handle_signal(sig, frame):
+        monitor.stop()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, handle_signal)
+    signal.signal(signal.SIGTERM, handle_signal)
+
+    monitor.start()
+    # Mantener el hilo principal vivo
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        monitor.stop()
+
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        servicemanager.Initialize()
-        servicemanager.PrepareToHostSingle(Zerokey)
-        servicemanager.StartServiceCtrlDispatcher()
-    else:
-        win32serviceutil.HandleCommandLine(Zerokey)
+    main()
