@@ -5,6 +5,9 @@
   <img src="https://github.com/ysalexg/zerokey/blob/main/screenshots/2.png?raw=true" alt="Imagen" />
 </p>
 
+## Descargas
+[Descargar la última versión](https://github.com/ysalexg/zerokey/releases/latest)
+
 ## Características
 - Detecta cuando finaliza una descarga y se inicia a través de un servicio en segundo plano (liviano, 13 mb y 0% de cpu en reposo).
 - Extracción automática de archivos comprimidos y detección del juego.
