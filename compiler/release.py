@@ -17,3 +17,7 @@ result = subprocess.run(command, capture_output=True, text=True)
 print(result.stdout)
 if result.returncode != 0:
     print("Error:", result.stderr)
+
+# git tag -a v1.0.0 -m "Primera versión"
+# git push origin v1.0.0
+# gh release create v1.0.0 zerokey.exe --title "v1.0.0" --notes "Primera versión"
