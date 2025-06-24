@@ -30,5 +30,6 @@
 <p>delete_files: true/false, si quiere que se borren los archivos comprimidos luego de extraerlos.</p>
 
 ## Integración con Playnite
-Ir a Playnite > Configuración > Para desarrolladores > Añadir > Agregar la ruta donde se encuentra la carpeta "plugin".
+<p>Ir a Playnite > Configuración > Para desarrolladores > Añadir > Agregar la ruta donde se encuentra la carpeta "plugin".</p>
 Luego de instalarse un juego, al refrescar la biblioteca (F5) se va a añadir automaticamente.
+<p>Para ver los logros en Playnite, es necesaria la extensión Succes Story https://github.com/eFMann/playnite-successstory-plugin</p>
