@@ -1,6 +1,7 @@
 import PyInstaller.__main__
 import os
 import shutil
+import subprocess
 
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ui_py_path = os.path.join(root_dir, 'ui.py')
@@ -41,3 +42,7 @@ if os.path.isdir(src_assets_dir):
     if os.path.exists(dst_assets_dir):
         shutil.rmtree(dst_assets_dir)
     shutil.copytree(src_assets_dir, dst_assets_dir)
+
+service_script = os.path.join(root_dir, 'compiler', 'buildService.py')
+if os.path.isfile(service_script):
+    subprocess.run(['python', service_script], check=True)
