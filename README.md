@@ -9,7 +9,7 @@
 [Descargar la última versión](https://github.com/ysalexg/zerokey/releases/latest)
 
 ## Características
-- Detecta cuando finaliza una descarga y se inicia a través de un servicio en segundo plano (liviano, 13 mb y 0% de cpu en reposo).
+- Puede iniciar de manera manual, o automática: detecta cuando finaliza una descarga y se inicia a través de un servicio en segundo plano (liviano, 13 mb y 0% de cpu en reposo).
 - Extracción automática de archivos comprimidos y detección del juego.
 - Mueve los archivos extraídos a una ruta especifica.
 - Cambia el nombre de la carpeta por el nombre del juego para una mejor organización.
