@@ -263,7 +263,7 @@ class ZerokeyMonitor:
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description="Monitor Zerokey standalone (sin servicio de Windows)")
+    parser = argparse.ArgumentParser(description="Monitor Zerokey")
     parser.add_argument('-c', '--config', default='config.yaml', help='Ruta al archivo de configuración YAML')
     args = parser.parse_args()
 
