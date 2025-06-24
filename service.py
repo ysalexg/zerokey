@@ -7,6 +7,27 @@ import yaml
 import logging
 import signal
 
+CREATE_NO_WINDOW = 0x08000000
+
+if getattr(sys, 'frozen', False):
+    # Ejecutable compilado
+    base_path = os.path.dirname(os.path.abspath(sys.argv[0]))
+    log_path = os.path.join(base_path, "assets", "zerokey.log")
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+    logging.basicConfig(
+        filename=log_path,
+        level=logging.INFO,
+        format='[%(asctime)s] %(levelname)s: %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+else:
+    # En desarrollo
+    logging.basicConfig(
+        level=logging.INFO,
+        format='[%(asctime)s] %(levelname)s: %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+
 
 def resource_path(relative_path):
     """Obtiene la ruta absoluta del recurso, funciona tanto para desarrollo como para el ejecutable"""
@@ -26,12 +47,6 @@ class ZerokeyMonitor:
         self.handle_path = None
         self.ui_script = None
         self.config_file = config_file
-        # Configure logging to console
-        logging.basicConfig(
-            level=logging.INFO,
-            format='[%(asctime)s] %(levelname)s: %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S'
-        )
 
     def load_config(self):
         """
@@ -69,7 +84,8 @@ class ZerokeyMonitor:
                 stderr=subprocess.DEVNULL,
                 text=True,
                 encoding='utf-8',
-                errors='ignore'
+                errors='ignore',
+                creationflags=CREATE_NO_WINDOW
             )
             if "No tasks" in output or "No se encuentra" in output:
                 return False
@@ -85,7 +101,7 @@ class ZerokeyMonitor:
         """
         try:
             cmd = [self.handle_path, "-accepteula", file_path]
-            output = subprocess.check_output(cmd, stderr=subprocess.DEVNULL, text=True, encoding='utf-8', errors='ignore')
+            output = subprocess.check_output(cmd, stderr=subprocess.DEVNULL, text=True, encoding='utf-8', errors='ignore', creationflags=CREATE_NO_WINDOW)
             if "aria2c.exe" in output.lower():
                 return True
             return False
@@ -185,7 +201,8 @@ class ZerokeyMonitor:
                         bufsize=0,
                         text=True,
                         encoding='utf-8',
-                        errors='ignore'
+                        errors='ignore',
+                        creationflags=CREATE_NO_WINDOW
                     )
                     out, err = proc.communicate()
                     if proc.returncode == 0:
@@ -203,7 +220,8 @@ class ZerokeyMonitor:
                             bufsize=0,
                             text=True,
                             encoding='utf-8',
-                            errors='ignore'
+                            errors='ignore',
+                            creationflags=CREATE_NO_WINDOW
                         )
                         out, err = proc.communicate()
                         if proc.returncode == 0:
