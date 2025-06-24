@@ -100,7 +100,6 @@ successful_paths = []
 def resource_path(relative_path):
     """Obtiene la ruta absoluta del recurso, funciona tanto para desarrollo como para el ejecutable"""
     try:
-        # PyInstaller crea una carpeta temporal y almacena la ruta en _MEIPASS
         base_path = os.path.dirname(os.path.abspath(sys.argv[0]))
     except Exception:
         base_path = os.path.abspath(".")

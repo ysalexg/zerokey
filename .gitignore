@@ -8,8 +8,10 @@ NDP462.exe
 manifest.yaml
 hardcoded.txt
 zerokey.exe
+*.pyc
 .vs/
 logs/
 info/
 bin/
 releases/
+__pycache__/
