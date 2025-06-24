@@ -9,7 +9,8 @@ items = [
     "zerokey.ico",
     "assets",
     "compiler",
-    "plugin"
+    "plugin",
+    "screenshots"
 ]
 
 src_dir = os.path.dirname(os.path.abspath(__file__))

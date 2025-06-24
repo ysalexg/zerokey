@@ -8,6 +8,7 @@ NDP462.exe
 manifest.yaml
 hardcoded.txt
 zerokey.exe
+zerokey.7z
 *.pyc
 .vs/
 logs/
