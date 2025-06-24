@@ -1,5 +1,3 @@
-# 1. Empaquetar y subir a github.
-
 import os
 import sys
 import requests
@@ -16,8 +14,7 @@ from PyQt5.QtCore import QThread, pyqtSignal, Qt, QPoint, QTimer
 from PyQt5.QtGui import QFont, QIcon
 
 if getattr(sys, "frozen", False):
-    # Si está empaquetado por PyInstaller, buscar config junto al ejecutable
-    # sys.argv[0] apunta al path del exe lanzado
+    # En un ejecutable
     base_path = os.path.dirname(os.path.abspath(sys.argv[0]))
 else:
     # En desarrollo
@@ -27,14 +24,12 @@ script_dir = base_path
 config_path = os.path.join(script_dir, "config.yaml")
 assets = os.path.join(script_dir, "assets")
 
-# Cargar configuración desde config.yaml
 yaml = YAML(typ="safe")
 
 try:
     with open(config_path, "r", encoding="utf-8") as f:
         config = yaml.load(f)
     
-    # Obtener rutas y opciones desde la configuración
     download_folder = config["paths"]["download_folder"]
     extraction_folder = config["paths"]["extraction_folder"]
     game_folder = config["paths"]["game_folder"]
@@ -51,7 +46,6 @@ manifest_path = os.path.join(assets, "manifest.yaml")
 executableTXT = os.path.join(assets, "executable.txt")
 crackTXT = os.path.join(assets, "crack.txt")
 appidTXT = os.path.join(assets, "appid.txt")
-# Necesarios para el plugin
 temp_dir = tempfile.gettempdir()
 gamePathTXT = os.path.join(temp_dir, "game_path.txt")
 gameNameTXT = os.path.join(temp_dir, "game_name.txt")
@@ -129,7 +123,6 @@ def log_message(msg):
 def create_default_config():
     """
     Crea el archivo config.yaml con valores por defecto si no existe.
-    Usa rutas de ejemplo y formato YAML estándar.
     """
     default_config = {
         "paths": {
@@ -154,10 +147,9 @@ def create_default_config():
     except Exception as e:
         print(f"Error al crear config.yaml: {e}")
 
-# Descargar manifest.yaml
 def download_manifest(update_progress):
     retries = 5
-    delay = 5  # segundos
+    delay = 5 
 
     for attempt in range(retries):
         try:
@@ -190,7 +182,6 @@ def download_manifest(update_progress):
                     log_message(f"\033[31m{error_msg}\033[0m")
                     raise
 
-# Verificar si una carpeta está excluida
 def is_excluded(folder_path):
     return any(folder_path.startswith(excluded) for excluded in excluded_folders)
 
@@ -200,7 +191,6 @@ def extract_archives(update_progress):
             os.makedirs(destination_folder, exist_ok=True)
             
             if is_main and start_progress is not None and file_progress_range is not None:
-                # Monitorear progreso para la extracción principal
                 process = subprocess.Popen(
                     ["7z", "x", file_path, f"-o{destination_folder}", "-aoa", "-bsp1"],
                     stdout=subprocess.PIPE,
@@ -217,7 +207,7 @@ def extract_archives(update_progress):
                             update_progress(
                                 int(total_progress),
                                 f"Extrayendo juego... {percentage}%",
-                                log_message=None  # No agregar al log durante el progreso
+                                log_message=None 
                             )
                         except ValueError:
                             pass
@@ -225,10 +215,8 @@ def extract_archives(update_progress):
                 if process.returncode != 0:
                     raise subprocess.CalledProcessError(process.returncode, process.args)
             else:
-                # Extracción anidada sin monitoreo de progreso
                 subprocess.run(["7z", "x", file_path, f"-o{destination_folder}", "-aoa"], check=True, creationflags=CREATE_NO_WINDOW)
 
-            # Buscar archivos comprimidos anidados
             for root, dirs, files in os.walk(destination_folder):
                 for file in files:
                     if file.endswith(('.zip', '.rar', '.7z')):
@@ -236,27 +224,24 @@ def extract_archives(update_progress):
                         nested_destination = os.path.join(destination_folder, Path(file).stem)
                         extract_recursive(nested_archive, nested_destination, update_progress, is_main=False)
                         if delete_files:
-                            os.remove(nested_archive)  # Solo borrar si delete_files es True
+                            os.remove(nested_archive)
 
-        # Recolectar archivos comprimidos
         compressed_files = []
         for root, dirs, files in os.walk(download_folder):
             for file in files:
                 if file.endswith(('.zip', '.rar', '.7z')):
                     compressed_files.append(os.path.join(root, file))
 
-        # Calcular el rango de progreso para la extracción (20% a 60%)
-        total_extraction_progress = 40  # 60% - 20%
+        total_extraction_progress = 40
         num_files = len(compressed_files)
         file_progress_range = total_extraction_progress / num_files if num_files > 0 else 0
-        progress = 20  # Inicio del rango de extracción
+        progress = 20
 
         for file in compressed_files:
             extraction_path = os.path.join(extraction_folder, Path(file).stem)
             if is_excluded(extraction_path):
                 continue
             extracted_paths.append(extraction_path)
-            # Mensaje único para el log al inicio de la extracción
             update_progress(
                 progress,
                 f"Iniciando extracción de {os.path.basename(file)}...",
@@ -265,7 +250,7 @@ def extract_archives(update_progress):
             extract_recursive(file, extraction_path, progress, file_progress_range, is_main=True)
             progress += file_progress_range
             if delete_files:
-                os.remove(file)  # Solo borrar si delete_files es True
+                os.remove(file)
 
         log_message("Archivos extraídos correctamente.")
     except Exception as e:
@@ -275,7 +260,6 @@ def extract_archives(update_progress):
         log_message(error_msg)
         raise
 
-# Leer manifest.yaml
 def load_manifest():
     yaml = YAML(typ="safe")
     with open(manifest_path, "r", encoding="utf-8") as f:
@@ -292,7 +276,6 @@ def handle_crack_files(original_exe_path, crack_exe_path):
         crack_folder = os.path.dirname(crack_exe_path)
         original_folder = os.path.dirname(original_exe_path)
         
-        # Archivos de crack comunes
         crack_files = [
             "steam_emu.ini",
             "steam_api64.dll",
@@ -307,10 +290,8 @@ def handle_crack_files(original_exe_path, crack_exe_path):
                 relative_path = os.path.relpath(source_path, crack_folder)
                 target_path = os.path.join(original_folder, relative_path)
                 
-                # Crear directorios necesarios
                 os.makedirs(os.path.dirname(target_path), exist_ok=True)
                 
-                # Copiar el archivo
                 shutil.copy2(source_path, target_path)
                 log_message(f"Copiado archivo de crack: {file} a {target_path}")
         
@@ -332,7 +313,6 @@ def process_games(update_progress):
             if f.is_dir() and not is_excluded(f.path)
         ]
 
-        # Diccionario para almacenar ejecutables duplicados
         duplicate_executables = {}
 
         # Primera pasada: recolectar todos los ejecutables
@@ -357,7 +337,7 @@ def process_games(update_progress):
         for folder in extracted_folders:
             print(f"Procesando carpeta: {folder}")
 
-            executables = []  # Lista para almacenar los ejecutables encontrados
+            executables = []
 
             for root, dirs, files in os.walk(folder):
                 if is_excluded(root):
@@ -369,13 +349,9 @@ def process_games(update_progress):
                         and "soundtrack" not in file.lower()
                     ):
                         full_path = os.path.join(root, file)
-                        # Verificar si es un ejecutable duplicado
                         if len(duplicate_executables.get(file, [])) > 1:
-                            # Verificar si está en una carpeta de crack
                             if "crack" in root.lower():
-                                # Encontrar el ejecutable original
                                 original_path = next(p for p in duplicate_executables[file] if "crack" not in p.lower())
-                                # Manejar los archivos de crack
                                 if handle_crack_files(original_path, full_path):
                                     log_message(f"\033[32mArchivos de crack aplicados correctamente para {file}\033[0m")
                                 continue
@@ -402,18 +378,15 @@ def process_games(update_progress):
         log_message(error_msg)
 
 def save_full_executable_path(target_folder, matching_exe, output_file="full_executable_path.txt"):
-    # Usar el directorio temporal del sistema
     output_directory = tempfile.gettempdir()
     output_file_path = os.path.join(output_directory, output_file)
 
     try:
-        # Buscar el ejecutable dentro de target_folder
         for root, _, files in os.walk(target_folder):
             if matching_exe in files:
                 full_path = os.path.join(root, matching_exe)
                 # Crear el directorio si no existe (normalmente innecesario para temp, pero por seguridad)
                 os.makedirs(output_directory, exist_ok=True)
-                # Guardar el archivo en la ruta deseada
                 with open(output_file_path, "w", encoding="utf-8") as file:
                     file.write(full_path)
                 print(f"Ruta completa del ejecutable guardada en {output_file_path}: {full_path}")
@@ -435,7 +408,6 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
     resolved_exe = executable
     resolved_path = folder_path
 
-    # Buscar recursivamente los archivos de AppId
     ini_paths = []
     cream_paths = []
     steam_txt_paths = []
@@ -452,7 +424,6 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             elif name == "cpy.ini":
                 cpy_paths.append(os.path.join(root, f))
 
-    # Recolectar posibles AppIds
     appid_candidates = []
 
     # steam_emu.ini
@@ -511,12 +482,10 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
     counts = Counter(appid_candidates)
     appid = None
     if counts:
-        # Preferimos un candidato con >=2 apariciones
         for aid, cnt in counts.items():
             if cnt >= 2:
                 appid = aid
                 break
-        # Si solo hay 1 candidato total, lo aceptamos
         if appid is None and len(counts) == 1:
             appid = next(iter(counts))
 
@@ -573,7 +542,6 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             resolved_exe = largest_exe
             # Si el exe encontrado es setup.exe o Setup.exe, buscar repack
             if resolved_exe.lower() == "setup.exe":
-                # Buscar indicadores FitGirl
                 for root, _, files in os.walk(folder_path):
                     for file in files:
                         if file.lower().startswith("fg-") and file.lower().endswith(".bin"):
@@ -582,7 +550,6 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
                     if fitgirl_found:
                         break
 
-                # Si no se encontró FitGirl, buscar indicador Dodi
                 if not fitgirl_found:
                     for root, _, files in os.walk(folder_path):
                         for file in files:
@@ -592,7 +559,6 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
                         if dodi_found:
                             break
 
-                # Si no se encontró ninguno, se marca repack
                 if not fitgirl_found and not dodi_found:
                     repack_detected = True
 
@@ -839,10 +805,8 @@ def apply_crack():
                     try:
                         with open(ini_path, "r", encoding="utf-8") as f:
                             lines = f.readlines()
-                        # Obtener el nombre del ejecutable desde executableTXT
                         with open(executableTXT, "r", encoding="utf-8") as f:
                             exe_name = f.read().strip()
-                        # Obtener el AppId desde appidTXT
                         with open(appidTXT, "r", encoding="utf-8") as f:
                             appid_content = f.read().strip()
                         new_lines = []
@@ -980,20 +944,17 @@ class GameInstallationProgress(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Instalación de Juego")
-        self.setFixedSize(255, 255)  # Tamaño fijo de 255x255 píxeles
+        self.setFixedSize(255, 255) 
         
-        # Quitar barra de ventana
         self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.Tool)
         self.setAttribute(Qt.WA_TranslucentBackground)
 
-        # Centrar la ventana en la pantalla
         screen = QDesktopWidget().screenGeometry()
         window_size = self.geometry()
         x = (screen.width() - window_size.width()) // 2
         y = (screen.height() - window_size.height()) // 2
         self.move(x, y)
 
-        # Crear un contenedor central personalizado
         central_widget = QWidget()
         central_widget.setObjectName("central_container")
         central_widget.setStyleSheet("""
@@ -1007,7 +968,6 @@ class GameInstallationProgress(QMainWindow):
         self.setCentralWidget(central_widget)
         layout = QVBoxLayout(central_widget)
         
-        # Aplicar paleta de colores
         self.setStyleSheet("""
             QMainWindow {
                 background-color: #202020; /* Fondo oscuro */
@@ -1037,7 +997,7 @@ class GameInstallationProgress(QMainWindow):
 
         self.setAttribute(Qt.WA_StyledBackground)
 
-        # Título estilizado
+        # Título
         self.title = QLabel("Instalando...")
         self.title.setFont(QFont('Segoe UI', 16, QFont.Bold))
         self.title.setAlignment(Qt.AlignCenter)
@@ -1049,13 +1009,13 @@ class GameInstallationProgress(QMainWindow):
         self.status_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.status_label)
         
-        # Barra de progreso estilizada
+        # Barra de progreso
         self.progress_bar = QProgressBar()
         self.progress_bar.setFixedHeight(25)
         self.progress_bar.setTextVisible(False)
         layout.addWidget(self.progress_bar)
         
-        # Área de log de mensajes estilizada
+        # Área de log de mensajes
         self.log_text = QTextEdit()
         self.log_text.setReadOnly(True)
         self.log_text.setMaximumHeight(100)
@@ -1084,7 +1044,7 @@ class GameInstallationProgress(QMainWindow):
             return button
 
         def cancelar_instalacion():
-            # Finalizar procesos 7z.exe y NanaZip.Core.Console.exe antes de salir
+            # Finalizar procesos 7z y NanaZip antes de salir
             for proc in psutil.process_iter(['name']):
                 if proc.info['name'] in ("7z.exe", "NanaZip.Core.Console.exe"):
                     try:
