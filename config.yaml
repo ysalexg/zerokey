@@ -1,0 +1,8 @@
+achievements: true
+delete_files: true
+show_tray: true
+paths:
+  download_folder: A:\Ejemplo
+  excluded_folders: ['D:\Ejemplo', 'D:\Ejemplo\Ejemplo2']
+  extraction_folder: D:\Ejemplo
+  game_folder: D:\Ejemplo

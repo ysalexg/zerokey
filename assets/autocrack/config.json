@@ -1,0 +1,55 @@
+{
+  "EMUApplyConfigs": {
+    "LocalSave": "steam_settings\\saves",
+    "UseLocalSave": false,
+    "UseGoldbergExperimental": true,
+    "GenerateInterfacesFile": false,
+    "ForceGenerateInterfacesFiles": false
+  },
+  "EMUConfigs": {
+    "Language": 23,
+    "SteamID": "76561199217517939",
+    "AccountName": "ysAlex",
+    "ListenPort": "47584",
+    "CustomIP": "127.0.0.1",
+    "UseCustomIP": false,
+    "DisableNetworking": false,
+    "Offline": false,
+    "EnableOverlay": false
+  },
+  "SteamStubUnpackerConfigs": {
+    "KeepBind": true,
+    "KeepStub": false,
+    "Realign": false,
+    "ReCalcChecksum": false,
+    "UseExperimentalFeatures": false,
+    "SteamAPICheckBypassMode": 0,
+    "SteamAPICheckBypassDLL": 0,
+    "SteamAPICheckBypassNthTime": [
+      1
+    ]
+  },
+  "EMUGameInfoConfigs": {
+    "GameInfoAPI": 0,
+    "SteamWebAPIKey": "D300C1810411D03190B285320D2DF61F",
+    "GenerateImages": true,
+    "UseXan105API": false,
+    "UseSteamWebAppList": false
+  },
+  "GenCrackOnlyConfigs": {
+    "OutputPath": "D:\\Programacion\\How to\\SteamAutoCrackCLI\\TEMP",
+    "CreateReadme": false,
+    "Pack": false
+  },
+  "ProcessConfigs": {
+    "GenerateEMUGameInfo": true,
+    "GenerateEMUConfig": true,
+    "Unpack": true,
+    "ApplyEMU": true,
+    "GenerateCrackOnly": false,
+    "Restore": false
+  },
+  "EnableDebugLog": false,
+  "LogToFile": false,
+  "Language": 0
+}

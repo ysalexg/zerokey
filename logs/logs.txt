@@ -1,0 +1,4 @@
+Achievements: True
+Delete files: True
+Manifest descargado correctamente.
+Archivos extraídos correctamente.
