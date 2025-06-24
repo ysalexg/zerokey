@@ -31,21 +31,17 @@ namespace AddGames
 
         public override IEnumerable<GameMetadata> GetGames(LibraryGetGamesArgs args)
         {
-            // Rutas de los archivos principales en el directorio Temp de Windows
             string tempDir = Path.GetTempPath();
             string nameFile = Path.Combine(tempDir, "game_name.txt");
             string executableFile = Path.Combine(tempDir, "full_executable_path.txt");
             string pathFile = Path.Combine(tempDir, "game_path.txt");
 
-            // Directorio de assets para los archivos adicionales
             string pluginDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             string assetsDir = Path.Combine(pluginDir, "..", "assets");
 
-            // Verificar existencia de los archivos principales
             if (!File.Exists(nameFile) || !File.Exists(executableFile) || !File.Exists(pathFile))
             {
                 logger.Error("No se encuentran los archivos necesarios en Temp: game_name.txt, full_executable_path.txt o game_path.txt.");
-                // Borrar archivos adicionales si existen
                 string extra1 = Path.Combine(assetsDir, "executable.txt");
                 string extra2 = Path.Combine(assetsDir, "crack.txt");
                 string extra3 = Path.Combine(assetsDir, "appid.txt");
@@ -55,17 +51,14 @@ namespace AddGames
                 return new List<GameMetadata>();
             }
 
-            // Leer datos de los archivos
             string gameName = File.ReadAllText(nameFile).Trim();
             string gameExecutable = File.ReadAllText(executableFile).Trim();
             string installDirectory = File.ReadAllText(pathFile).Trim();
 
-            // Borrar los archivos después de leerlos
             File.Delete(nameFile);
             File.Delete(executableFile);
             File.Delete(pathFile);
 
-            // Borrar archivos adicionales si existen
             string extra1Del = Path.Combine(assetsDir, "executable.txt");
             string extra2Del = Path.Combine(assetsDir, "crack.txt");
             string extra3Del = Path.Combine(assetsDir, "appid.txt");
@@ -73,10 +66,8 @@ namespace AddGames
             if (File.Exists(extra2Del)) File.Delete(extra2Del);
             if (File.Exists(extra3Del)) File.Delete(extra3Del);
 
-            // Generar GameId a partir del nombre del juego
             string gameId = gameName.Replace(" ", "").ToLower();
 
-            // Crear y devolver los metadatos del juego
             return new List<GameMetadata>()
             {
                 new GameMetadata()
