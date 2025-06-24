@@ -1,0 +1,34 @@
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\bin\Debug\extension.yaml
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\bin\Debug\icon.png
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\bin\Debug\Localization\en_US.xaml
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\bin\Debug\AddGames.dll
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\bin\Debug\AddGames.pdb
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\bin\Debug\Playnite.SDK.dll
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\bin\Debug\Playnite.SDK.xml
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\obj\Debug\AddGames.csproj.AssemblyReference.cache
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\obj\Debug\App.baml
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\obj\Debug\AddGamesSettingsView.baml
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\obj\Debug\AddGamesSettingsView.g.cs
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\obj\Debug\AddGames_MarkupCompile.cache
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\obj\Debug\AddGames.g.resources
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\obj\Debug\AddGames.csproj.CoreCompileInputs.cache
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\obj\Debug\AddGames.csproj.Up2Date
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\obj\Debug\AddGames.dll
+D:\Programacion\Python\Automatic Game Instalation\Playnite Plugin\AddGames\obj\Debug\AddGames.pdb
+D:\Programacion\Python\zerokey\plugin\AddGames\bin\Debug\extension.yaml
+D:\Programacion\Python\zerokey\plugin\AddGames\bin\Debug\icon.png
+D:\Programacion\Python\zerokey\plugin\AddGames\bin\Debug\Localization\en_US.xaml
+D:\Programacion\Python\zerokey\plugin\AddGames\bin\Debug\AddGames.dll
+D:\Programacion\Python\zerokey\plugin\AddGames\bin\Debug\AddGames.pdb
+D:\Programacion\Python\zerokey\plugin\AddGames\bin\Debug\Playnite.SDK.dll
+D:\Programacion\Python\zerokey\plugin\AddGames\bin\Debug\Playnite.SDK.xml
+D:\Programacion\Python\zerokey\plugin\AddGames\obj\Debug\AddGames.csproj.AssemblyReference.cache
+D:\Programacion\Python\zerokey\plugin\AddGames\obj\Debug\App.baml
+D:\Programacion\Python\zerokey\plugin\AddGames\obj\Debug\AddGamesSettingsView.baml
+D:\Programacion\Python\zerokey\plugin\AddGames\obj\Debug\AddGamesSettingsView.g.cs
+D:\Programacion\Python\zerokey\plugin\AddGames\obj\Debug\AddGames_MarkupCompile.cache
+D:\Programacion\Python\zerokey\plugin\AddGames\obj\Debug\AddGames.g.resources
+D:\Programacion\Python\zerokey\plugin\AddGames\obj\Debug\AddGames.csproj.CoreCompileInputs.cache
+D:\Programacion\Python\zerokey\plugin\AddGames\obj\Debug\AddGames.csproj.Up2Date
+D:\Programacion\Python\zerokey\plugin\AddGames\obj\Debug\AddGames.dll
+D:\Programacion\Python\zerokey\plugin\AddGames\obj\Debug\AddGames.pdb

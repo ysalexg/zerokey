@@ -1,8 +1,14 @@
-achievements: true
-delete_files: true
-show_tray: true
 paths:
-  download_folder: A:\Ejemplo
-  excluded_folders: ['D:\Ejemplo', 'D:\Ejemplo\Ejemplo2']
-  extraction_folder: D:\Ejemplo
-  game_folder: D:\Ejemplo
+  download_folder: "E:\\Descargas"
+  extraction_folder: "D:\\Extracciones"
+  game_folder: "D:\\Juegos"
+  excluded_folders:
+    - "D:\\Extracciones\\Drive Cache"
+    - "D:\\Extracciones\\Free Download Manager"
+    - "D:\\Extracciones\\IDM Temporal"
+    - "E:\\Descargas\\TempDownload"
+    - "E:\\Descargas\\TempDownload\\DwnlData"
+    - "E:\\Descargas\\TempDownload\\DwnlData\\Alex"
+achievements: true
+delete_files: false
+show_tray: true
