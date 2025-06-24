@@ -28,7 +28,7 @@ for item in items:
             dst_path,
             "/MIR",                # Sincroniza (copia y elimina)
             "/XD", ".git", "releases",  # Excluye carpetas
-            "/XF", "manifest.yaml", "zerokeyDark.ico", "coding.txt",  # Excluye archivos
+            "/XF", "manifest.yaml", "zerokeyDark.ico", "coding.txt", "zerokey.7z",  # Excluye archivos
             "/NFL", "/NDL",
             "/NJH", "/NJS",
             "/NC", "/NS", "/NP"
