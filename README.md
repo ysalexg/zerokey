@@ -21,8 +21,9 @@
 7zip/Nanazip (Necesario para la extracción). Playnite (Opcional)
 
 ## Cómo usar
+Para la manera automática, ejecutar zerokeyService.exe. Para usarlo de manera manual, ejecutar zerokey.exe al terminar una descarga.
 <p> En el archivo "config.yaml", especificar: </p>
-<p>"download_folder" esta va a ser la ruta donde se van a leer los archivos comprimidos/carpeta del juego.</p>
+<p>"download_folder" esta va a ser la ruta donde se van a leer los archivos comprimidos/carpeta del juego. Se recomienda que se cree una carpeta donde sólo se vayan a descargar juegos. (En actualizaciones no va a hacer falta)</p>
 <p>"extraction_folder" la carpeta a donde se van a extraer, puede ser la misma que "download_folder".</p>
 <p>"game_folder" la carpeta donde se van a instalar los juegos.</p>
 <p>Opcionalmente, se pueden añadir carpetas para excluir.</p>
