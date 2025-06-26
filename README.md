@@ -27,7 +27,7 @@ Para la manera automática, ejecutar zerokeyService.exe. Para usarlo de manera m
 <p>"extraction_folder" la carpeta a donde se van a extraer, puede ser la misma que "download_folder".</p>
 <p>"game_folder" la carpeta donde se van a instalar los juegos.</p>
 <p>Opcionalmente, se pueden añadir carpetas para excluir.</p>
-<p>achievements: true/false, si se quiere tener logros del juego o no, para esto utilizará Goldberg (Fork de Denaup01). No usar en juegos con Online-Fix.</p>
+<p>achievements: true/false, si se quiere tener logros del juego o no, para esto utilizará Goldberg (Fork de Denaup01). No se aplica en juegos con Online-Fix.</p>
 <p>delete_files: true/false, si quiere que se borren los archivos comprimidos luego de extraerlos.</p>
 
 
