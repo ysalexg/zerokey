@@ -18,7 +18,7 @@
 - Actualmente no soporta repacks (FitGirl, DODI, etc.)
 
 ## Requisitos
-7zip/Nanazip (Necesario para la extracción). Playnite (Opcional)
+7zip/Nanazip y [ .NET Runtime 8 ](https://dotnet.microsoft.com/download/dotnet/8.0/runtime?cid=getdotnetcore&runtime=desktop&os=windows&arch=x64). Playnite (Opcional)
 
 ## Cómo usar
 Para la manera automática, ejecutar zerokeyService.exe. Para usarlo de manera manual, ejecutar zerokey.exe al terminar una descarga.
