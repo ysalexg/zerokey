@@ -34,4 +34,4 @@ Para la manera automática, ejecutar zerokeyService.exe. Para usarlo de manera m
 ## Integración con Playnite
 <p>Ir a Playnite > Configuración > Para desarrolladores > Añadir > Agregar la ruta donde se encuentra la carpeta "plugin".</p>
 Luego de instalarse un juego, al refrescar la biblioteca (F5) se va a añadir automaticamente.
-Para ver los logros en Playnite, es necesaria la extensión [Success Story](https://github.com/eFMann/playnite-successstory-plugin)
+<p>Para ver los logros en Playnite, es necesaria la extensión Success Story https://github.com/eFMann/playnite-successstory-plugin</p>
