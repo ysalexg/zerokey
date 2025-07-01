@@ -10,5 +10,6 @@ paths:
     - "E:\\Descargas\\TempDownload\\DwnlData"
     - "E:\\Descargas\\TempDownload\\DwnlData\\Alex"
 achievements: true
+extraction: true
 delete_files: false
 show_tray: true

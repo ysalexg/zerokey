@@ -35,10 +35,39 @@ try:
     game_folder = config["paths"]["game_folder"]
     excluded_folders = config["paths"]["excluded_folders"]
     achievements = config.get("achievements", True)
+    extraction = config.get("extraction", True)
     delete_files = config.get("delete_files", True)
     show_tray = config.get("show_tray", True)
 except Exception as e:
     print(f"Error al cargar config.yaml: {e}")
+
+def create_default_config():
+    """
+    Crea el archivo config.yaml con valores por defecto si no existe.
+    """
+    default_config = {
+        "paths": {
+            "download_folder": "A:\\Ejemplo",
+            "extraction_folder": "D:\\Ejemplo",
+            "game_folder": "D:\\Ejemplo",
+            "excluded_folders": [
+                "D:\\Ejemplo",
+                "D:\\Ejemplo\\Ejemplo2",
+            ]
+        },
+        "achievements": False,
+        "extraction": True,
+        "delete_files": True,
+        "show_tray": True
+    }
+
+    try:
+        if not os.path.exists(config_path):
+            with open(config_path, "w", encoding="utf-8") as f:
+                yaml.dump(default_config, f)
+            print("Archivo config.yaml creado con valores por defecto.")
+    except Exception as e:
+        print(f"Error al crear config.yaml: {e}")
 
 CREATE_NO_WINDOW = 0x08000000
 seven_zip = os.path.join(assets, "7z.exe")
@@ -121,32 +150,6 @@ def log_message(msg):
     with open(log_file, "a", encoding="utf-8") as f:
         f.write(msg + "\n")
 
-def create_default_config():
-    """
-    Crea el archivo config.yaml con valores por defecto si no existe.
-    """
-    default_config = {
-        "paths": {
-            "download_folder": "A:\\Ejemplo",
-            "extraction_folder": "D:\\Ejemplo",
-            "game_folder": "D:\\Ejemplo",
-            "excluded_folders": [
-                "D:\\Ejemplo",
-                "D:\\Ejemplo\\Ejemplo2",
-            ]
-        },
-        "achievements": False,
-        "delete_files": True,
-        "show_tray": True
-    }
-
-    try:
-        if not os.path.exists(config_path):
-            with open(config_path, "w", encoding="utf-8") as f:
-                yaml.dump(default_config, f)
-            print("Archivo config.yaml creado con valores por defecto.")
-    except Exception as e:
-        print(f"Error al crear config.yaml: {e}")
 
 def download_manifest(update_progress):
     retries = 5
@@ -910,6 +913,8 @@ def success_installation_status(update_progress):
 def config_flags():
     log_message(f"Achievements: {achievements}")
     print(f"Achievements: {achievements}")
+    log_message(f"Extraction: {extraction}")
+    print(f"Extraction: {extraction}")
     log_message(f"Delete files: {delete_files}")
     print(f"Delete files: {delete_files}")
     log_message(f"Tray: {show_tray}")
@@ -929,7 +934,8 @@ class GameInstallationThread(QThread):
 
             config_flags()
             download_manifest(update_progress)
-            extract_archives(update_progress)
+            if extraction:
+                extract_archives(update_progress)
             process_games(update_progress)
             if not os.path.exists(executableTXT) or not os.path.exists(gamePathTXT):
                 update_progress(100, "No se encontró ejecutable valido.", log_message="No se encontró ejecutable valido.")
