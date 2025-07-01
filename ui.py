@@ -541,7 +541,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         if largest_exe:
             resolved_exe = largest_exe
             # Si el exe encontrado es setup.exe o Setup.exe, buscar repack
-            if resolved_exe.lower() == "setup.exe":
+            if "setup" in resolved_exe.lower():
                 for root, _, files in os.walk(folder_path):
                     for file in files:
                         if file.lower().startswith("fg-") and file.lower().endswith(".bin"):
