@@ -21,21 +21,32 @@
 7zip/Nanazip y [ .NET Runtime 8 ](https://dotnet.microsoft.com/download/dotnet/8.0/runtime?cid=getdotnetcore&runtime=desktop&os=windows&arch=x64). Playnite (Opcional)
 
 ## Cómo usar
-Para la manera automática, ejecutar zerokeyService.exe. Para usarlo de manera manual, ejecutar zerokey.exe al terminar una descarga.
-<br>
-En el archivo "config.yaml", especificar: 
-<br>
-"download_folder" esta va a ser la ruta donde se van a leer los archivos comprimidos/carpeta del juego. Se recomienda que se cree una carpeta donde sólo se vayan a descargar juegos. (En actualizaciones no va a hacer falta)
-<br>
-"extraction_folder" la carpeta a donde se van a extraer, puede ser la misma que "download_folder".
-<br>
-"game_folder" la carpeta donde se van a instalar los juegos.
-<br>
-Opcionalmente, se pueden añadir carpetas para excluir.
-<br>
-achievements: true/false, si se quiere tener logros del juego o no, para esto utilizará Goldberg (Fork de Denaup01). No se aplica en juegos con Online-Fix.
-<br>
-delete_files: true/false, si quiere que se borren los archivos comprimidos luego de extraerlos.
+
+Para la manera automática, ejecutar `zerokeyService.exe`.  
+Para usarlo de manera manual, ejecutar `zerokey.exe` al terminar una descarga.
+
+En el archivo `config.yaml`, especificar los siguientes valores:
+
+- **`download_folder`**: Ruta donde se van a leer los archivos comprimidos o carpetas del juego.  
+  Se recomienda crear una carpeta donde **solo** se descarguen juegos.  
+  *(En actualizaciones no va a hacer falta)*
+
+- **`extraction_folder`**: Carpeta donde se van a extraer los archivos.  
+  Puede ser la misma que `download_folder`.
+
+- **`game_folder`**: Carpeta donde se van a instalar los juegos.
+
+Opcionalmente, se pueden añadir estas opciones:
+
+- **`exclude_folders`**: Lista de carpetas que se quieren excluir (opcional).
+
+- **`achievements`**: `true` o `false`.  
+  Si es `true`, se activan los logros del juego usando Goldberg (Fork de Denaup01).  
+  *No se aplica a juegos con Online-Fix.*
+
+- **`delete_files`**: `true` o `false`.  
+  Si es `true`, se borrarán los archivos comprimidos después de extraerlos.
+
 
 
 ## Integración con Playnite
