@@ -1,11 +1,11 @@
 #define MyAppName "zerokey"
-#define MyAppVersion "1.1"
+#define MyAppVersion "1.2.2"
 #define MyAppPublisher "ysAlex"
 #define MyAppURL "https://github.com/ysalexg/zerokey"
 #define MyAppExeName "zerokey.exe"
 
 [Setup]
-AppId={{AEAEA68F-06AE-43D7-B17C-367CB8F6F7DA}
+AppId={{AEAEA68F-06AE-43D7-B17C-367CB8F6F7DA}}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -36,10 +36,14 @@ Source: "D:\\Programacion\\Python\\zerokey\\compiler\\releases\\*"; DestDir: "{a
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{autoprograms}\zerokey service"; Filename: "{app}\zerokeyService.exe"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Registry]
 Root: HKCU; Subkey: "Software\\Microsoft\\Windows\\CurrentVersion\\Run"; ValueType: string; ValueName: "ZerokeyService"; ValueData: """{app}\\zerokeyService.exe"""; Flags: uninsdeletevalue; Tasks: autostart_service
+
+[Run]
+Filename: "{app}\zerokeyService.exe"; Description: "Ejecutar servicio de Zerokey"; Flags: postinstall unchecked nowait
 
 [Code]
 var
@@ -111,10 +115,10 @@ begin
     ConfigLines := TStringList.Create;
     try
       ConfigLines.Add('paths:');
-      ConfigLines.Add('  download_folder: "' + PageDownload.Values[0] + '"');
-      ConfigLines.Add('  game_folder: "' + PageGame.Values[0] + '"');
+      ConfigLines.Add('  download_folder: ''' + PageDownload.Values[0] + '''');
+      ConfigLines.Add('  game_folder: ''' + PageGame.Values[0] + '''');
       ConfigLines.Add('  excluded_folders:');
-      ConfigLines.Add('    - "E:\\Descargas\\TempDownload"');
+      ConfigLines.Add('    - ''E:\Descargas\TempDownload''');
       ConfigLines.Add('achievements: ' + StrAchievements);
       ConfigLines.Add('extraction: true');
       ConfigLines.Add('delete_files: ' + StrDelete);
@@ -125,3 +129,4 @@ begin
     end;
   end;
 end;
+

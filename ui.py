@@ -1209,10 +1209,7 @@ class GameInstallationProgress(QMainWindow):
 if __name__ == "__main__":
     create_default_config()
     app = QApplication(sys.argv)
-    icon = QIcon(resource_path("icon.png"))
-    app.setWindowIcon(icon)
 
     window = GameInstallationProgress()
-    window.setWindowIcon(icon)
     window.show()
     sys.exit(app.exec_())
