@@ -134,7 +134,7 @@ def create_default_config():
                 "D:\\Ejemplo\\Ejemplo2",
             ]
         },
-        "achievements": True,
+        "achievements": False,
         "delete_files": True,
         "show_tray": True
     }
@@ -541,7 +541,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         if largest_exe:
             resolved_exe = largest_exe
             # Si el exe encontrado es setup.exe o Setup.exe, buscar repack
-            if resolved_exe.lower() == "setup.exe":
+            if "setup" in resolved_exe.lower():
                 for root, _, files in os.walk(folder_path):
                     for file in files:
                         if file.lower().startswith("fg-") and file.lower().endswith(".bin"):
@@ -675,8 +675,8 @@ def detect_crack():
 
     # Buscar archivos de crack
     for root, dirs, files in os.walk(game_path):
-        if "onlinefix64.dll" in files:
-            result["onlinefix64.dll"] = True
+        if "OnlineFix64.dll" in files:
+            result["OnlineFix64.dll"] = True
             found_onlinefix = True
         if "steam_api64.rne" in files:
             result["steam_api64.rne"] = True
@@ -741,6 +741,16 @@ def apply_crack():
             game_path = f.read().strip()
         with open(appidTXT, "r", encoding="utf-8") as f:
             appid = f.read().strip()
+
+        # Buscar steam_api64.dll en toda la carpeta y subcarpetas
+        found_steam_api64 = False
+        for root, _, files in os.walk(game_path):
+            if "steam_api64.dll" in files:
+                found_steam_api64 = True
+            break
+        if not found_steam_api64:
+            log_message("No se encontró steam_api64.dll en la ruta del juego, no se puede aplicar el crack.")
+            return False
 
         if not game_path or not appid:
             log_message("game_path.txt o appid.txt están vacíos.")
@@ -901,6 +911,8 @@ def config_flags():
     print(f"Achievements: {achievements}")
     log_message(f"Delete files: {delete_files}")
     print(f"Delete files: {delete_files}")
+    log_message(f"Tray: {show_tray}")
+    print(f"Tray: {show_tray}")
 
 class GameInstallationThread(QThread):
     progress_update = pyqtSignal(int)
@@ -919,7 +931,7 @@ class GameInstallationThread(QThread):
             extract_archives(update_progress)
             process_games(update_progress)
             if not os.path.exists(executableTXT) or not os.path.exists(gamePathTXT):
-                update_progress(100, "No se encontró ejecutable.", log_message="No se encontró ejecutable.")
+                update_progress(100, "No se encontró ejecutable valido.", log_message="No se encontró ejecutable valido.")
                 self.installation_canceled.emit()
             else:
                 with open(executableTXT, "r", encoding="utf-8") as f:

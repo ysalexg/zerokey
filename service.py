@@ -102,7 +102,8 @@ class ZerokeyMonitor:
         try:
             cmd = [self.handle_path, "-accepteula", file_path]
             output = subprocess.check_output(cmd, stderr=subprocess.DEVNULL, text=True, encoding='utf-8', errors='ignore', creationflags=CREATE_NO_WINDOW)
-            if "aria2c.exe" in output.lower():
+            output_lower = output.lower()
+            if "aria2c.exe" in output_lower or "hydra-python-rpc.exe" in output_lower:
                 return True
             return False
         except subprocess.CalledProcessError:
