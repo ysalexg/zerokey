@@ -41,6 +41,7 @@ except Exception as e:
     print(f"Error al cargar config.yaml: {e}")
 
 CREATE_NO_WINDOW = 0x08000000
+seven_zip = os.path.join(assets, "7z.exe")
 manifest_url = "https://raw.githubusercontent.com/mtkennerly/ludusavi-manifest/refs/heads/master/data/manifest.yaml"
 manifest_path = os.path.join(assets, "manifest.yaml")
 executableTXT = os.path.join(assets, "executable.txt")
@@ -192,7 +193,7 @@ def extract_archives(update_progress):
             
             if is_main and start_progress is not None and file_progress_range is not None:
                 process = subprocess.Popen(
-                    ["7z", "x", file_path, f"-o{destination_folder}", "-aoa", "-bsp1"],
+                    [seven_zip, "x", file_path, f"-o{destination_folder}", "-aoa", "-bsp1"],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                     text=True,
@@ -215,7 +216,7 @@ def extract_archives(update_progress):
                 if process.returncode != 0:
                     raise subprocess.CalledProcessError(process.returncode, process.args)
             else:
-                subprocess.run(["7z", "x", file_path, f"-o{destination_folder}", "-aoa"], check=True, creationflags=CREATE_NO_WINDOW)
+                subprocess.run([seven_zip, "x", file_path, f"-o{destination_folder}", "-aoa"], check=True, creationflags=CREATE_NO_WINDOW)
 
             for root, dirs, files in os.walk(destination_folder):
                 for file in files:
