@@ -97,13 +97,24 @@ class ZerokeyMonitor:
     def is_file_in_use_by_hydra(self, file_path):
         """
         Invoca handle.exe para saber si file_path está abierto por el proceso de descarga.
-        Busca "aria2c.exe" por defecto.
+        Busca "aria2c.exe", "hydra-python-rpc.exe" o "7z.exe".
         """
         try:
             cmd = [self.handle_path, "-accepteula", file_path]
-            output = subprocess.check_output(cmd, stderr=subprocess.DEVNULL, text=True, encoding='utf-8', errors='ignore', creationflags=CREATE_NO_WINDOW)
+            output = subprocess.check_output(
+                cmd,
+                stderr=subprocess.DEVNULL,
+                text=True,
+                encoding='utf-8',
+                errors='ignore',
+                creationflags=CREATE_NO_WINDOW
+            )
             output_lower = output.lower()
-            if "aria2c.exe" in output_lower or "hydra-python-rpc.exe" in output_lower:
+            if (
+                "aria2c.exe" in output_lower or
+                "hydra-python-rpc.exe" in output_lower or
+                "7z.exe" in output_lower
+            ):
                 return True
             return False
         except subprocess.CalledProcessError:
