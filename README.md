@@ -27,12 +27,10 @@ Para usarlo de manera manual, ejecutar `zerokey.exe` al terminar una descarga.
 
 En el archivo `config.yaml`, especificar los siguientes valores:
 
-- **`download_folder`**: Ruta donde se van a leer los archivos comprimidos o carpetas del juego.  
+- **`download_folder`**: Ruta donde se van a leer los archivos comprimidos o carpetas del juego. 
+  Tiene que ser la misma que en Hydra.
   Se recomienda crear una carpeta donde **solo** se descarguen juegos.  
   *(En actualizaciones no va a hacer falta)*
-
-- **`extraction_folder`**: Carpeta donde se van a extraer los archivos.  
-  Puede ser la misma que `download_folder`.
 
 - **`game_folder`**: Carpeta donde se van a instalar los juegos.
 

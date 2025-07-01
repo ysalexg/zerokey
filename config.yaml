@@ -1,6 +1,5 @@
 paths:
-  download_folder: "E:\\Descargas"
-  extraction_folder: "D:\\Extracciones"
+  download_folder: "D:\\Extracciones"
   game_folder: "D:\\Juegos"
   excluded_folders:
     - "D:\\Extracciones\\Drive Cache"
@@ -10,5 +9,6 @@ paths:
     - "E:\\Descargas\\TempDownload\\DwnlData"
     - "E:\\Descargas\\TempDownload\\DwnlData\\Alex"
 achievements: true
+extraction: true
 delete_files: false
 show_tray: true

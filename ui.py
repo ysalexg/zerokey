@@ -31,16 +31,44 @@ try:
         config = yaml.load(f)
     
     download_folder = config["paths"]["download_folder"]
-    extraction_folder = config["paths"]["extraction_folder"]
     game_folder = config["paths"]["game_folder"]
     excluded_folders = config["paths"]["excluded_folders"]
     achievements = config.get("achievements", True)
+    extraction = config.get("extraction", True)
     delete_files = config.get("delete_files", True)
     show_tray = config.get("show_tray", True)
 except Exception as e:
     print(f"Error al cargar config.yaml: {e}")
 
+def create_default_config():
+    """
+    Crea el archivo config.yaml con valores por defecto si no existe.
+    """
+    default_config = {
+        "paths": {
+            "download_folder": "A:\\Ejemplo",
+            "game_folder": "D:\\Ejemplo",
+            "excluded_folders": [
+                "D:\\Ejemplo",
+                "D:\\Ejemplo\\Ejemplo2",
+            ]
+        },
+        "achievements": False,
+        "extraction": True,
+        "delete_files": True,
+        "show_tray": True
+    }
+
+    try:
+        if not os.path.exists(config_path):
+            with open(config_path, "w", encoding="utf-8") as f:
+                yaml.dump(default_config, f)
+            print("Archivo config.yaml creado con valores por defecto.")
+    except Exception as e:
+        print(f"Error al crear config.yaml: {e}")
+
 CREATE_NO_WINDOW = 0x08000000
+seven_zip = os.path.join(assets, "7z.exe")
 manifest_url = "https://raw.githubusercontent.com/mtkennerly/ludusavi-manifest/refs/heads/master/data/manifest.yaml"
 manifest_path = os.path.join(assets, "manifest.yaml")
 executableTXT = os.path.join(assets, "executable.txt")
@@ -120,32 +148,6 @@ def log_message(msg):
     with open(log_file, "a", encoding="utf-8") as f:
         f.write(msg + "\n")
 
-def create_default_config():
-    """
-    Crea el archivo config.yaml con valores por defecto si no existe.
-    """
-    default_config = {
-        "paths": {
-            "download_folder": "A:\\Ejemplo",
-            "extraction_folder": "D:\\Ejemplo",
-            "game_folder": "D:\\Ejemplo",
-            "excluded_folders": [
-                "D:\\Ejemplo",
-                "D:\\Ejemplo\\Ejemplo2",
-            ]
-        },
-        "achievements": False,
-        "delete_files": True,
-        "show_tray": True
-    }
-
-    try:
-        if not os.path.exists(config_path):
-            with open(config_path, "w", encoding="utf-8") as f:
-                yaml.dump(default_config, f)
-            print("Archivo config.yaml creado con valores por defecto.")
-    except Exception as e:
-        print(f"Error al crear config.yaml: {e}")
 
 def download_manifest(update_progress):
     retries = 5
@@ -192,7 +194,7 @@ def extract_archives(update_progress):
             
             if is_main and start_progress is not None and file_progress_range is not None:
                 process = subprocess.Popen(
-                    ["7z", "x", file_path, f"-o{destination_folder}", "-aoa", "-bsp1"],
+                    [seven_zip, "x", file_path, f"-o{destination_folder}", "-aoa", "-bsp1"],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                     text=True,
@@ -215,7 +217,7 @@ def extract_archives(update_progress):
                 if process.returncode != 0:
                     raise subprocess.CalledProcessError(process.returncode, process.args)
             else:
-                subprocess.run(["7z", "x", file_path, f"-o{destination_folder}", "-aoa"], check=True, creationflags=CREATE_NO_WINDOW)
+                subprocess.run([seven_zip, "x", file_path, f"-o{destination_folder}", "-aoa"], check=True, creationflags=CREATE_NO_WINDOW)
 
             for root, dirs, files in os.walk(destination_folder):
                 for file in files:
@@ -238,7 +240,7 @@ def extract_archives(update_progress):
         progress = 20
 
         for file in compressed_files:
-            extraction_path = os.path.join(extraction_folder, Path(file).stem)
+            extraction_path = os.path.join(download_folder, Path(file).stem)
             if is_excluded(extraction_path):
                 continue
             extracted_paths.append(extraction_path)
@@ -309,7 +311,7 @@ def process_games(update_progress):
         manifest_data = load_manifest()
         log_message("Manifest cargado correctamente.")
         extracted_folders = [
-            f.path for f in os.scandir(extraction_folder)
+            f.path for f in os.scandir(download_folder)
             if f.is_dir() and not is_excluded(f.path)
         ]
 
@@ -606,6 +608,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             f.write(target_folder)
         save_game_name(install_dir)
         if not os.path.exists(target_folder):
+            update_progress(90, "Moviendo...", log_message="Moviendo...")
             shutil.move(resolved_path, target_folder)
             log_message(f"Movido {resolved_path} a {target_folder}")
         else:
@@ -881,6 +884,7 @@ def cleanup_extraction_paths_and_crack(update_progress):
                 print(f"Eliminada carpeta de extracción: {path}")
         detect_crack()
         if achievements:
+            update_progress(95, "Añadiendo logros...", log_message="Añadiendo logros...")
             apply_crack()
         try:
             logs_dir = os.path.join(script_dir, "logs")
@@ -909,6 +913,8 @@ def success_installation_status(update_progress):
 def config_flags():
     log_message(f"Achievements: {achievements}")
     print(f"Achievements: {achievements}")
+    log_message(f"Extraction: {extraction}")
+    print(f"Extraction: {extraction}")
     log_message(f"Delete files: {delete_files}")
     print(f"Delete files: {delete_files}")
     log_message(f"Tray: {show_tray}")
@@ -928,7 +934,8 @@ class GameInstallationThread(QThread):
 
             config_flags()
             download_manifest(update_progress)
-            extract_archives(update_progress)
+            if extraction:
+                extract_archives(update_progress)
             process_games(update_progress)
             if not os.path.exists(executableTXT) or not os.path.exists(gamePathTXT):
                 update_progress(100, "No se encontró ejecutable valido.", log_message="No se encontró ejecutable valido.")
