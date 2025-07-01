@@ -1,1 +1,0 @@
-This repository exposes code for a unattended game installation from pirate sources.

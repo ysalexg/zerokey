@@ -742,6 +742,16 @@ def apply_crack():
         with open(appidTXT, "r", encoding="utf-8") as f:
             appid = f.read().strip()
 
+        # Buscar steam_api64.dll en toda la carpeta y subcarpetas
+        found_steam_api64 = False
+        for root, _, files in os.walk(game_path):
+            if "steam_api64.dll" in files:
+                found_steam_api64 = True
+            break
+        if not found_steam_api64:
+            log_message("No se encontró steam_api64.dll en la ruta del juego, no se puede aplicar el crack.")
+            return False
+
         if not game_path or not appid:
             log_message("game_path.txt o appid.txt están vacíos.")
             return False
