@@ -1,5 +1,5 @@
 <h1 align="center">Zerokey</h1>
-<p align="center">Instalación automática de juegos con Hydra. <br> Integración con Playnite. Soporta únicamente juegos portables.</p>
+<p align="center">Instalación automática de juegos con Hydra Launcher. <br> Integración con Playnite. Soporta únicamente juegos portables.</p>
 
 <p align="center">
   <img src="https://github.com/ysalexg/zerokey/blob/main/screenshots/2.png?raw=true" alt="Imagen" />
