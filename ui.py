@@ -929,7 +929,7 @@ class GameInstallationThread(QThread):
             extract_archives(update_progress)
             process_games(update_progress)
             if not os.path.exists(executableTXT) or not os.path.exists(gamePathTXT):
-                update_progress(100, "No se encontró ejecutable.", log_message="No se encontró ejecutable.")
+                update_progress(100, "No se encontró ejecutable valido.", log_message="No se encontró ejecutable valido.")
                 self.installation_canceled.emit()
             else:
                 with open(executableTXT, "r", encoding="utf-8") as f:
