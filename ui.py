@@ -675,8 +675,8 @@ def detect_crack():
 
     # Buscar archivos de crack
     for root, dirs, files in os.walk(game_path):
-        if "onlinefix64.dll" in files:
-            result["onlinefix64.dll"] = True
+        if "OnlineFix64.dll" in files:
+            result["OnlineFix64.dll"] = True
             found_onlinefix = True
         if "steam_api64.rne" in files:
             result["steam_api64.rne"] = True
