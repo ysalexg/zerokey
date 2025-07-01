@@ -9,6 +9,7 @@ manifest.yaml
 hardcoded.txt
 zerokey.exe
 zerokey.7z
+zerokeyInstaller.exe
 *.pyc
 .vs/
 logs/

@@ -134,7 +134,7 @@ def create_default_config():
                 "D:\\Ejemplo\\Ejemplo2",
             ]
         },
-        "achievements": True,
+        "achievements": False,
         "delete_files": True,
         "show_tray": True
     }
@@ -911,6 +911,8 @@ def config_flags():
     print(f"Achievements: {achievements}")
     log_message(f"Delete files: {delete_files}")
     print(f"Delete files: {delete_files}")
+    log_message(f"Tray: {show_tray}")
+    print(f"Tray: {show_tray}")
 
 class GameInstallationThread(QThread):
     progress_update = pyqtSignal(int)
