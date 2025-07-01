@@ -17,3 +17,14 @@ https://www.examplefile.com/compressed/7z/20-mb-7z
 
 mp4 test files
 https://drive.google.com/drive/folders/1jV6RlAWAGnvm93IpH5CpuIn7v0QMn1nC
+
+
+benchmark:
+extracción por zerokey
+1. descargas -> extracciones -> juegos -> 1:10
+2. descargas -> juegos -> 2:06
+3. extracciones -> juegos -> 1:49
+
+extracción por hydra
+1. descargas -> juegos -> 2:08
+2. extracciones -> juegos -> 1:33

@@ -31,7 +31,6 @@ try:
         config = yaml.load(f)
     
     download_folder = config["paths"]["download_folder"]
-    extraction_folder = config["paths"]["extraction_folder"]
     game_folder = config["paths"]["game_folder"]
     excluded_folders = config["paths"]["excluded_folders"]
     achievements = config.get("achievements", True)
@@ -48,7 +47,6 @@ def create_default_config():
     default_config = {
         "paths": {
             "download_folder": "A:\\Ejemplo",
-            "extraction_folder": "D:\\Ejemplo",
             "game_folder": "D:\\Ejemplo",
             "excluded_folders": [
                 "D:\\Ejemplo",
@@ -242,7 +240,7 @@ def extract_archives(update_progress):
         progress = 20
 
         for file in compressed_files:
-            extraction_path = os.path.join(extraction_folder, Path(file).stem)
+            extraction_path = os.path.join(download_folder, Path(file).stem)
             if is_excluded(extraction_path):
                 continue
             extracted_paths.append(extraction_path)
@@ -313,7 +311,7 @@ def process_games(update_progress):
         manifest_data = load_manifest()
         log_message("Manifest cargado correctamente.")
         extracted_folders = [
-            f.path for f in os.scandir(extraction_folder)
+            f.path for f in os.scandir(download_folder)
             if f.is_dir() and not is_excluded(f.path)
         ]
 
