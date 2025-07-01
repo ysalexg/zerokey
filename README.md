@@ -24,21 +24,23 @@
 Para la manera automática, ejecutar zerokeyService.exe. Para usarlo de manera manual, ejecutar zerokey.exe al terminar una descarga.
 <br>
 En el archivo "config.yaml", especificar: 
-
+<br>
 "download_folder" esta va a ser la ruta donde se van a leer los archivos comprimidos/carpeta del juego. Se recomienda que se cree una carpeta donde sólo se vayan a descargar juegos. (En actualizaciones no va a hacer falta)
-
+<br>
 "extraction_folder" la carpeta a donde se van a extraer, puede ser la misma que "download_folder".
-
+<br>
 "game_folder" la carpeta donde se van a instalar los juegos.
-
+<br>
 Opcionalmente, se pueden añadir carpetas para excluir.
-
+<br>
 achievements: true/false, si se quiere tener logros del juego o no, para esto utilizará Goldberg (Fork de Denaup01). No se aplica en juegos con Online-Fix.
-
+<br>
 delete_files: true/false, si quiere que se borren los archivos comprimidos luego de extraerlos.
 
 
 ## Integración con Playnite
 Ir a Playnite > Configuración > Para desarrolladores > Añadir > Agregar la ruta donde se encuentra la carpeta "plugin".
+<br>
 Luego de instalarse un juego, al refrescar la biblioteca (F5) se va a añadir automaticamente.
+<br>
 Para ver los logros en Playnite, es necesaria la extensión Success Story https://github.com/eFMann/playnite-successstory-plugin
