@@ -41,7 +41,7 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-Name: "autostart_service"; Description: "Iniciar ZerokeyService con Windows"; GroupDescription: "Configuración de inicio"; Flags: checkedonce
+Name: "autostart_service"; Description: "Iniciar servicio de Zerokey con Windows"; GroupDescription: "Configuración de inicio"; Flags: checkedonce
 
 
 [Files]

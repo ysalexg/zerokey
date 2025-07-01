@@ -608,6 +608,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             f.write(target_folder)
         save_game_name(install_dir)
         if not os.path.exists(target_folder):
+            update_progress(90, "Moviendo...", log_message="Moviendo...")
             shutil.move(resolved_path, target_folder)
             log_message(f"Movido {resolved_path} a {target_folder}")
         else:
@@ -883,6 +884,7 @@ def cleanup_extraction_paths_and_crack(update_progress):
                 print(f"Eliminada carpeta de extracción: {path}")
         detect_crack()
         if achievements:
+            update_progress(95, "Añadiendo logros...", log_message="Añadiendo logros...")
             apply_crack()
         try:
             logs_dir = os.path.join(script_dir, "logs")
