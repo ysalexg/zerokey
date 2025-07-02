@@ -1040,46 +1040,38 @@ class GameInstallationProgress(QMainWindow):
         self.log_text.setMaximumHeight(100)
         layout.addWidget(self.log_text)
 
-        def create_button(text, visible=False, on_click=None):
-            button = QPushButton(text)
+        self.cancelar_button = QPushButton("Cancelar")
+        self.finish_button = QPushButton("Finalizar")
+        self.close_button = QPushButton("Cerrar")
+
+        for button in [self.cancelar_button, self.finish_button, self.close_button]:
             button.setFixedHeight(30)
             button.setStyleSheet("""
-            QPushButton {
-                background-color: #F3F3F3;
-                color: #202020;
-                border-radius: 6px;
-                font-weight: bold;
-                font-family: 'Segoe UI', sans-serif;
-                font-size: 14px;
-            }
-            QPushButton:hover {
-                background-color: #D8DEE9;
-            }
+                QPushButton {
+                    background-color: #F3F3F3;
+                    color: #202020;
+                    border-radius: 6px;
+                    font-weight: bold;
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 14px;
+                }
+                QPushButton:hover {
+                    background-color: #D8DEE9;
+                }
             """)
-            if on_click:
-                button.clicked.connect(on_click)
-                button.setVisible(visible)
-                layout.addWidget(button)
-            return button
+            layout.addWidget(button)
 
-        def cancelar_instalacion():
-            # Finalizar procesos 7z y NanaZip antes de salir
-            for proc in psutil.process_iter(['name']):
-                if proc.info['name'] in ("7z.exe", "NanaZip.Core.Console.exe"):
-                    try:
-                        proc.terminate()
-                    except Exception:
-                        pass
-            sys.exit(0)
+        self.cancelar_button.clicked.connect(self.cancelar_instalacion)
+        self.finish_button.clicked.connect(sys.exit)
+        self.close_button.clicked.connect(sys.exit)
 
-        self.cancelar_button = create_button("Cancelar", visible=True, on_click=cancelar_instalacion)
-        self.finish_button = create_button("Finalizar", visible=False, on_click=lambda: sys.exit(0))
-        self.close_button = create_button("Cerrar", visible=False, on_click=lambda: sys.exit(0))
+        # Initially hide unnecessary buttons
+        self.finish_button.setVisible(False)
+        self.close_button.setVisible(False)
 
         self.is_dragging = False
         self.drag_position = QPoint()
         
-        # Hilo de instalación
         self.installation_thread = GameInstallationThread()
         self.installation_thread.progress_update.connect(self.update_progress)
         self.installation_thread.status_update.connect(self.update_status)
@@ -1140,16 +1132,16 @@ class GameInstallationProgress(QMainWindow):
 
             self.tray_icon.activated.connect(self.on_tray_activated)
 
-    def closeEvent(self, event):
-        event.ignore()
-        self.hide()
-        # self.tray_icon.showMessage(
-        #     "Zerokey",
-        #     "El programa sigue ejecutándose en el área de notificación.",
-        #     QSystemTrayIcon.Information,
-        #     2000
-        # )
-
+    def cancelar_instalacion():
+            # Finalizar procesos 7z y NanaZip antes de salir
+            for proc in psutil.process_iter(['name']):
+                if proc.info['name'] in ("7z.exe", "NanaZip.Core.Console.exe"):
+                    try:
+                        proc.terminate()
+                    except Exception:
+                        pass
+            sys.exit(0)
+            
     def on_tray_activated(self, reason):
         if reason == QSystemTrayIcon.Trigger:
             self.showNormal()
