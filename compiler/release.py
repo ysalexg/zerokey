@@ -24,4 +24,6 @@ if result.returncode != 0:
 # git tag -a v1.0.0 -m "Primera versión"
 # git push origin v1.0.0
 # gh release create v1.0.0 zerokey.7z zerokeyInstaller.exe --title "v1.0.0" --notes "Primera versión"
+# git remote remove origin
+# git remote add origin https://github.com/ysalexg/zerokey-dev.git
 # restart vscode
