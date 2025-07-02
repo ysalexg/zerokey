@@ -18,11 +18,12 @@
 - Actualmente no soporta repacks (FitGirl, DODI, etc.)
 
 ## Requisitos
-7zip/Nanazip y [ .NET Runtime 8 ](https://dotnet.microsoft.com/download/dotnet/8.0/runtime?cid=getdotnetcore&runtime=desktop&os=windows&arch=x64). Playnite (Opcional)
+[ .NET Runtime 8 ](https://dotnet.microsoft.com/download/dotnet/8.0/runtime?cid=getdotnetcore&runtime=desktop&os=windows&arch=x64). Playnite (Opcional)
 
 ## Cómo usar
+Usar el instalador para configurar Zerokey. En caso de querer configurarlo manualmente, estas son las opciones:
 
-Para la manera automática, ejecutar `zerokeyService.exe`.  
+Para usarlo de manera automática, ejecutar `zerokeyService.exe`.  
 Para usarlo de manera manual, ejecutar `zerokey.exe` al terminar una descarga.
 
 En el archivo `config.yaml`, especificar los siguientes valores:
