@@ -293,7 +293,7 @@ def main():
     # Mantener el hilo principal vivo
     try:
         while True:
-            time.sleep(1)
+            time.sleep(3)
     except KeyboardInterrupt:
         monitor.stop()
 
