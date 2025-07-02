@@ -999,6 +999,7 @@ class GameInstallationProgress(QMainWindow):
                 background-color: #2D2D2D; /* Fondo de la barra */
                 color: #88C0D0; /* Texto */
                 border-radius: 6px;
+                border: 1px solid #444;
             }
             QProgressBar::chunk {
                 background-color: #F3F3F3; /* Color del progreso */
@@ -1009,7 +1010,7 @@ class GameInstallationProgress(QMainWindow):
                 color: #D8DEE9; /* Texto */
                 font-size: 12px;
                 font-family: 'Segoe UI', sans-serif;
-                border: 1px solid #202020;
+                border: 1px solid #444;
                 border-radius: 6px;
             }
         """)
