@@ -45,7 +45,7 @@ class ZerokeyMonitor:
         self.download_folder = None
         self.excluded_folder = None
         self.handle_path = None
-        self.ui_script = None
+        self.zerokey = None
         self.config_file = config_file
 
     def load_config(self):
@@ -205,9 +205,9 @@ class ZerokeyMonitor:
                 break
             logging.info(f"Archivo libre: {archive_path}. Ejecutando zerokey...")
             try:
-                if os.path.exists(self.ui_script):
+                if os.path.exists(self.zerokey):
                     proc = subprocess.Popen(
-                        [self.ui_script],
+                        [self.zerokey],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
                         bufsize=0,
@@ -241,7 +241,7 @@ class ZerokeyMonitor:
                         else:
                             logging.error(f"ui.py retornó código {proc.returncode} para {archive_path}. STDERR: {err.strip()}")
                     else:
-                        logging.error(f"No existe zerokey.exe en: {self.ui_script} ni ui.py en: {ui_py_path}. No se puede ejecutar instalador.")
+                        logging.error(f"No existe zerokey.exe en: {self.zerokey} ni ui.py en: {ui_py_path}. No se puede ejecutar instalador.")
             except Exception as e:
                 logging.error(f"Error ejecutando instalador para {archive_path}: {e}")
 
@@ -255,11 +255,11 @@ class ZerokeyMonitor:
             self.handle_path = "handle.exe"
         logging.info(f'Usando handle.exe en: {self.handle_path}')
 
-        self.ui_script = resource_path("zerokey.exe")
-        if not os.path.exists(self.ui_script):
-            logging.warning(f"zerokey.exe no encontrado en: {self.ui_script}. Asegúrate de empacarlo junto al script.")
+        self.zerokey = resource_path("zerokey.exe")
+        if not os.path.exists(self.zerokey):
+            logging.warning(f"zerokey.exe no encontrado en: {self.zerokey}. Asegúrate de empacarlo junto al script.")
         else:
-            logging.info(f'Encontrado zerokey.exe en: {self.ui_script}')
+            logging.info(f'Encontrado zerokey.exe en: {self.zerokey}')
 
         self.running = True
         self.monitor_thread = threading.Thread(target=self.monitor_loop, daemon=True)
