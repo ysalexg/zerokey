@@ -1,5 +1,5 @@
 #define MyAppName "zerokey"
-#define MyAppVersion "1.2.2"
+#define MyAppVersion "1.3"
 #define MyAppPublisher "ysAlex"
 #define MyAppURL "https://github.com/ysalexg/zerokey"
 #define MyAppExeName "zerokey.exe"
