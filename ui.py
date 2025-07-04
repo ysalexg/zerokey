@@ -1,3 +1,18 @@
+"""
+Añadir funcionalidad:
+Soporte para carpetas que no estén vacías
+- Hacer que service.py guarde y ejecute ui.py con el archivo comprimido como argumento
+- Hacer que ui.py pueda recibir un argumento con el archivo especifico que debe comprimir
+- Si Hydra ya descomprimió el archivo, entonces debe de pasar como argumento la carpeta y no el archivo comprimido (esto no es necesario si la extracción la maneja Zerokey)
+- Para esto, debe de pasar una carpeta con el nombre similar al del archivo comprimido, pero sin la extensión
+- También tener en cuenta que puede ser Cuphead.zip -> Cuphead
+- También puede ser Hollow-Knight-AtopGames.com.zip -> Hollow Knight v1.5.78.11833
+Tray para el service
+- El tray debería de estar siempre si está el service abierto, y este manejar ui.py
+- Cerrar el servicio o reiniciarlo
+- Ir a carpeta del programa
+"""
+
 import os
 import sys
 import requests
@@ -78,6 +93,14 @@ temp_dir = tempfile.gettempdir()
 gamePathTXT = os.path.join(temp_dir, "game_path.txt")
 gameNameTXT = os.path.join(temp_dir, "game_name.txt")
 fullExecutablePathTXT = os.path.join(temp_dir, "full_executable_path.txt")
+
+for path in [executableTXT, crackTXT, appidTXT, gamePathTXT, gameNameTXT, fullExecutablePathTXT]:
+    if os.path.exists(path):
+        try:
+            os.remove(path)
+        except Exception as e:
+            print(f"[ERROR] No se pudo eliminar {path}: {e}")
+
 
 autocrack_dir = os.path.join(assets, "autocrack")
 if not os.path.exists(autocrack_dir):
@@ -409,6 +432,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
     resolved_game = None
     resolved_exe = executable
     resolved_path = folder_path
+    print(f"Resolved path: {resolved_path}")
 
     ini_paths = []
     cream_paths = []
@@ -423,6 +447,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
                 cream_paths.append(os.path.join(root, f))
             elif name == "steam_appid.txt":
                 steam_txt_paths.append(os.path.join(root, f))
+                print(f"Encontrado steam_appid.txt en: {os.path.join(root, f)}")
             elif name == "cpy.ini":
                 cpy_paths.append(os.path.join(root, f))
 
@@ -746,13 +771,14 @@ def apply_crack():
             appid = f.read().strip()
 
         # Buscar steam_api64.dll en toda la carpeta y subcarpetas
-        found_steam_api64 = False
+        found_steam_api = False
         for root, _, files in os.walk(game_path):
-            if "steam_api64.dll" in files:
-                found_steam_api64 = True
-            break
-        if not found_steam_api64:
-            log_message("No se encontró steam_api64.dll en la ruta del juego, no se puede aplicar el crack.")
+            if "steam_api64.dll" in files or "steam_api.dll" in files:
+                found_steam_api = True
+                break
+
+        if not found_steam_api:
+            log_message("No se encontró steam_api64.dll ni steam_api.dll en la ruta del juego, no se puede aplicar el crack.")
             return False
 
         if not game_path or not appid:
@@ -885,7 +911,8 @@ def cleanup_extraction_paths_and_crack(update_progress):
         detect_crack()
         if achievements:
             update_progress(95, "Añadiendo logros...", log_message="Añadiendo logros...")
-            apply_crack()
+            if not apply_crack():
+                update_progress(95, "No se pudieron añadir logros.", log_message="No se pudieron añadir logros.")
         try:
             logs_dir = os.path.join(script_dir, "logs")
             old_log = os.path.join(logs_dir, "logs.txt")
@@ -896,8 +923,9 @@ def cleanup_extraction_paths_and_crack(update_progress):
                     # Limpiar el nombre del juego para usarlo como nombre de archivo
                     safe_game_name = "".join(c for c in game_name if c.isalnum() or c in (' ', '_', '-')).rstrip()
                     new_log = os.path.join(logs_dir, f"{safe_game_name}.txt")
-                    if not os.path.exists(new_log):
-                        os.rename(old_log, new_log)
+                    if os.path.exists(new_log):
+                        os.remove(new_log)
+                    os.rename(old_log, new_log)
         except Exception as e:
             print(f"Error al renombrar el archivo de log: {e}")
     except Exception as e:
