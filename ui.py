@@ -607,9 +607,6 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
         for game_name, game_info in manifest_data.items():
             for launch_path in game_info.get("launch", {}):
                 launch_exe = os.path.basename(launch_path)
-                print(f"[DEBUG] Comparando con ejecutable del manifest: {launch_exe}")
-                log_message(f"Comparando con ejecutable del manifest: {launch_exe}")
-
                 if launch_exe.lower() == executable.lower():
                     resolved_game = (game_name, game_info)
                     print(f"[INFO] Juego encontrado con método 2 (matching por nombre de exe): {game_name}")
@@ -623,7 +620,7 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             log_message(f"No se pudo resolver el juego por nombre de ejecutable: {executable}")
 
 
-    # 3) Si no se encontró en el manifest, usar el .exe más grande (excluyendo los de la lista)
+    # 4) Si no se encontró en el manifest, usar el .exe más grande (excluyendo los de la lista)
     fitgirl_found = False
     dodi_found = False
     repack_detected = False
