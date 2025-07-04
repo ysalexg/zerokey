@@ -3,10 +3,7 @@ french
 italian
 german
 spanish
-japanese
-koreana
 polish
 brazilian
 russian
 schinese
-latam

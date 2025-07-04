@@ -18,3 +18,4 @@ bin/
 releases/
 __pycache__/
 repo/
+steam_settings/

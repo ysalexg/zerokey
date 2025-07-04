@@ -342,7 +342,7 @@ def process_games(update_progress):
 
         # Primera pasada: recolectar todos los ejecutables
         for folder in extracted_folders:
-            print(f"Procesando carpeta: {folder}")
+            print(f"Recolectando ejecutables: {folder}")
 
             for root, dirs, files in os.walk(folder):
                 if is_excluded(root):
@@ -774,27 +774,45 @@ def detect_crack():
         print(f"La ruta del juego no existe: {game_path}")
         return result
 
+    found_csf = False
     found_onlinefix = False
     found_rune = False
     found_codex = False
     found_goldberg = False
 
-    # Buscar archivos de crack
+    dll_found = False
+
     for root, dirs, files in os.walk(game_path):
+        if "steam_api64.dll" in files or "steam_api.dll" in files:
+            dll_found = True  # sólo marcar presencia por ahora
+
         if "OnlineFix64.dll" in files:
             result["OnlineFix64.dll"] = True
             found_onlinefix = True
+
         if "steam_api64.rne" in files:
             result["steam_api64.rne"] = True
             found_rune = True
+
         if "steam_api64.cdx" in files:
             result["steam_api64.cdx"] = True
             found_codex = True
+
         if crack_folder in dirs:
             result[crack_folder] = True
             found_goldberg = True
 
-    # Lógica de prioridad: Online-Fix > RUNE > CODEX
+    # Evaluar al final si los DLL son "limpios"
+    if dll_found and not (found_onlinefix or found_rune or found_codex):
+        found_csf = True
+        print("[INFO] Se detectaron archivos steam_api*.dll limpios (sin crack conocido)")
+        log_message("Se detectaron archivos steam_api*.dll limpios (sin crack conocido)")
+    else:
+        print("[INFO] No se marcaron archivos DLL como limpios: se detectó algún crack")
+        log_message("No se marcaron archivos DLL como limpios: se detectó algún crack")
+
+
+    # Lógica de prioridad: Online-Fix > RUNE > CODEX > CSF
     if found_onlinefix:
         log_message("Crack usado: Online-Fix")
         detected_cracks.append("Online-Fix")
@@ -808,6 +826,9 @@ def detect_crack():
     if found_goldberg:
         log_message("Crack usado: Goldberg")
         detected_cracks.append("Goldberg")
+    if found_csf:
+        log_message("Archivos limpios sin crack.")
+        detected_cracks.append("CSF")
 
     if detected_cracks:
         try:
@@ -834,7 +855,7 @@ def apply_crack():
             crack_type = f.read().strip().upper()
 
         # Solo aplicar si es RUNE o CODEX
-        if crack_type not in ("RUNE", "CODEX"):
+        if crack_type not in ("RUNE", "CODEX", "CSF"):
             log_message(f"El crack detectado es '{crack_type}', no se aplicará SteamAutoCrack.")
             return False
 
@@ -991,6 +1012,9 @@ def cleanup_extraction_paths_and_crack(update_progress):
             update_progress(95, "Añadiendo logros...", log_message="Añadiendo logros...")
             if not apply_crack():
                 update_progress(95, "No se pudieron añadir logros.", log_message="No se pudieron añadir logros.")
+                log_message("No se pudieron añadir logros.")
+            else:
+                log_message("Logros añadidos correctamente.")
         try:
             logs_dir = os.path.join(script_dir, "logs")
             old_log = os.path.join(logs_dir, "logs.txt")
