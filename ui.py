@@ -432,7 +432,6 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
     resolved_game = None
     resolved_exe = executable
     resolved_path = folder_path
-    print(f"Resolved path: {resolved_path}")
 
     ini_paths = []
     cream_paths = []
@@ -443,13 +442,20 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             name = f.lower()
             if name == "steam_emu.ini":
                 ini_paths.append(os.path.join(root, f))
+                print(f"Encontrado steam_emu.ini en: {os.path.join(root, f)}")
+                log_message(f"Encontrado steam_emu.ini en: {os.path.join(root, f)}")
             elif name == "cream_api.ini":
                 cream_paths.append(os.path.join(root, f))
+                print(f"Encontrado cream_api.ini en: {os.path.join(root, f)}")
+                log_message(f"Encontrado cream_api.ini en: {os.path.join(root, f)}")
             elif name == "steam_appid.txt":
                 steam_txt_paths.append(os.path.join(root, f))
                 print(f"Encontrado steam_appid.txt en: {os.path.join(root, f)}")
+                log_message(f"Encontrado steam_appid.txt en: {os.path.join(root, f)}")
             elif name == "cpy.ini":
                 cpy_paths.append(os.path.join(root, f))
+                print(f"Encontrado CPY.ini en: {os.path.join(root, f)}")
+                log_message(f"Encontrado CPY.ini en: {os.path.join(root, f)}")
 
     appid_candidates = []
 
@@ -459,12 +465,17 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             with open(ini_path, "r", encoding="utf-8") as f:
                 lines = f.readlines()
         except UnicodeDecodeError:
+            print(f"[WARN] Problema de codificación en {ini_path}, intentando latin-1")
+            log_message(f"Problema de codificación en {ini_path}, intentando latin-1")
             with open(ini_path, "r", encoding="latin-1") as f:
                 lines = f.readlines()
         for line in lines:
             if line.strip().startswith("AppId="):
                 _, aid = line.strip().split("=", 1)
-                appid_candidates.append(aid.strip())
+                aid = aid.strip()
+                appid_candidates.append(aid)
+                print(f"[INFO] AppId encontrado en steam_emu.ini: {aid}")
+                log_message(f"AppId encontrado en steam_emu.ini: {aid}")
                 break
 
     # cream_api.ini
@@ -476,19 +487,32 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
                         aid = line.split("=", 1)[1].strip()
                         if aid.isdigit():
                             appid_candidates.append(aid)
+                            print(f"[INFO] AppId encontrado en cream_api.ini: {aid}")
+                            log_message(f"AppId encontrado en cream_api.ini: {aid}")
                             break
         except UnicodeDecodeError:
+            print(f"[WARN] No se pudo leer {cream_path} por error de codificación.")
+            log_message(f"No se pudo leer {cream_path} por error de codificación.")
             continue
 
     # steam_appid.txt
     for txt_path in steam_txt_paths:
         try:
             with open(txt_path, "r", encoding="utf-8") as f:
-                content = f.read().strip()
-                if content.isdigit():
-                    appid_candidates.append(content)
+                raw = f.read()
         except UnicodeDecodeError:
+            print(f"[WARN] No se pudo leer {txt_path} por error de codificación.")
+            log_message(f"No se pudo leer {txt_path} por error de codificación.")
             continue
+
+        content = raw.strip().lstrip("\ufeff").strip()
+        if content.isdigit():
+            appid_candidates.append(content)
+            print(f"[INFO] AppId encontrado en steam_appid.txt: {content}")
+            log_message(f"AppId encontrado en steam_appid.txt: {content}")
+        else:
+            print(f"[WARN] Contenido inválido en {txt_path}: {repr(content)}")
+            log_message(f"Contenido inválido en {txt_path}: {repr(content)}")
 
     # CPY.ini
     for cpy_path in cpy_paths:
@@ -496,54 +520,108 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             with open(cpy_path, "r", encoding="utf-8") as f:
                 for line in f:
                     if line.strip().startswith("AppID="):
-                        aid = line.strip().split("=", 1)[1]
+                        aid = line.strip().split("=", 1)[1].strip()
                         if aid.isdigit():
                             appid_candidates.append(aid)
+                            print(f"[INFO] AppId encontrado en CPY.ini: {aid}")
+                            log_message(f"AppId encontrado en CPY.ini: {aid}")
                             break
         except UnicodeDecodeError:
+            print(f"[WARN] No se pudo leer {cpy_path} por error de codificación.")
+            log_message(f"No se pudo leer {cpy_path} por error de codificación.")
             continue
+
+    # Resultado final
+    print(f"AppIDs recolectados: {appid_candidates}")
+    log_message(f"AppIDs recolectados: {appid_candidates}")
 
     # Determinar AppId válido
     from collections import Counter
 
     counts = Counter(appid_candidates)
     appid = None
+
+    print(f"Conteo de AppIDs detectados: {counts}")
+    log_message(f"Conteo de AppIDs detectados: {counts}")
+
     if counts:
         for aid, cnt in counts.items():
             if cnt >= 2:
                 appid = aid
+                print(f"AppID seleccionado por coincidencia múltiple: {appid} (x{cnt})")
+                log_message(f"AppID seleccionado por coincidencia múltiple: {appid} (x{cnt})")
                 break
         if appid is None and len(counts) == 1:
             appid = next(iter(counts))
+            print(f"AppID único seleccionado: {appid}")
+            log_message(f"AppID único seleccionado: {appid}")
+    else:
+        print("No se encontraron AppIDs válidos.")
+        log_message("No se encontraron AppIDs válidos.")
+
 
     # 1) Si tenemos AppId, intentamos resolver por manifest
     if appid:
+        print(f"[INFO] Buscando juego en el manifest con AppID: {appid}")
+        log_message(f"Buscando juego en el manifest con AppID: {appid}")
+
         for game_name, game_info in manifest_data.items():
-            if str(game_info.get("steam", {}).get("id", "")) == appid:
+            manifest_appid = str(game_info.get("steam", {}).get("id", ""))
+            if manifest_appid == appid:
                 launch_paths = game_info.get("launch", {})
                 if launch_paths:
                     desired_exe = os.path.basename(next(iter(launch_paths.keys())))
+                    if not desired_exe.lower().endswith('.exe'):
+                        desired_exe += ".exe"
+                    print(f"[INFO] Ejecutable esperado según manifest: {desired_exe}")
+                    log_message(f"Ejecutable esperado según manifest: {desired_exe}")
+                    
                     for root, _, files in os.walk(folder_path):
                         if desired_exe.lower() in (f.lower() for f in files):
                             resolved_exe = next(f for f in files if f.lower() == desired_exe.lower())
                             resolved_path = root
                             resolved_game = (game_name, game_info)
-                            print("Juego encontrado con método 1 (AppId en manifest)")
+                            print(f"[INFO] Juego encontrado con método 1 (AppId en manifest): {game_name}")
                             log_message(f"Juego encontrado con método 1 (AppId en manifest): {game_name} (AppID={appid})")
                             break
+                    else:
+                        print(f"[WARN] No se encontró el ejecutable esperado '{desired_exe}' en la carpeta del juego.")
+                        log_message(f"No se encontró el ejecutable esperado '{desired_exe}' en la carpeta del juego.")
+                else:
+                    print(f"[WARN] El juego '{game_name}' no tiene rutas de lanzamiento definidas en el manifest.")
+                    log_message(f"El juego '{game_name}' no tiene rutas de lanzamiento definidas en el manifest.")
                 break
+        else:
+            print(f"[WARN] No se encontró ningún juego en el manifest con AppID={appid}.")
+            log_message(f"No se encontró ningún juego en el manifest con AppID={appid}.")
+    else:
+        print("[WARN] No se proporcionó AppID, se omitirá la búsqueda por manifest.")
+        log_message("No se proporcionó AppID, se omitirá la búsqueda por manifest.")
+
 
     # 2) Si no se resolvió vía AppId, matching por nombre de exe
-    if not resolved_game and executable.lower() not in ("setup.exe"):
+    if not resolved_game and executable.lower() not in ("setup.exe",):
+        print(f"[INFO] Intentando resolver por nombre de ejecutable: {executable}")
+        log_message(f"Intentando resolver por nombre de ejecutable: {executable}")
+
         for game_name, game_info in manifest_data.items():
             for launch_path in game_info.get("launch", {}):
-                if os.path.basename(launch_path).lower() == executable.lower():
+                launch_exe = os.path.basename(launch_path)
+                print(f"[DEBUG] Comparando con ejecutable del manifest: {launch_exe}")
+                log_message(f"Comparando con ejecutable del manifest: {launch_exe}")
+
+                if launch_exe.lower() == executable.lower():
                     resolved_game = (game_name, game_info)
-                    print("Juego encontrado con método 2 (matching por nombre de exe)")
+                    print(f"[INFO] Juego encontrado con método 2 (matching por nombre de exe): {game_name}")
                     log_message(f"Juego encontrado con método 2 (matching por nombre de exe): {game_name}")
                     break
             if resolved_game:
                 break
+
+        if not resolved_game:
+            print(f"[WARN] No se pudo resolver el juego por nombre de ejecutable: {executable}")
+            log_message(f"No se pudo resolver el juego por nombre de ejecutable: {executable}")
+
 
     # 3) Si no se encontró en el manifest, usar el .exe más grande (excluyendo los de la lista)
     fitgirl_found = False
