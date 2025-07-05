@@ -1,922 +1,962 @@
 [
   {
-    "description": "Chop down your first tree.",
-    "displayName": "Timber!!",
+    "description": "Complete \"Stereo Madness\" in Practice mode",
+    "displayName": "Stereo Bump",
     "hidden": 0,
-    "icon": "achievement_images/0fbb33098c9da39d1d4771d8209afface9c46e81.jpg",
-    "icongray": "achievement_images/215ab323d2700314c7e46077e4d8609f2ff6e1d4.jpg",
-    "name": "TIMBER"
+    "icon": "achievement_images/9430df8cfb53bbc24b31566e3fbca2e44fa1ff0e.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level01a"
   },
   {
-    "description": "Build a house suitable enough for your first town NPC, such as the guide, to move into.",
-    "displayName": "No Hobo",
+    "description": "Complete \"Stereo Madness\" in Normal mode",
+    "displayName": "Stereo Madness!",
     "hidden": 0,
-    "icon": "achievement_images/65bbc5ea6a030b963d9a06e5e1b315c3872837a3.jpg",
-    "icongray": "achievement_images/d7991d4cfd2277daf7717a5ec9710a20137ec547.jpg",
-    "name": "NO_HOBO"
+    "icon": "achievement_images/7fea7a6beb7886ee4f318c59334c569058e81cc1.jpg",
+    "icongray": "achievement_images/c79b9a389ea5c3c41cf099880044ea2ee1e3933d.jpg",
+    "name": "geometry.ach.level01b"
   },
   {
-    "description": "Obtain your first hammer via crafting or otherwise.",
-    "displayName": "Stop! Hammer Time!",
+    "description": "Complete \"Back On Track\" in Practice mode",
+    "displayName": "On my way",
     "hidden": 0,
-    "icon": "achievement_images/4760436e9973519098bb2cc419339d24e56af139.jpg",
-    "icongray": "achievement_images/43638a5dcbe4106165c36e688048ac4b48ec19d6.jpg",
-    "name": "OBTAIN_HAMMER"
+    "icon": "achievement_images/3db1d64381bba1fdf732afae1bd5126b36319d7c.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level02a"
   },
   {
-    "description": "Mine your first nugget of ore with a pickaxe.",
-    "displayName": "Ooo! Shiny!",
+    "description": "Complete \"Back On Track\" in Normal mode",
+    "displayName": "Back On Track!",
     "hidden": 0,
-    "icon": "achievement_images/57b929ffd1a732ffc49abc6c53387e08bac4cbbb.jpg",
-    "icongray": "achievement_images/a6ca1f5a2805564872fd658d3518d9679987e7ea.jpg",
-    "name": "OOO_SHINY"
+    "icon": "achievement_images/93a8dad732b3db59d4b20f4a7d437d02d3dd01fc.jpg",
+    "icongray": "achievement_images/39444ca779e8ea4b1ce153e81251e43db4acb23d.jpg",
+    "name": "geometry.ach.level02b"
   },
   {
-    "description": "Discover and smash your first heart crystal underground.",
-    "displayName": "Heart Breaker",
+    "description": "Complete \"Polargeist\" in Practice mode",
+    "displayName": "Polarbear",
     "hidden": 0,
-    "icon": "achievement_images/8243e4a0f7f803cd06cf37d64d11e04697afe30c.jpg",
-    "icongray": "achievement_images/fec5b945a914710f4c0a4d306c84cd1c202b123e.jpg",
-    "name": "HEART_BREAKER"
+    "icon": "achievement_images/50c9fe7ee63c6fb7a298d098ec8f4ff3d7afbf61.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level03a"
   },
   {
-    "description": "Obtain an anvil made from iron or lead.",
-    "displayName": "Heavy Metal",
+    "description": "Complete \"Polargeist\" in Normal mode",
+    "displayName": "Polargeist!",
     "hidden": 0,
-    "icon": "achievement_images/f727271437793b278c809a067fa2334ea2846f34.jpg",
-    "icongray": "achievement_images/aa3f77b9245edd057fc9939045457e189ebc7b4a.jpg",
-    "name": "HEAVY_METAL"
+    "icon": "achievement_images/91264d0a69ac67f4f291f374eba96861890920a0.jpg",
+    "icongray": "achievement_images/4942afa0633f7e2f05efdb39c649f56ce10518c1.jpg",
+    "name": "geometry.ach.level03b"
   },
   {
-    "description": "Discover a golden chest underground and take a peek at its contents.",
-    "displayName": "I Am Loot!",
+    "description": "Complete \"Dry Out\" in Practice mode",
+    "displayName": "Dehydrated",
     "hidden": 0,
-    "icon": "achievement_images/6705287adc42e2741d632c2d714424b2aa3e5716.jpg",
-    "icongray": "achievement_images/c520b63981069eb7e71172116e4d90edeea7e4a0.jpg",
-    "name": "I_AM_LOOT"
+    "icon": "achievement_images/84bacf3d34bd5419a844402269d871fc18322503.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level04a"
   },
   {
-    "description": "Craft a mana crystal out of fallen stars, and consume it.",
-    "displayName": "Star Power",
+    "description": "Complete \"Dry Out\" in Normal mode",
+    "displayName": "Dry Out!",
     "hidden": 0,
-    "icon": "achievement_images/738ca7765e32895918979d31d600d19254b14190.jpg",
-    "icongray": "achievement_images/780cc0a0ed919094689e2f7785dfc9b1d13f5fed.jpg",
-    "name": "STAR_POWER"
+    "icon": "achievement_images/b529e7d61a115d4eb6719bd59fac7574ea7bb63a.jpg",
+    "icongray": "achievement_images/b484a1a5ba3a7db88983966a7cebf31dd9cfd7ff.jpg",
+    "name": "geometry.ach.level04b"
   },
   {
-    "description": "Equip your first grappling hook.",
-    "displayName": "Hold on Tight!",
+    "description": "Complete \"Base After Base\" in Practice mode",
+    "displayName": "All your base...",
     "hidden": 0,
-    "icon": "achievement_images/0e2a5e080563ce9c30cf3b45dd155d18640f0bf6.jpg",
-    "icongray": "achievement_images/46f83676ab1490b0b68a2241c1eeaf906f49bd49.jpg",
-    "name": "HOLD_ON_TIGHT"
+    "icon": "achievement_images/45099e30abcb90c512673d060553a3807a6c7b7e.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level05a"
   },
   {
-    "description": "Defeat the Eye of Cthulhu, an ocular menace who only appears at night.",
-    "displayName": "Eye on You",
+    "description": "Complete \"Base After Base\" in Normal mode",
+    "displayName": "Base After Base!",
     "hidden": 0,
-    "icon": "achievement_images/b10b068163125e13444e2cdb145c1a200c7ad607.jpg",
-    "icongray": "achievement_images/f4ab794679e941f840a57c0a22dd7a744b621a7a.jpg",
-    "name": "EYE_ON_YOU"
+    "icon": "achievement_images/b2ea135b2762c6afa36fd0eeba7cd6c2ba9e0d4c.jpg",
+    "icongray": "achievement_images/47eba2a7c2ad9aa7e7d1c92009fe650c93d863de.jpg",
+    "name": "geometry.ach.level05b"
   },
   {
-    "description": "Using explosives or your trusty hammer, smash a Shadow Orb or Crimson Heart in the evil parts of your world.",
-    "displayName": "Smashing, Poppet!",
+    "description": "Complete \"Cant Let Go\" in Practice mode",
+    "displayName": "Hold on",
     "hidden": 0,
-    "icon": "achievement_images/7f9006b20f6615ef0e93c72cade8fb26c3818db7.jpg",
-    "icongray": "achievement_images/b8d1c66a82961f679321d361c0c917b6984ba02c.jpg",
-    "name": "SMASHING_POPPET"
+    "icon": "achievement_images/1940fbed8e05f14f46ac1bcd46916782029e42a3.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level06a"
   },
   {
-    "description": "Defeat the Eater of Worlds, a massive worm whom dwells in the corruption.",
-    "displayName": "Worm Fodder",
+    "description": "Complete \"Cant Let Go\" in Normal mode",
+    "displayName": "Cant Let Go!",
     "hidden": 0,
-    "icon": "achievement_images/624b8391794e2f02f067295d634d648d6cb0e4a9.jpg",
-    "icongray": "achievement_images/456fa5f8871b686071517894ee7fba53c50a07d9.jpg",
-    "name": "WORM_FODDER"
+    "icon": "achievement_images/50f55bb38065943f422ef7b39e57462f4017f5b4.jpg",
+    "icongray": "achievement_images/59a6d088d1e14a1c4d59c512491a9d3e79dbae75.jpg",
+    "name": "geometry.ach.level06b"
   },
   {
-    "description": "Defeat the Brain of Cthulhu, an enourmous demon brain which haunts the creeping crimson.",
-    "displayName": "Mastermind",
+    "description": "Complete \"Jumper\" in Practice mode",
+    "displayName": "Hop Hop...",
     "hidden": 0,
-    "icon": "achievement_images/53b00566871f426e2e2a341de81b143c0fd1be9d.jpg",
-    "icongray": "achievement_images/27bccf4571b9b3d9e5ed937a7f4301bdf04ba32b.jpg",
-    "name": "MASTERMIND"
+    "icon": "achievement_images/58007038d6a06731eec64ca3fda548b7540e13b3.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level07a"
   },
   {
-    "description": "Discover a large bee's hive deep in the jungle.",
-    "displayName": "Where's My Honey?",
+    "description": "Complete \"Jumper\" in Normal mode",
+    "displayName": "Jumper!",
     "hidden": 0,
-    "icon": "achievement_images/b4b56f2efddc04d7c234de521f58a9ee9e697327.jpg",
-    "icongray": "achievement_images/42a043392ef650a17df5202884652e6e4b8d73ea.jpg",
-    "name": "WHERES_MY_HONEY"
+    "icon": "achievement_images/2ef36d5caad933ecad035f641c746a2cb55cab3d.jpg",
+    "icongray": "achievement_images/e29d9d79b82c17db0ecef29a990487e45bff19b6.jpg",
+    "name": "geometry.ach.level07b"
   },
   {
-    "description": "Defeat the Queen Bee, the matriarch of the jungle hives.",
-    "displayName": "Sting Operation",
+    "description": "Complete \"Time Machine\" in Practice mode",
+    "displayName": "Tick Tock",
     "hidden": 0,
-    "icon": "achievement_images/a8ed027c602baf83e6f3d59ba074eec87b1dd2d7.jpg",
-    "icongray": "achievement_images/c2dc31e752a7949e713bf8547604db81b4299b7d.jpg",
-    "name": "STING_OPERATION"
+    "icon": "achievement_images/243dfcef4bcac4b0b41332edf841d4a8328e0d97.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level08a"
   },
   {
-    "description": "Defeat Skeletron, the cursed guardian of the dungeon.",
-    "displayName": "Boned",
+    "description": "Complete \"Time Machine\" in Normal mode",
+    "displayName": "Time Machine!",
     "hidden": 0,
-    "icon": "achievement_images/11b9d704b496f6586f952e93c2158d38dd169377.jpg",
-    "icongray": "achievement_images/a5920e4de2afd1dfeed66d7669f349a61c9f29bb.jpg",
-    "name": "BONED"
+    "icon": "achievement_images/be444c9e894b9859284e16a45029e87052a80ff1.jpg",
+    "icongray": "achievement_images/bbcee979a8deef12d31d36699eaa0eba7053cb40.jpg",
+    "name": "geometry.ach.level08b"
   },
   {
-    "description": "Steal a key from the dungeon's undead denizens, and unlock one of their precious golden chests.",
-    "displayName": "Dungeon Heist",
+    "description": "Complete \"Cycles\" in Practice mode",
+    "displayName": "Loops",
     "hidden": 0,
-    "icon": "achievement_images/ba1daa2f08355bf11e2494b01db49f47fa4f43c7.jpg",
-    "icongray": "achievement_images/5b9a4093d1f8c8262399f71daf5ea2d949d8c1c7.jpg",
-    "name": "DUNGEON_HEIST"
+    "icon": "achievement_images/36683e45d2dda7693b9510ba1fcb860e32267ae2.jpg",
+    "icongray": "achievement_images/e2211a248d4806601e82a47dce3db93a595968bd.jpg",
+    "name": "geometry.ach.level09a"
   },
   {
-    "description": "Spelunk deep enough to reach the molten underworld.",
-    "displayName": "It's Getting Hot in Here",
+    "description": "Complete \"Cycles\" in Normal mode",
+    "displayName": "Cycles!",
     "hidden": 0,
-    "icon": "achievement_images/58efa6a9a0ae6a955c6a82874961b08c8e4def60.jpg",
-    "icongray": "achievement_images/64b938e19a5dbbe762e0e407b7bac933e6dcc42d.jpg",
-    "name": "ITS_GETTING_HOT_IN_HERE"
+    "icon": "achievement_images/36b4f1c6c0456054200bb9f497a379e7ed203845.jpg",
+    "icongray": "achievement_images/b0fc2e9932487b931b9cfae42912d174be573ae6.jpg",
+    "name": "geometry.ach.level09b"
   },
   {
-    "description": "Craft a molten pickaxe using the hottest of materials.",
-    "displayName": "Miner for Fire",
+    "description": "Complete \"xStep\" in Practice mode",
+    "displayName": "yStep",
     "hidden": 0,
-    "icon": "achievement_images/bbb5c58dea957db42faaa276c697599f0354f06c.jpg",
-    "icongray": "achievement_images/0abf772214e1de738eb095f105e87c014f539d97.jpg",
-    "name": "MINER_FOR_FIRE"
+    "icon": "achievement_images/dc43ddcbd37b5edab1de4dc44b2b128ec4a16be9.jpg",
+    "icongray": "achievement_images/ec27e063fc07b4949431c95baeaaea99e7f0ca96.jpg",
+    "name": "geometry.ach.level10a"
   },
   {
-    "description": "Defeat the Wall of Flesh, the master and core of the world who arises after a great, burning sacrifice.",
-    "displayName": "Still Hungry",
+    "description": "Complete \"xStep\" in Normal mode",
+    "displayName": "xStep!",
     "hidden": 0,
-    "icon": "achievement_images/02ba42d3df19dc2cd81a6bf4ee29c7ce446e4360.jpg",
-    "icongray": "achievement_images/111897a2360d0c1f399d070f0d6a6d2d5554c448.jpg",
-    "name": "STILL_HUNGRY"
+    "icon": "achievement_images/0b86b252fb1db54e1ed051f23311c071ccd106fa.jpg",
+    "icongray": "achievement_images/8a5ce9b8951056c7dc03e5c80fbedaea3b45738a.jpg",
+    "name": "geometry.ach.level10b"
   },
   {
-    "description": "Unleash the ancient spirits of light and darkness across your world, enabling much stronger foes and showering the world with dazzling treasures (and rainbows!).",
-    "displayName": "It's Hard!",
+    "description": "Complete \"Clutterfunk\" in Practice mode",
+    "displayName": "Funky",
     "hidden": 0,
-    "icon": "achievement_images/dc65c66c704560c7a940fab6d5023490f7102fb3.jpg",
-    "icongray": "achievement_images/fcc6d9d4e6fd59d1da778f96efbaa7df4e9053d8.jpg",
-    "name": "ITS_HARD"
+    "icon": "achievement_images/358f37d05e8c4bc013c04b02f42b7cd14605459e.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level11a"
   },
   {
-    "description": "Smash a demon or crimson altar with a powerful, holy hammer.",
-    "displayName": "Begone, Evil!",
+    "description": "Complete \"Clutterfunk\" in Normal mode",
+    "displayName": "Clutterfunk!",
     "hidden": 0,
-    "icon": "achievement_images/c3917d676fc752415849de9f132549d05ba0ca4c.jpg",
-    "icongray": "achievement_images/20e720e5b07babbbc93481b4ccaa4c0168ddc3d2.jpg",
-    "name": "BEGONE_EVIL"
+    "icon": "achievement_images/5fec118682c75e21091d6c3052d5e6ff4c2dfa10.jpg",
+    "icongray": "achievement_images/f681dcaf6d1d0b59e74ce92f349014473ef59ba0.jpg",
+    "name": "geometry.ach.level11b"
   },
   {
-    "description": "Mine a powerful ore that has been newly blessed upon your world.",
-    "displayName": "Extra Shiny!",
+    "description": "Complete \"Theory of Everything\" in Practice mode",
+    "displayName": "Theory of Something",
     "hidden": 0,
-    "icon": "achievement_images/9d573b4067856938a1c13c9c93f3dec66c0c3f72.jpg",
-    "icongray": "achievement_images/dda0a5f3579e08dc09b49591d0c10f3266af1edf.jpg",
-    "name": "EXTRA_SHINY"
+    "icon": "achievement_images/abdcc4bb1a7ceb5c2304a5f6ce4127e3e9a22a00.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level12a"
   },
   {
-    "description": "Equip a pair of wings.",
-    "displayName": "Head in the Clouds",
+    "description": "Complete \"Theory of Everything\" in Normal mode",
+    "displayName": "Theory of Everything!",
     "hidden": 0,
-    "icon": "achievement_images/55cb91ab9841f538742277b897189ab19aaefc8b.jpg",
-    "icongray": "achievement_images/a7bf41d4a8e34e2a322a22af48592bbf3d5dd503.jpg",
-    "name": "HEAD_IN_THE_CLOUDS"
+    "icon": "achievement_images/f78acc1668b93f573dbe343018b5c1ab65fd3bc4.jpg",
+    "icongray": "achievement_images/6586091ce3e8bc7c3e5dc408acde86f0266bf50b.jpg",
+    "name": "geometry.ach.level12b"
   },
   {
-    "description": "Obtain a boss-summoning item.",
-    "displayName": "Like a Boss",
+    "description": "Complete \"Electroman Adventures\" in Practice mode",
+    "displayName": "Electro Time",
     "hidden": 0,
-    "icon": "achievement_images/e5e0bffeb00c720091439eb8336fea7d77f147c5.jpg",
-    "icongray": "achievement_images/efb2a686c7730a07d3ac2ffeaa5460d9c69a9619.jpg",
-    "name": "LIKE_A_BOSS"
+    "icon": "achievement_images/91afb317e63e65d9aab1ac5b7f895099eeb5424f.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level13a"
   },
   {
-    "description": "Defeat the three nocturnal mechanical menaces: the Twins, the Destroyer, and Skeletron Prime.",
-    "displayName": "Buckets of Bolts",
+    "description": "Complete \"Electroman Adventures\" in Normal mode",
+    "displayName": "Electroman Adventures!",
     "hidden": 0,
-    "icon": "achievement_images/27536dd7b5ee4de46b85be337d0c792d685b14f5.jpg",
-    "icongray": "achievement_images/11c5ee02a102d797ca34f74245b6f4e2d33121ed.jpg",
-    "name": "BUCKETS_OF_BOLTS"
+    "icon": "achievement_images/349ed36714f5536c56d5b8e06dceb00a56d87e6b.jpg",
+    "icongray": "achievement_images/989f951f1fb1fa24b8752cf81bc3ac8c57663e74.jpg",
+    "name": "geometry.ach.level13b"
   },
   {
-    "description": "Craft a drax or pickaxe axe using hallowed bars, and the souls of the three mechanical bosses.",
-    "displayName": "Drax Attax",
+    "description": "Complete \"Clubstep\" in Practice mode",
+    "displayName": "Clubbin",
     "hidden": 0,
-    "icon": "achievement_images/d3955ec8610cc6a7229866780451467ab0e5c5a2.jpg",
-    "icongray": "achievement_images/65b04a560e6d035bf2488cabf6eb9fab36121d1f.jpg",
-    "name": "DRAX_ATTAX"
+    "icon": "achievement_images/21dbef0bf207cf2a7e935b4ec49f7eb1774f1226.jpg",
+    "icongray": "achievement_images/e6da641b6f7544cfed74f96e903c4dd0dbcb6f86.jpg",
+    "name": "geometry.ach.level14a"
   },
   {
-    "description": "Mine chlorophyte, an organic ore found deep among the thickest of flora.",
-    "displayName": "Photosynthesis",
+    "description": "Complete \"Clubstep\" in Normal mode",
+    "displayName": "Clubstep!",
     "hidden": 0,
-    "icon": "achievement_images/2a4c26b8eca5e09cabcd64a50b76115d2679796a.jpg",
-    "icongray": "achievement_images/a7db8206e7bcecf947d6ba3514a7784d700e776b.jpg",
-    "name": "PHOTOSYNTHESIS"
+    "icon": "achievement_images/525dbe4df0b96a5d0bf4a6a31a39de9083a02394.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level14b"
   },
   {
-    "description": "Consume a life fruit, which grows in the thick of subterranean jungle grass.",
-    "displayName": "Get a Life",
+    "description": "Complete \"Electrodynamix\" in Practice mode",
+    "displayName": "Electromaniac",
     "hidden": 0,
-    "icon": "achievement_images/e54172f81aaaac5bdabededcb8e52b8c2d2f7f8e.jpg",
-    "icongray": "achievement_images/c2292cc9fd71f85cb02134ab0b1b160eb58aac44.jpg",
-    "name": "GET_A_LIFE"
+    "icon": "achievement_images/02026d2d190215ae97d91972cf5284fe48958881.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level15a"
   },
   {
-    "description": "Defeat Plantera, the overgrown monstrosity of the jungle's depths.",
-    "displayName": "The Great Southern Plantkill",
+    "description": "Complete \"Electrodynamix\" in Normal mode",
+    "displayName": "Electrodynamix!",
     "hidden": 0,
-    "icon": "achievement_images/4b52e1dd35f600a9f82f7958abe2a467d68351e7.jpg",
-    "icongray": "achievement_images/ad356178e23bc02c5347217c5e1fdf1e53a9fcad.jpg",
-    "name": "THE_GREAT_SOUTHERN_PLANTKILL"
+    "icon": "achievement_images/db6bc9cdb3e9a86dcc4cbf0d3cf223c4c7e9394a.jpg",
+    "icongray": "achievement_images/0a1eb113e2100a9d1ae8ef8bbf559261437dacc1.jpg",
+    "name": "geometry.ach.level15b"
   },
   {
-    "description": "Breach the impenetrable walls of the jungle temple.",
-    "displayName": "Temple Raider",
+    "description": "Complete \"Hexagon Force\" in Practice mode",
+    "displayName": "Hexagonest",
     "hidden": 0,
-    "icon": "achievement_images/cd11c08ea1a436e8156e1d3ebeccd1c9ba5cb22f.jpg",
-    "icongray": "achievement_images/e3190b1bb96ed0611d670bbadaae4906a2af8273.jpg",
-    "name": "TEMPLE_RAIDER"
+    "icon": "achievement_images/7b7970299864f35b6f188a87182a075c7a828639.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level16a"
   },
   {
-    "description": "Defeat Golem, the stone-faced ritualistic idol of the lihzahrd tribe.",
-    "displayName": "Lihzahrdian Idol",
+    "description": "Complete \"Hexagon Force\" in Normal mode",
+    "displayName": "Hexagon Force!",
     "hidden": 0,
-    "icon": "achievement_images/3d8a29010ed3e22203cb4f0d52167c88f9c91a5c.jpg",
-    "icongray": "achievement_images/8e1ebae754aceb1afdaa23bd6d98f44577f50d5b.jpg",
-    "name": "LIHZAHRDIAN_IDOL"
+    "icon": "achievement_images/c1412bb090bd4613bf0d313501f7e9c917d91365.jpg",
+    "icongray": "achievement_images/b6b275c59b484b905398b1bdbff66975c942cec5.jpg",
+    "name": "geometry.ach.level16b"
   },
   {
-    "description": "Obtain a rare treasure from a difficult monster in the dungeon.",
-    "displayName": "Robbing the Grave",
+    "description": "Complete \"Blast Processing\" in Practice mode",
+    "displayName": "Blast Power",
     "hidden": 0,
-    "icon": "achievement_images/45884dee9cec706f27db75fbe4567da42d235836.jpg",
-    "icongray": "achievement_images/33a8b86b6798f9a068b7d5fa2040377b950ac248.jpg",
-    "name": "ROBBING_THE_GRAVE"
+    "icon": "achievement_images/453abff4c495c3b1bad2cb8a7e3a0a4070e9e2a5.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level17a"
   },
   {
-    "description": "Unlock one of the dungeon's large, mysterious chests with a special key.",
-    "displayName": "Big Booty",
+    "description": "Complete \"Blast Processing\" in Normal mode",
+    "displayName": "Blast Processing!",
     "hidden": 0,
-    "icon": "achievement_images/c7415e2bf7cbef15558b41c70bb1e306e5682e27.jpg",
-    "icongray": "achievement_images/fab3cbe2a2838c4b45cff7c1345207381759f01f.jpg",
-    "name": "BIG_BOOTY"
+    "icon": "achievement_images/7fe12a71aa102fb9499cfc6ecfda80bc6dd09058.jpg",
+    "icongray": "achievement_images/8f5bfc259c45754466a70cab0dfedc631343354f.jpg",
+    "name": "geometry.ach.level17b"
   },
   {
-    "description": "Defeat Duke Fishron, mutant terror of the sea.",
-    "displayName": "Fish Out of Water",
+    "description": "Complete \"Theory of Everything 2\" in Practice mode",
+    "displayName": "Second Theory",
     "hidden": 0,
-    "icon": "achievement_images/3efe3c4fcbfa43a355df16292f307232559fb3ec.jpg",
-    "icongray": "achievement_images/2f7c0c5af413c687f6d2d2c85535643cc946278f.jpg",
-    "name": "FISH_OUT_OF_WATER"
+    "icon": "achievement_images/fafe07ecee79901246ba3352cea3fc24e91f1968.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.level18a"
   },
   {
-    "description": "Defeat the Ancient Cultist, fanatical leader of the dungeon coven.",
-    "displayName": "Obsessive Devotion",
+    "description": "Complete \"Theory of Everything 2\" in Normal mode",
+    "displayName": "Theory of Everything 2!",
     "hidden": 0,
-    "icon": "achievement_images/b9436b13653d95dd441c8a96213e6a4dfbc6b72f.jpg",
-    "icongray": "achievement_images/72d866929276b478e2f074bee1e5bf1919d47588.jpg",
-    "name": "OBSESSIVE_DEVOTION"
+    "icon": "achievement_images/484106870109b250a800c377b45311c241e53c51.jpg",
+    "icongray": "achievement_images/110db5872af4f71a32f1658aa19439179a148d0b.jpg",
+    "name": "geometry.ach.level18b"
   },
   {
-    "description": "Defeat the four celestial towers of the moon.",
-    "displayName": "Star Destroyer",
+    "description": "Complete a Demon difficulty level in Normal mode",
+    "displayName": "Reflex Champion",
     "hidden": 0,
-    "icon": "achievement_images/da3155b9d24c435c244f7c099914586bac0b9853.jpg",
-    "icongray": "achievement_images/fd4782809e8e761df20a066d73c6e59a37eda578.jpg",
-    "name": "STAR_DESTROYER"
+    "icon": "achievement_images/fc0742a0ef4e2d10df94b5fb3a821689a5908f0f.jpg",
+    "icongray": "achievement_images/5a8dff04caf31f000bb6d35970d603422d41182d.jpg",
+    "name": "geometry.ach.demon01"
   },
   {
-    "description": "Defeat the Moon Lord.",
-    "displayName": "Champion of Terraria",
+    "description": "Complete 2 Demon difficulty levels in Normal mode",
+    "displayName": "Demon Chaser",
     "hidden": 0,
-    "icon": "achievement_images/c91f1b034b7ce14a89a377320eddaf29f18143f1.jpg",
-    "icongray": "achievement_images/84d49737dac6efb43404cfad460f5cf1e4e23f22.jpg",
-    "name": "CHAMPION_OF_TERRARIA"
+    "icon": "achievement_images/fc95a89b764b3b6fc40a47767e1c7a53a7703ee2.jpg",
+    "icongray": "achievement_images/57f529457556ef6d83ace9c610abf993c936df02.jpg",
+    "name": "geometry.ach.demon02"
   },
   {
-    "description": "Survive a blood moon, a nocturnal event where the rivers run red and monsters swarm aplenty.",
-    "displayName": "Bloodbath",
+    "description": "Complete 3 Demon difficulty levels in Normal mode",
+    "displayName": "The One",
     "hidden": 0,
-    "icon": "achievement_images/ce64b32e5385e779e3c615b2f36a966f8cdf4405.jpg",
-    "icongray": "achievement_images/d570053a6fc1e3eb18e08832b945299bcd32f133.jpg",
-    "name": "BLOODBATH"
+    "icon": "achievement_images/015f375d4384b7ed9ce2a747838a9bdfd009e538.jpg",
+    "icongray": "achievement_images/52dcf74daa5b166315dbbbc57e771a1c9e52fef1.jpg",
+    "name": "geometry.ach.demon03"
   },
   {
-    "description": "Defeat King Slime, the lord of all things slimy.",
-    "displayName": "Slippery Shinobi",
+    "description": "Complete 4 Demon difficulty levels in Normal mode",
+    "displayName": "Demon Master",
     "hidden": 0,
-    "icon": "achievement_images/839662b6bd88d0babf10cb9e7d5bafd9d89f3efc.jpg",
-    "icongray": "achievement_images/ff2ed08c73b61064aff96fbb11e3ef7a37cf5cc9.jpg",
-    "name": "SLIPPERY_SHINOBI"
+    "icon": "achievement_images/00355acd2a0c401ad321225baf8afb292f1cb9b9.jpg",
+    "icongray": "achievement_images/7388d4cf38aacd2d282a50480a767f2fef563903.jpg",
+    "name": "geometry.ach.demon04"
   },
   {
-    "description": "Triumph over a goblin invasion, a ragtag regiment of crude, barbaric, pointy-eared warriors and their shadowflame sorcerers.",
-    "displayName": "Goblin Punter",
+    "description": "Complete 5 Demon difficulty levels in Normal mode",
+    "displayName": "Demonic Guardian",
     "hidden": 0,
-    "icon": "achievement_images/984d8201f226319980b9a5f13b0a17455587d187.jpg",
-    "icongray": "achievement_images/748af6880cb3fcd471f8219cf53e120da140021b.jpg",
-    "name": "GOBLIN_PUNTER"
+    "icon": "achievement_images/4c828d5a08138cd36b14f7fbb8ff799e86f635f9.jpg",
+    "icongray": "achievement_images/b2b29db6ac61ae59d608dc5f7044b426a941c65e.jpg",
+    "name": "geometry.ach.demon05"
   },
   {
-    "description": "Triumph over a pirate invasion, a group of pillagers from the sea out for your booty... and your life!",
-    "displayName": "Walk the Plank",
+    "description": "Complete 10 Demon difficulty levels in Normal mode",
+    "displayName": "Demonic Overmind",
     "hidden": 0,
-    "icon": "achievement_images/ce10d46dae4218e320e2ae46188507aa39ddf12b.jpg",
-    "icongray": "achievement_images/67904eae5050a56f21c7ccf11e0980cd8db8210c.jpg",
-    "name": "WALK_THE_PLANK"
+    "icon": "achievement_images/8715db19d2a6719522c5aedc409b671f33c2add7.jpg",
+    "icongray": "achievement_images/bd3c074d5c5fa3b52800493b3564f3bfe436f899.jpg",
+    "name": "geometry.ach.demon06"
   },
   {
-    "description": "Survive a solar eclipse, a day darker than night filled with creatures of horror.",
-    "displayName": "Kill the Sun",
+    "description": "Complete 15 Demon difficulty levels in Normal mode",
+    "displayName": "Master of Timing",
     "hidden": 0,
-    "icon": "achievement_images/b528155244502c33c5bf0b8d8cee3e08e9637216.jpg",
-    "icongray": "achievement_images/30e1e79d2e2a2c398cf6a2f5b56341fd7d2ae51b.jpg",
-    "name": "KILL_THE_SUN"
+    "icon": "achievement_images/c4319002a0cf42ccf0f59dbc0f968d771b8fd3e7.jpg",
+    "icongray": "achievement_images/90771e706661d4449cd544b85fa4205b181d1055.jpg",
+    "name": "geometry.ach.demon07"
   },
   {
-    "description": "Triumph over the frost legion, a festive family of maniacal snowman mobsters.",
-    "displayName": "Do You Want to Slay a Snowman?",
+    "description": "Complete 20 Demon difficulty levels in Normal mode",
+    "displayName": "Unstoppable!",
     "hidden": 0,
-    "icon": "achievement_images/f00bc8242a3fe3ba2c682ae50eaf9c9a14fe95be.jpg",
-    "icongray": "achievement_images/7baaf96332c48c159c7f52dac890fb63ecd469bc.jpg",
-    "name": "DO_YOU_WANT_TO_SLAY_A_SNOWMAN"
+    "icon": "achievement_images/4790757a575f73237ced2a731d41f145dcddc6cd.jpg",
+    "icongray": "achievement_images/2af91d7abd9f4298fe87c8dc413f76ce5939004b.jpg",
+    "name": "geometry.ach.demon08"
   },
   {
-    "description": "Triumph over a martian invasion, when beings from out of this world come to scramble your brains and probe you in uncomfortable places.",
-    "displayName": "Tin-Foil Hatter",
+    "description": "Complete 30 Demon difficulty levels in Normal mode",
+    "displayName": "Demolicious!",
     "hidden": 0,
-    "icon": "achievement_images/c3e587ad5f2dea6f18e3b1dbda3ae258f70edf9c.jpg",
-    "icongray": "achievement_images/2056002102103e728caf7c943a33814cc93664a3.jpg",
-    "name": "TIN_FOIL_HATTER"
+    "icon": "achievement_images/bf0306db33258d8e42568fd18c79e75f5910ac65.jpg",
+    "icongray": "achievement_images/597a1f77bd483f1e4b95098481b22b4eabaa6417.jpg",
+    "name": "geometry.ach.demon09"
   },
   {
-    "description": "Reach the 15th wave of a pumpkin moon, where evil lurks among the autumn harvest.",
-    "displayName": "Baleful Harvest",
+    "description": "Complete 40 Demon difficulty levels in Normal mode",
+    "displayName": "Give me a CHALLENGE!",
     "hidden": 0,
-    "icon": "achievement_images/86778a8e3b31dc11c21491bf0fb49364efa586aa.jpg",
-    "icongray": "achievement_images/d7a84b961390a85af46ac6cc7764d15c39f59c3a.jpg",
-    "name": "BALEFUL_HARVEST"
+    "icon": "achievement_images/376dd58b39392b6160d5a8fcbc35abdd48db5ae3.jpg",
+    "icongray": "achievement_images/83230fc72c3c3ef59339dba000198f02c0284246.jpg",
+    "name": "geometry.ach.demon10"
   },
   {
-    "description": "Reach the 15th wave of a frost moon, where the festive season quickly degrades into madness.",
-    "displayName": "Ice Scream",
+    "description": "Collect 100 stars",
+    "displayName": "Oh, Shiny!",
     "hidden": 0,
-    "icon": "achievement_images/c8da134d01c965ca92dffdeba235f04174e0841e.jpg",
-    "icongray": "achievement_images/96ad2e289870490210a2baa6bb9f8333b5ac9868.jpg",
-    "name": "ICE_SCREAM"
+    "icon": "achievement_images/e68b13f2957d78546e56ba7a9432ae13f811301b.jpg",
+    "icongray": "achievement_images/9504e017cb55fa5626f757763f37d08c6e677107.jpg",
+    "name": "geometry.ach.stars01"
   },
   {
-    "description": "Survive the slime rain, where gelatinous organisms fall from the sky in droves.",
-    "displayName": "Sticky Situation",
+    "description": "Collect 200 stars",
+    "displayName": "More stars!",
     "hidden": 0,
-    "icon": "achievement_images/d033499586f55832b7ca093fc07077c6d64dfb57.jpg",
-    "icongray": "achievement_images/0f8b79711f309e9d4552949765ee5644532e6377.jpg",
-    "name": "STICKY_SITUATION"
+    "icon": "achievement_images/88aa843052eec8974794088511b91adff25af465.jpg",
+    "icongray": "achievement_images/74b7ffe19f7b10a7563286064fe378e75e507acc.jpg",
+    "name": "geometry.ach.stars02"
   },
   {
-    "description": "Have all possible town NPCs living in your world.",
-    "displayName": "Real Estate Agent",
+    "description": "Collect 300 stars",
+    "displayName": "Star Maniac",
     "hidden": 0,
-    "icon": "achievement_images/bb38f0b5c56803197bd87c5de580ede512a0ae59.jpg",
-    "icongray": "achievement_images/05dce04e306a30efc50c2a5a675f6e9f99adbddb.jpg",
-    "name": "REAL_ESTATE_AGENT"
+    "icon": "achievement_images/950d130d0835e3c3b05dd521f85c287e2cc805d4.jpg",
+    "icongray": "achievement_images/5f18d251ab918370ca0683eccfd258e1968cde12.jpg",
+    "name": "geometry.ach.stars03"
   },
   {
-    "description": "Fire a Bee Gun while wearing a full set of Bee Armor.",
-    "displayName": "Not the Bees!",
+    "description": "Collect 400 stars",
+    "displayName": "Master Collector",
     "hidden": 0,
-    "icon": "achievement_images/03d53ce253896b4ca711a08fd8dee0f6cb557cad.jpg",
-    "icongray": "achievement_images/de0d94a90f47e5387f028bf188330a2939ab545a.jpg",
-    "name": "NOT_THE_BEES"
+    "icon": "achievement_images/7f3de4b3bdeb3a5acb4ad94cb5de0773d54ca2e0.jpg",
+    "icongray": "achievement_images/dff393fa78cd8ce0c167e3b8e56bd2e7b7bb5b40.jpg",
+    "name": "geometry.ach.stars04"
   },
   {
-    "description": "Stumble into a spider cavern in the underground.",
-    "displayName": "Jeepers Creepers",
+    "description": "Collect 500 stars",
+    "displayName": "Epic Collector",
     "hidden": 0,
-    "icon": "achievement_images/d9aeb5789d29be12161f43cb7a6a6e7afb045116.jpg",
-    "icongray": "achievement_images/0797a8d84b529fe59b46539aa41ce33c493fc791.jpg",
-    "name": "JEEPERS_CREEPERS"
+    "icon": "achievement_images/f70a3f1251388cfb02c3f8eaed890ccdfc37ecfe.jpg",
+    "icongray": "achievement_images/cd8e0fcf6a2ef2eb574777538b0da8ee1ec9e5df.jpg",
+    "name": "geometry.ach.stars05"
   },
   {
-    "description": "Build or encounter a glowing mushroom field above the surface.",
-    "displayName": "Funkytown",
+    "description": "Collect 600 stars",
+    "displayName": "Epic Master Collector",
     "hidden": 0,
-    "icon": "achievement_images/2f0d702bad1430791b379ff1735f6bf2ba7e9eb1.jpg",
-    "icongray": "achievement_images/5b65e9808d69d30266c14092c1437990fb4e5ed2.jpg",
-    "name": "FUNKYTOWN"
+    "icon": "achievement_images/c41a25c8735a1d5f3279072b5f6737403d3d382d.jpg",
+    "icongray": "achievement_images/fefa36d656c47ffabd5a0ab9f77c60c7d7a62aac.jpg",
+    "name": "geometry.ach.stars06"
   },
   {
-    "description": "You can only go down from here!",
-    "displayName": "Into Orbit",
+    "description": "Collect 700 stars",
+    "displayName": "Star Factory",
     "hidden": 0,
-    "icon": "achievement_images/db6d01c34f6ad734293be8ce9d587e9d0b5faf51.jpg",
-    "icongray": "achievement_images/67dfe8db60f8d6694e13eb1d6bca4a619c7f18a3.jpg",
-    "name": "INTO_ORBIT"
+    "icon": "achievement_images/074a1d04fa27e83a5f003ba66e8017fbf601ef8d.jpg",
+    "icongray": "achievement_images/3b2656f087e126dd65c87f0ebd816fc4c68aa701.jpg",
+    "name": "geometry.ach.stars07"
   },
   {
-    "description": "The only way is up!",
-    "displayName": "Rock Bottom",
+    "description": "Collect 800 stars",
+    "displayName": "Starshine",
     "hidden": 0,
-    "icon": "achievement_images/ef421de200597d9553957957bb16b1504a25c752.jpg",
-    "icongray": "achievement_images/9e055f21ae568e26c5931b5a38b43db9dd5c1b9d.jpg",
-    "name": "ROCK_BOTTOM"
+    "icon": "achievement_images/d32ee86038bc6d81e2d2253d9d45f981f90801d9.jpg",
+    "icongray": "achievement_images/999b9ee4eb18a848e956f35910793be68b379d62.jpg",
+    "name": "geometry.ach.stars08"
   },
   {
-    "description": "Do battle against the Twins, the Destroyer, and Skeletron Prime simultaneously and emerge victorious.",
-    "displayName": "Mecha Mayhem",
+    "description": "Collect 900 stars",
+    "displayName": "All MINE!",
     "hidden": 0,
-    "icon": "achievement_images/d8d3d50b2216d47c33e307972056d8fd8471d54e.jpg",
-    "icongray": "achievement_images/e3953f411d1825a9f20c27716077220048ac8d0c.jpg",
-    "name": "MECHA_MAYHEM"
+    "icon": "achievement_images/77743cc59ba47f05862b3b8fe570f89cd40515ac.jpg",
+    "icongray": "achievement_images/c88d567a781b357dcf9eb0c324b7c33789f6d3b0.jpg",
+    "name": "geometry.ach.stars09"
   },
   {
-    "description": "Defeat every type of slime there is!",
-    "displayName": "Gelatin World Tour",
+    "description": "Collect 1000 stars",
+    "displayName": "MORE SHINY!!!",
     "hidden": 0,
-    "icon": "achievement_images/7528c2a19d58be44828e538579f2c422b35537f5.jpg",
-    "icongray": "achievement_images/1b33ceaa4d26eb9fb8a60bfd0b9d9fd4dbb76354.jpg",
-    "name": "GELATIN_WORLD_TOUR"
+    "icon": "achievement_images/9100d557c9b884590e6775617e6f0fd0497bec98.jpg",
+    "icongray": "achievement_images/46a905520fd52557ffa5dec3b44dbd14f0d31ecb.jpg",
+    "name": "geometry.ach.stars10"
   },
   {
-    "description": "Equip armor or vanity clothing in all three social slots.",
-    "displayName": "Fashion Statement",
+    "description": "Collect 1500 stars",
+    "displayName": "Was that all of them?",
     "hidden": 0,
-    "icon": "achievement_images/a21ac001c8eb0eece9a498b094d5c1f8e121727a.jpg",
-    "icongray": "achievement_images/2d91a2f8a502afe5bbf5f0ab7de1a1263dad1f38.jpg",
-    "name": "FASHION_STATEMENT"
+    "icon": "achievement_images/b5292ea35b8d8f40682222d5dc76f91cf5785d04.jpg",
+    "icongray": "achievement_images/1fa4175a9caf4a339ca0210690b7b204bbfb3cc4.jpg",
+    "name": "geometry.ach.stars11"
   },
   {
-    "description": "Defeat an enemy by running it over with a minecart.",
-    "displayName": "Vehicular Manslaughter",
+    "description": "Collect 2000 stars",
+    "displayName": "Knock knock. Who's there? STARS!",
     "hidden": 0,
-    "icon": "achievement_images/a959913d98f2195136a4c8acd11b98281e2109e4.jpg",
-    "icongray": "achievement_images/dc02c7917eb0fc9ad741c89070530221274cbdf9.jpg",
-    "name": "VEHICULAR_MANSLAUGHTER"
+    "icon": "achievement_images/0107fd9b6c154303992e3d1a09c946debfe103df.jpg",
+    "icongray": "achievement_images/edaea0195295ed841708d25197b992d144dc2fed.jpg",
+    "name": "geometry.ach.stars12"
   },
   {
-    "description": "Destroy a total of 10,000 tiles.",
-    "displayName": "Bulldozer",
+    "description": "Collect 5 Secret Coins",
+    "displayName": "Coins?!",
     "hidden": 0,
-    "icon": "achievement_images/c57a4c06ecbc2ec8fe5af0b1d4cb8cbfe8821a10.jpg",
-    "icongray": "achievement_images/fce7dab9aaaea5580e351ae70e888cc1f6713be7.jpg",
-    "name": "BULLDOZER"
+    "icon": "achievement_images/88db818da5397b8190d0a5d0819443cb115312a8.jpg",
+    "icongray": "achievement_images/45944d113f928b00ddfe4764d61f0c08b3975cb7.jpg",
+    "name": "geometry.ach.coins01"
   },
   {
-    "description": "Kill Tim.",
-    "displayName": "There are Some Who Call Him...",
+    "description": "Collect 10 Secret Coins",
+    "displayName": "Maybe behind that block?",
     "hidden": 0,
-    "icon": "achievement_images/472bdbff627e1e346f0cff906bc698abde36f9c0.jpg",
-    "icongray": "achievement_images/f7c1a70379fdfdba3c25334691584a1e3a960a2d.jpg",
-    "name": "THERE_ARE_SOME_WHO_CALL_HIM"
+    "icon": "achievement_images/e131a26eee5213c7739ebe2d5d9858d8ad197444.jpg",
+    "icongray": "achievement_images/32361dff65bd6769260fbe6ab9d9800d023f507c.jpg",
+    "name": "geometry.ach.coins02"
   },
   {
-    "description": "Kill a nymph.",
-    "displayName": "Deceiver of Fools",
+    "description": "Collect 15 Secret Coins",
+    "displayName": "I.. Need... MORE!",
     "hidden": 0,
-    "icon": "achievement_images/5a07dc5b30fe19e1675d03b89ef2cdd1856d6157.jpg",
-    "icongray": "achievement_images/b7f7236c84356eacfe8693a28b94865d90f54de3.jpg",
-    "name": "DECEIVER_OF_FOOLS"
+    "icon": "achievement_images/91afb317e63e65d9aab1ac5b7f895099eeb5424f.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.coins03"
   },
   {
-    "description": "Obtain a Terra Blade, forged from the finest blades of light and darkness.",
-    "displayName": "Sword of the Hero",
+    "description": "Collect 20 Secret Coins",
+    "displayName": "We wants it!",
     "hidden": 0,
-    "icon": "achievement_images/4256db7a8c24e4bfa312b6768d1af19873883b02.jpg",
-    "icongray": "achievement_images/cb42e09d2a7ba48c618f50681bfd725839e2e08a.jpg",
-    "name": "SWORD_OF_THE_HERO"
+    "icon": "achievement_images/ada15916904e1aeb23d909eaac0e26228e89fb9b.jpg",
+    "icongray": "achievement_images/06eb8ed4e0ef09237089b5c84a9227a48367e89c.jpg",
+    "name": "geometry.ach.coins04"
   },
   {
-    "description": "Survive a long fall with just a sliver of health remaining.",
-    "displayName": "Lucky Break",
+    "description": "Collect 25 Secret Coins",
+    "displayName": "We needs it!",
     "hidden": 0,
-    "icon": "achievement_images/8fe7fc557c8573f9bf353c82387dd18c4f20c9ab.jpg",
-    "icongray": "achievement_images/443d31c8693f52f10041b43e7fa7479aff01e827.jpg",
-    "name": "LUCKY_BREAK"
+    "icon": "achievement_images/de71de24674660392e6d644db5c154d49ef6cbde.jpg",
+    "icongray": "achievement_images/e077dd7fc60ab1deb57759baa69fa5e098828971.jpg",
+    "name": "geometry.ach.coins05"
   },
   {
-    "description": "Throw a yoyo.",
-    "displayName": "Throwing Lines",
+    "description": "Collect 30 Secret Coins",
+    "displayName": "Must have the precious",
     "hidden": 0,
-    "icon": "achievement_images/efd06080d5ca93192d2c1dda6e9cf92b424e461e.jpg",
-    "icongray": "achievement_images/a5465292376582d75b67bd891e59f29680a4e7e2.jpg",
-    "name": "THROWING_LINES"
+    "icon": "achievement_images/525dbe4df0b96a5d0bf4a6a31a39de9083a02394.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.coins06"
   },
   {
-    "description": "Equip a dye in every possible dye slot.",
-    "displayName": "Dye Hard",
+    "description": "Collect 35 Secret Coins",
+    "displayName": "They stole it from us!",
     "hidden": 0,
-    "icon": "achievement_images/1aa1fffcccddc0cf50f4da93914ad18e59e92c23.jpg",
-    "icongray": "achievement_images/2b67334a91be3f2fd00199db5c8a12251e5fd043.jpg",
-    "name": "DYE_HARD"
+    "icon": "achievement_images/4c615d265886f746e1783d54a704df7a3178048f.jpg",
+    "icongray": "achievement_images/967de068b46f08ae2bb0ce4ca5e6163e6b61d0a6.jpg",
+    "name": "geometry.ach.coins07"
   },
   {
-    "description": "Obtain the Terrarian.",
-    "displayName": "Sick Throw",
+    "description": "Collect 40 Secret Coins",
+    "displayName": "Where is it?! Where is it?!",
     "hidden": 0,
-    "icon": "achievement_images/7cf7f0f0a17e1bfdb864857698458a548454f944.jpg",
-    "icongray": "achievement_images/36664bb1b70a54c595b133845977fc1dd2f59c5e.jpg",
-    "name": "SICK_THROW"
+    "icon": "achievement_images/b8bab74bf1b539bf10f364752f7b7c8e8cbc3df7.jpg",
+    "icongray": "achievement_images/5738f0a3e209ac612904cdbd616861c5cf082c4a.jpg",
+    "name": "geometry.ach.coins08"
   },
   {
-    "description": "Spend over 1 gold being treated by the nurse.",
-    "displayName": "The Frequent Flyer",
+    "description": "Collect 45 Secret Coins",
+    "displayName": "Thief, thief, thief!",
     "hidden": 0,
-    "icon": "achievement_images/af50c3b5549094e0f99d20f04ff6ed4e5fda6889.jpg",
-    "icongray": "achievement_images/50ad4ca074968f2d4c75aaaa8cf267bdc4da3bd2.jpg",
-    "name": "FREQUENT_FLYER"
+    "icon": "achievement_images/09058757d92952164dedb6624c49cab3988695d7.jpg",
+    "icongray": "achievement_images/8e0ab9ac2d3852d9a26f941eacd7bd520e9c210f.jpg",
+    "name": "geometry.ach.coins09"
   },
   {
-    "description": "Equip a mount.",
-    "displayName": "The Cavalry",
+    "description": "Collect 50 Secret Coins",
+    "displayName": "My Precious...",
     "hidden": 0,
-    "icon": "achievement_images/da6e31f8c70f22252c7d5c7ec6882093499146f9.jpg",
-    "icongray": "achievement_images/aad963cda98cdd9970682c0fd30517768b9eee32.jpg",
-    "name": "THE_CAVALRY"
+    "icon": "achievement_images/5ee5b985ccb76f0ecfb7517e73777f85535e3b2b.jpg",
+    "icongray": "achievement_images/a1b1ee154e87f2b1084ce51dec7b07499e86f7d0.jpg",
+    "name": "geometry.ach.coins10"
   },
   {
-    "description": "Obtain a minishark.",
-    "displayName": "Completely Awesome",
+    "description": "Collect 55 Secret Coins",
+    "displayName": "There's more!?",
     "hidden": 0,
-    "icon": "achievement_images/8ae7da8ea8eb7fd920f499fb762e7efb24fae8fc.jpg",
-    "icongray": "achievement_images/aff3bad7ac17baf7ac01387ba9b706a48d546d70.jpg",
-    "name": "COMPLETELY_AWESOME"
+    "icon": "achievement_images/97f8b0503f17c3be1e6c80814dcaa5f1fe558378.jpg",
+    "icongray": "achievement_images/838369926f0f5f1287b1b773201906108625fdfd.jpg",
+    "name": "geometry.ach.coins11"
   },
   {
-    "description": "Kill the groom.",
-    "displayName": "Til Death...",
+    "description": "Collect 60 Secret Coins",
+    "displayName": "Found it under a rock!",
     "hidden": 0,
-    "icon": "achievement_images/67c95d83892c06d5d3cfb9070e0260da72500d4a.jpg",
-    "icongray": "achievement_images/0489d40788b5c12008be275ee0ce1d9fd105e312.jpg",
-    "name": "TIL_DEATH"
+    "icon": "achievement_images/27033387daaf25083826bff44d5ded56a89e5209.jpg",
+    "icongray": "achievement_images/52c14e8986308b93092d6a8c2e77695e40192817.jpg",
+    "name": "geometry.ach.coins12"
   },
   {
-    "description": "Kill Doctor Bones.",
-    "displayName": "Archaeologist",
+    "description": "Collect 65 Secret Coins",
+    "displayName": "Not so secret",
     "hidden": 0,
-    "icon": "achievement_images/3060f4ae13f56fbb3f78e36371aaa039f4b2c9bf.jpg",
-    "icongray": "achievement_images/a7561e76c30e3abc7102234be1c52c08eff35961.jpg",
-    "name": "ARCHAEOLOGIST"
+    "icon": "achievement_images/b784a6a2440b9e1b578fb74d040f38e079a0bc78.jpg",
+    "icongray": "achievement_images/a8b7b9acb4787f1d1a26843f30ce4b6d4df931d1.jpg",
+    "name": "geometry.ach.coins13"
   },
   {
-    "description": "Kill pinky.",
-    "displayName": "Pretty in Pink",
+    "description": "Collect 70 Secret Coins",
+    "displayName": "Nothing is secret!",
     "hidden": 0,
-    "icon": "achievement_images/f00eae3408364653eefe9a6e9283a1610ae8643b.jpg",
-    "icongray": "achievement_images/5853fb23955af87e5d6aba210fcf4fd4efc2474f.jpg",
-    "name": "PRETTY_IN_PINK"
+    "icon": "achievement_images/b06b4026e8e42622a4ddc125957a5ea6bfa556c2.jpg",
+    "icongray": "achievement_images/977bc76626f62949ff4d7e871db44ff6f8f6a242.jpg",
+    "name": "geometry.ach.coins14"
   },
   {
-    "description": "Fire a rainbow gun while riding on a unicorn.",
-    "displayName": "Rainbows and Unicorns",
+    "description": "Collect 75 Secret Coins",
+    "displayName": "Finders Keepers!",
     "hidden": 0,
-    "icon": "achievement_images/bc685bc68f0fa00ba3a78d0302a03b593d328bd2.jpg",
-    "icongray": "achievement_images/d288ddb53b518ea47d072c8c6be5c7d73fcba69e.jpg",
-    "name": "RAINBOWS_AND_UNICORNS"
+    "icon": "achievement_images/b52d6dffbedd5448d6a3f83d04c3653fe21f59ba.jpg",
+    "icongray": "achievement_images/1abfaacffb2f95daf464966f375b282a78e99385.jpg",
+    "name": "geometry.ach.coins15"
   },
   {
-    "description": "Command nine summoned minions simultaneously.",
-    "displayName": "You and What Army?",
+    "description": "Collect 80 Secret Coins",
+    "displayName": "The Golden Rule",
     "hidden": 0,
-    "icon": "achievement_images/3b575ae17236ef4fda976015685e0e2c55b4c2e4.jpg",
-    "icongray": "achievement_images/3720f2cb46ac0ae9474d4bf7de094eb2d28d9080.jpg",
-    "name": "YOU_AND_WHAT_ARMY"
+    "icon": "achievement_images/634d4b999bf2d7015c72c85b164a9c59e690550a.jpg",
+    "icongray": "achievement_images/3a1f70fab12dfc15ca7e4abdad1032702564effc.jpg",
+    "name": "geometry.ach.coins16"
   },
   {
-    "description": "Obtain a rainbow rod.",
-    "displayName": "Prismancer",
+    "description": "Collect 85 Secret Coins",
+    "displayName": "Robin Hood",
     "hidden": 0,
-    "icon": "achievement_images/6c21f8ead465f9cd90c7b4d936239467c334bd5c.jpg",
-    "icongray": "achievement_images/738a9dc9464e7d514f902f578ff589c34bcd8238.jpg",
-    "name": "PRISMANCER"
+    "icon": "achievement_images/39a2bb2284e20a38955378fd7353f7042018d274.jpg",
+    "icongray": "achievement_images/5fee798fc28ddbeec975ab70026d6f3494a794a3.jpg",
+    "name": "geometry.ach.coins17"
   },
   {
-    "description": "Build a house in a mushroom biome and have the Truffle move in.",
-    "displayName": "It Can Talk?!",
+    "description": "Collect 90 Secret Coins",
+    "displayName": "The Finder",
     "hidden": 0,
-    "icon": "achievement_images/5bcc7dd72c781448be7f89fab335d7c789defc92.jpg",
-    "icongray": "achievement_images/0bb0ed6b0027acbcdaecb0e36d1d86d8cbea9969.jpg",
-    "name": "IT_CAN_TALK"
+    "icon": "achievement_images/87722d5e2812d567e740b31de6628713c8c46b8c.jpg",
+    "icongray": "achievement_images/ee4a109146517cd3acf0a9e1379b2fec72427c5c.jpg",
+    "name": "geometry.ach.coins18"
   },
   {
-    "description": "Become a victim to a nasty underground trap.",
-    "displayName": "Watch Your Step!",
+    "description": "Collect 95 Secret Coins",
+    "displayName": "Tax Collector",
     "hidden": 0,
-    "icon": "achievement_images/280b95017555560b63ea0a44dbdb3a38e86cd7cd.jpg",
-    "icongray": "achievement_images/6ad4453544e6167718ec3fffd91271b6bb46d66b.jpg",
-    "name": "WATCH_YOUR_STEP"
+    "icon": "achievement_images/c8e3d06e5e68dc94e44e2bc78efc7d73732829dc.jpg",
+    "icongray": "achievement_images/df8fb4a188fe13fe1a3eb0ba09bb511821a721f7.jpg",
+    "name": "geometry.ach.coins19"
   },
   {
-    "description": "Travel a total of 26.2 miles on foot.",
-    "displayName": "Marathon Medalist",
+    "description": "Collect 100 Secret Coins",
+    "displayName": "The King's Vault",
     "hidden": 0,
-    "icon": "achievement_images/c624a2f9b28c26d804f22337d4c46efffc2d4563.jpg",
-    "icongray": "achievement_images/3a0fa8a90eb2ec4ecd57352d8139845fd4d93ec9.jpg",
-    "name": "MARATHON_MEDALIST"
+    "icon": "achievement_images/56b51b0c6ec202e0dc4d539fef5c481ca9576c9c.jpg",
+    "icongray": "achievement_images/ce9f64c106f3772173b4472ae120ece2b8047e64.jpg",
+    "name": "geometry.ach.coins20"
   },
   {
-    "description": "Obtain a golden fishing rod.",
-    "displayName": "Glorious Golden Pole",
+    "description": "Complete a Map Pack",
+    "displayName": "Jump, Forrest, jump",
     "hidden": 0,
-    "icon": "achievement_images/31bf55f9458e34e287fdda09870667d8aefb40d9.jpg",
-    "icongray": "achievement_images/4cc5ff3420fe0900910bee9255ae62c97842c837.jpg",
-    "name": "GLORIOUS_GOLDEN_POLE"
+    "icon": "achievement_images/857035d30b46200b400e18a323aff18f2b9dc2f9.jpg",
+    "icongray": "achievement_images/cf4abeac71ee490c0e255b1b7097c56b99d5a9cc.jpg",
+    "name": "geometry.ach.mappacks01"
   },
   {
-    "description": "Complete your 1st quest for the angler.",
-    "displayName": "Servant-in-Training",
+    "description": "Complete 5 Map Packs",
+    "displayName": "Failure is not an option",
     "hidden": 0,
-    "icon": "achievement_images/b973018a8927f10e575b7c26f3be471d36770a18.jpg",
-    "icongray": "achievement_images/561d73948b4fed4061d48672303ed04cd1fb6d82.jpg",
-    "name": "SERVANT_IN_TRAINING"
+    "icon": "achievement_images/eed58eba44cb53f99c1e6a3c29d25093a09129cb.jpg",
+    "icongray": "achievement_images/44b31a54ba8117bdfa6ab1d51e158ce55a72aae1.jpg",
+    "name": "geometry.ach.mappacks02"
   },
   {
-    "description": "Complete your 10th quest for the angler.",
-    "displayName": "Good Little Slave",
+    "description": "Complete 10 Map Packs",
+    "displayName": "Map Packer",
     "hidden": 0,
-    "icon": "achievement_images/d3c8364503839510538d9689703a49ebf7871354.jpg",
-    "icongray": "achievement_images/dff9d0c485bfaca3b75b6d72ea8683882742b71b.jpg",
-    "name": "GOOD_LITTLE_SLAVE"
+    "icon": "achievement_images/380248ffc872a0c29f6f8289443e6017d4e3e681.jpg",
+    "icongray": "achievement_images/89b6b4837a755005f5422f2f3fb11219845dbff5.jpg",
+    "name": "geometry.ach.mappacks03"
   },
   {
-    "description": "Complete your 25th quest for the angler.",
-    "displayName": "Trout Monkey",
+    "description": "Complete 15 Map Packs",
+    "displayName": "Pack it up",
     "hidden": 0,
-    "icon": "achievement_images/8c6376252ce0e24852d8182d85e005a892e7a36c.jpg",
-    "icongray": "achievement_images/22bcf25b747e1f047a55c0f4f9417e0bf5e1854c.jpg",
-    "name": "TROUT_MONKEY"
+    "icon": "achievement_images/7216526d3ceb0898cd581e2c87c132cccc6f0302.jpg",
+    "icongray": "achievement_images/506bee13f8dc25325b696550f1e95384c13e21b3.jpg",
+    "name": "geometry.ach.mappacks04"
   },
   {
-    "description": "Complete your 50th quest for the angler.",
-    "displayName": "Fast and Fishious",
+    "description": "Complete 20 Map Packs",
+    "displayName": "Package Complete",
     "hidden": 0,
-    "icon": "achievement_images/d165c8707e2896057eff47fbb9042dc88acc4ca7.jpg",
-    "icongray": "achievement_images/e656b806588daf3eaf8266485f104257b11be802.jpg",
-    "name": "FAST_AND_FISHIOUS"
+    "icon": "achievement_images/c5b6a76016c9192449a41dc6f9f0692dce83fccf.jpg",
+    "icongray": "achievement_images/4c74f43cf9c7f70bf4890a706249f8174830a9d2.jpg",
+    "name": "geometry.ach.mappacks05"
   },
   {
-    "description": "Complete a grand total of 200 quests for the angler.",
-    "displayName": "Supreme Helper Minion!",
+    "description": "Complete 25 Map Packs",
+    "displayName": "You pack, I complete",
     "hidden": 0,
-    "icon": "achievement_images/0efea1bf7f4a5adf079263c1db65cf6d9445ae87.jpg",
-    "icongray": "achievement_images/0a6ff6a36670c96ceb4d30cf6fd69d2fdf55f38e.jpg",
-    "name": "SUPREME_HELPER_MINION"
+    "icon": "achievement_images/0cd1cf8e971378507cf4d2c2d97e703fb65a2d76.jpg",
+    "icongray": "achievement_images/9d2ebe580caaf6fc71b946dfdf16907ec2a397fc.jpg",
+    "name": "geometry.ach.mappacks06"
   },
   {
-    "description": "Attain maximum health and mana possible without accessories or buffs.",
-    "displayName": "Topped Off",
+    "description": "Complete 30 Map Packs",
+    "displayName": "I R Unstoppable!",
     "hidden": 0,
-    "icon": "achievement_images/6fafd5617f5f2c23a0ffeefc2799d2fbb5a7c801.jpg",
-    "icongray": "achievement_images/f53a0153c8fbe5158609b871d794e436709e802a.jpg",
-    "name": "TOPPED_OFF"
+    "icon": "achievement_images/ebe74ab189a68f10f907b616e393fee2330ef2a0.jpg",
+    "icongray": "achievement_images/39be350edb24e9bd928c9d45da0b6837ee5df30e.jpg",
+    "name": "geometry.ach.mappacks07"
   },
   {
-    "description": "Defeat every boss in Terraria.",
-    "displayName": "Slayer of Worlds",
+    "description": "Complete a user created level in Normal mode",
+    "displayName": "Challenger",
     "hidden": 0,
-    "icon": "achievement_images/98a47ac6d34f74f0f4d8651a929701bd2aa4ae42.jpg",
-    "icongray": "achievement_images/016e2af6b13f54ffa3d52c31bad7e01be53694b4.jpg",
-    "name": "SLAYER_OF_WORLDS"
+    "icon": "achievement_images/82f28a822a724754b468cb2774f82d611dcc90df.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.custom01"
   },
   {
-    "description": "Survive your character's first full night.",
-    "displayName": "You Can Do It!",
+    "description": "Complete 10 user created levels in Normal mode",
+    "displayName": "Master",
     "hidden": 0,
-    "icon": "achievement_images/6a5b944787cc9f1dab1dd661e409ce97996d412b.jpg",
-    "icongray": "achievement_images/a040d581a494f8fb08c212bd1d6b1ed552e4e7e4.jpg",
-    "name": "YOU_CAN_DO_IT"
+    "icon": "achievement_images/e53cc6edb3c56a19a84fb43e08fd7fa5eb2815c4.jpg",
+    "icongray": "achievement_images/f0e81eebe0395a4b01e0b5fd7b031c3b473ba5f0.jpg",
+    "name": "geometry.ach.custom02"
   },
   {
-    "description": "Equip armor in all three armor slots: head, chest, and feet.",
-    "displayName": "Matching Attire",
+    "description": "Complete 50 user created levels in Normal mode",
+    "displayName": "The Gamer",
     "hidden": 0,
-    "icon": "achievement_images/4982fd3ed36214f5c68280e4502a48f6a2e857cc.jpg",
-    "icongray": "achievement_images/e4a07abd78446149c798233475eee2c68c5696b7.jpg",
-    "name": "MATCHING_ATTIRE"
+    "icon": "achievement_images/8822dc7e73fb8abff582488040d4c7d9c0ca47f5.jpg",
+    "icongray": "achievement_images/1036eb987e210ea852ac9277f8a5c424d438f446.jpg",
+    "name": "geometry.ach.custom03"
   },
   {
-    "description": "Craft your first work bench.",
-    "displayName": "Benched",
+    "description": "Complete 100 user created levels in Normal mode",
+    "displayName": "Geometrician",
     "hidden": 0,
-    "icon": "achievement_images/e76f23d7116ce2a3ddb73611a58207094f2fed35.jpg",
-    "icongray": "achievement_images/1e60f2b4095ae944e56e5eb854a6cfffd6b37ab4.jpg",
-    "name": "BENCHED"
+    "icon": "achievement_images/96d740632f44297a27eae3b918c386111d18dd38.jpg",
+    "icongray": "achievement_images/d5010fe3b22c103143e17fcd0458a4f83c8ccafe.jpg",
+    "name": "geometry.ach.custom04"
   },
   {
-    "description": "Defeat the Empress of Light, responsible for all those flashy lights and glitter.",
-    "displayName": "Fae Flayer",
+    "description": "Complete 200 user created levels in Normal mode",
+    "displayName": "Spike dodger",
     "hidden": 0,
-    "icon": "achievement_images/ae620dba9905fffad026095e82548c0cddb31b94.jpg",
-    "icongray": "achievement_images/9aedb19301a931e82d22736eff0c068e07ed0760.jpg",
-    "name": "DEFEAT_EMPRESS_OF_LIGHT"
+    "icon": "achievement_images/0a4a4af39b3be3ede590370d4550fcf40e625721.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.custom05"
   },
   {
-    "description": "Defeat Queen Slime, giving the coup-de-grace to the sovereign of all that jiggles.",
-    "displayName": "Just Desserts",
+    "description": "Complete 300 user created levels in Normal mode",
+    "displayName": "No match for me!",
     "hidden": 0,
-    "icon": "achievement_images/6091aa5a41f25af23b6c408d9669bc0bb8aa067b.jpg",
-    "icongray": "achievement_images/f636763903291de2fe31af4cbb644d7677b8e01e.jpg",
-    "name": "DEFEAT_QUEEN_SLIME"
+    "icon": "achievement_images/18126accb652a8a109601e4301ad6d823faa8a0e.jpg",
+    "icongray": "achievement_images/8eeb6dfd739abbe1b60b077f9aebb84d2ec6d05d.jpg",
+    "name": "geometry.ach.custom06"
   },
   {
-    "description": "Defeat the Dreadnautilus, murderous mollusk lurking beneath the surface of the sanguine seas.",
-    "displayName": "Don't Dread on Me",
+    "description": "Complete 500 user created levels in Normal mode",
+    "displayName": "Bring me their heads!",
     "hidden": 0,
-    "icon": "achievement_images/f36753b1fe186f04edf1a7ae791b85f70b07302b.jpg",
-    "icongray": "achievement_images/613f71db1cf2797cbb409c2bfc139114298512bd.jpg",
-    "name": "DEFEAT_DREADNAUTILUS"
+    "icon": "achievement_images/2efb7eb0a5082c2eb931a8788c3943a9943ef629.jpg",
+    "icongray": "achievement_images/a7818b78622bb7fb53369751a94cd903fa8e7524.jpg",
+    "name": "geometry.ach.custom07"
   },
   {
-    "description": "Repel the strongest forces the Old One's Army can muster.",
-    "displayName": "Hero of Etheria",
+    "description": "Complete 1000 user created levels in Normal mode",
+    "displayName": "Tonight, we dine in GEOMETRY DASH!",
     "hidden": 0,
-    "icon": "achievement_images/2c1f94b506fc34b6f3cb805c08b1b19484e4c5aa.jpg",
-    "icongray": "achievement_images/7df01b8161f74f4955b862736c0b5b8bcf045d23.jpg",
-    "name": "DEFEAT_OLD_ONES_ARMY_TIER3"
+    "icon": "achievement_images/10e09b6e8aa93036919fee98a8d4a4a0c758bf2a.jpg",
+    "icongray": "achievement_images/3d740dca6ca8f115890dc4bfea1f64d95a36a0db.jpg",
+    "name": "geometry.ach.custom08"
   },
   {
-    "description": "Obtain the Zenith, the culmination of a journey forged into the ultimate sword.",
-    "displayName": "Infinity +1 Sword",
+    "description": "Review \"Geometry Dash\" and let us know what you think",
+    "displayName": "Supporter",
     "hidden": 0,
-    "icon": "achievement_images/ad65c49e080605670ce5dee3e94c5863e5dcdb76.jpg",
-    "icongray": "achievement_images/04b28a823ec8d9313de04825c8157a7692a0328f.jpg",
-    "name": "GET_ZENITH"
+    "icon": "achievement_images/61084c0d07ccc047ca603530069b4f56c95711f2.jpg",
+    "icongray": "achievement_images/c88230f9f1a447dfcbf2f26604192301eae16f92.jpg",
+    "name": "geometry.ach.rate"
   },
   {
-    "description": "Obtain the Terraspark Boots, forged from the finest boots of fire and ice.",
-    "displayName": "Boots of the Hero",
+    "description": "Jump 1000 times",
+    "displayName": "Bounce",
     "hidden": 0,
-    "icon": "achievement_images/50bae94af5dffa4d3f41d242aefaa84b34a6df1a.jpg",
-    "icongray": "achievement_images/2578c03ef18818fb5e417cd1bcd1a5cffafcc30e.jpg",
-    "name": "GET_TERRASPARK_BOOTS"
+    "icon": "achievement_images/3db1d64381bba1fdf732afae1bd5126b36319d7c.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.jump01"
   },
   {
-    "description": "Fly a kite on a windy day.",
-    "displayName": "A Rather Blustery Day",
+    "description": "Jump 10000 times",
+    "displayName": "I like jumping",
     "hidden": 0,
-    "icon": "achievement_images/fb4a164d117f4e02e2e84b0803d25f5c39a147ba.jpg",
-    "icongray": "achievement_images/c92f4deff9808eb23ec2757142e452711aaf586f.jpg",
-    "name": "FLY_A_KITE_ON_A_WINDY_DAY"
+    "icon": "achievement_images/82f28a822a724754b468cb2774f82d611dcc90df.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.jump02"
   },
   {
-    "description": "Enter a misty graveyard filled with the surly dead.",
-    "displayName": "Quiet Neighborhood",
+    "description": "Jump 20000 times",
+    "displayName": "You jump like a pro!",
     "hidden": 0,
-    "icon": "achievement_images/a3e4fc9470751bf2eec49a0d9fc3409a110328ec.jpg",
-    "icongray": "achievement_images/69b94c1610e1c96b85fcfc2f4e255edbad3a74d8.jpg",
-    "name": "FOUND_GRAVEYARD"
+    "icon": "achievement_images/243dfcef4bcac4b0b41332edf841d4a8328e0d97.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.jump03"
   },
   {
-    "description": "Drop a lure in a pool of lava for a pre-fried haul!",
-    "displayName": "Hot Reels!",
+    "description": "Jump 50000 times",
+    "displayName": "Hop Hop Hop",
     "hidden": 0,
-    "icon": "achievement_images/b69c78cee817dbe14238c10c042bf478003a9c27.jpg",
-    "icongray": "achievement_images/857e2df684ca7b638f1fea5d20a075a6610b7cc6.jpg",
-    "name": "GO_LAVA_FISHING"
+    "icon": "achievement_images/fc9269b80c2321a196d044927fe0bb1e7f014cc1.jpg",
+    "icongray": "achievement_images/515f42d410b8d689a1e5366ac1ca7b77c223ba68.jpg",
+    "name": "geometry.ach.jump04"
   },
   {
-    "description": "Trick a gnome into turning into stone!",
-    "displayName": "Heliophobia",
+    "description": "Do 100 attempts",
+    "displayName": "Trial and error",
     "hidden": 0,
-    "icon": "achievement_images/0d7088cea84ce1cdbb400285318dd138ffac3a21.jpg",
-    "icongray": "achievement_images/1313002f19b26295d625d7cad1c45c3417bf961d.jpg",
-    "name": "TURN_GNOME_TO_STATUE"
+    "icon": "achievement_images/50c9fe7ee63c6fb7a298d098ec8f4ff3d7afbf61.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.attempt01"
   },
   {
-    "description": "Meet with a tenant who's as happy as they possibly can be!",
-    "displayName": "Leading Landlord",
+    "description": "Do 500 attempts",
+    "displayName": "Crash Tester",
     "hidden": 0,
-    "icon": "achievement_images/16ad9b0660dbb63a04c9866f5e09f6337dd194af.jpg",
-    "icongray": "achievement_images/350b6b619fe3ea6c65afba12e9d652573a9b6251.jpg",
-    "name": "TALK_TO_NPC_AT_MAX_HAPPINESS"
+    "icon": "achievement_images/84bacf3d34bd5419a844402269d871fc18322503.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.attempt02"
   },
   {
-    "description": "Deliver headpats to the town pet.",
-    "displayName": "Feeling Petty",
+    "description": "Do 2000 attempts",
+    "displayName": "You Shall Not Pass!",
     "hidden": 0,
-    "icon": "achievement_images/89ae5fc62de83ed0c5b472dba2434a2f91940bd1.jpg",
-    "icongray": "achievement_images/1f06334eac77fd793fff2b120974b63dd288cefc.jpg",
-    "name": "PET_THE_PET"
+    "icon": "achievement_images/abdcc4bb1a7ceb5c2304a5f6ce4127e3e9a22a00.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.attempt03"
   },
   {
-    "description": "Encounter a fairy.",
-    "displayName": "Hey! Listen!",
+    "description": "Do 10000 attempts",
+    "displayName": "Ouch...",
     "hidden": 0,
-    "icon": "achievement_images/98424268ca1fe5748753b891affa4c20c4ab5147.jpg",
-    "icongray": "achievement_images/b0d9f7a7c9bf4736da35eaea7da9d226fc87f717.jpg",
-    "name": "FIND_A_FAIRY"
+    "icon": "achievement_images/02026d2d190215ae97d91972cf5284fe48958881.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.attempt04"
   },
   {
-    "description": "What you're celebrating doesn't matter, just throw a party already!",
-    "displayName": "Jolly Jamboree",
+    "description": "Like an online level",
+    "displayName": "Helper",
     "hidden": 0,
-    "icon": "achievement_images/9f723603a35018b1701fd21a222ee26a60ca845c.jpg",
-    "icongray": "achievement_images/bba16ecd82696ca2f05d2d29ecb9ce7085cbc921.jpg",
-    "name": "THROW_A_PARTY"
+    "icon": "achievement_images/45099e30abcb90c512673d060553a3807a6c7b7e.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.like"
   },
   {
-    "description": "You were so preoccupied with whether or not you could open the chest that you didn't stop to think if you should.",
-    "displayName": "Dead Men Tell No Tales",
+    "description": "Like or Dislike 100 online levels",
+    "displayName": "Cleric",
     "hidden": 0,
-    "icon": "achievement_images/0dfe1e75f8432cd357cefa8190a11693a2786dc0.jpg",
-    "icongray": "achievement_images/264f324b58874bd8836bc38fc8ef9906671520f2.jpg",
-    "name": "DIE_TO_DEAD_MANS_CHEST"
+    "icon": "achievement_images/4a516e41f025f1af34fa7c88e9057c0f661295ee.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.like02"
   },
   {
-    "description": "Defeat Deerclops, the chilly one-eyed monstrosity from a foreign land.",
-    "displayName": "An Eye For An Eye",
+    "description": "Like or Dislike 1000 online levels",
+    "displayName": "Spymaster",
     "hidden": 0,
-    "icon": "achievement_images/8bbfcf168e0034054d479a72d30e2fe36354f2cc.jpg",
-    "icongray": "achievement_images/732d05d33f4cab1fcfff1adbba9e2aa25361e1ee.jpg",
-    "name": "DEFEAT_DEERCLOPS"
+    "icon": "achievement_images/fd170dcdb6f2aae63ee4bfb2e5f1c919fbf0d450.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.like03"
   },
   {
-    "description": "Obtain Golden Delight, the highest quality meal made from the highest quality . . . ingredients.",
-    "displayName": "Feast of Midas",
+    "description": "Rate the difficulty of an online level",
+    "displayName": "Guide",
     "hidden": 0,
-    "icon": "achievement_images/a66cea955e671d290bad146559a3bd060eaf794a.jpg",
-    "icongray": "achievement_images/2d10311274fe7c92ab25cc29afdca86b019ad472.jpg",
-    "name": "GET_GOLDEN_DELIGHT"
+    "icon": "achievement_images/1940fbed8e05f14f46ac1bcd46916782029e42a3.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.rateDiff"
   },
   {
-    "description": "Delay death from drowning by drinking water. It doesn't make much sense, but you did what you had to do.",
-    "displayName": "Unusual Survival Strategies",
+    "description": "Rate the difficulty of 100 online levels",
+    "displayName": "Visionary",
     "hidden": 0,
-    "icon": "achievement_images/8e1b99704b1f4c6b22d7debe3860f8490abca351.jpg",
-    "icongray": "achievement_images/321621992dd22a16a4e42203092ce24ac6847c34.jpg",
-    "name": "DRINK_BOTTLED_WATER_WHILE_DROWNING"
+    "icon": "achievement_images/fd170dcdb6f2aae63ee4bfb2e5f1c919fbf0d450.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.rateDiff02"
   },
   {
-    "description": "Obtain the Cell Phone. You'll never leave home without it again.",
-    "displayName": "Black Mirror",
+    "description": "Rate the difficulty of 1000 online levels",
+    "displayName": "Guiding Light",
     "hidden": 0,
-    "icon": "achievement_images/bcf6b104b2bccd4a5f781fc3983bd42b5fb1eea2.jpg",
-    "icongray": "achievement_images/aeb444fb0c6190dc87a8a788fff84172610a8a2a.jpg",
-    "name": "GET_CELL_PHONE"
+    "icon": "achievement_images/4a516e41f025f1af34fa7c88e9057c0f661295ee.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.rateDiff03"
   },
   {
-    "description": "Obtain the Ankh Shield, the finest protection from unpleasant maladies and ailments.",
-    "displayName": "Ankhumulation Complete",
+    "description": "Create and submit a custom level",
+    "displayName": "Creator",
     "hidden": 0,
-    "icon": "achievement_images/820ecf21246cb8acb0a293fb5781b479c46bc441.jpg",
-    "icongray": "achievement_images/e811c3b4e59fa637cb76b1cfd83eaa9cb30e88d6.jpg",
-    "name": "GET_ANKH_SHIELD"
+    "icon": "achievement_images/58007038d6a06731eec64ca3fda548b7540e13b3.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.submit"
   },
   {
-    "description": "Invoked the wrath of the God of Torches, and survived long enough to earn its blessing.",
-    "displayName": "Torch God",
+    "description": "Get 100 likes on a created level",
+    "displayName": "Geometry Creator",
     "hidden": 0,
-    "icon": "achievement_images/a3ec24fea5772694e7b994a5435736c48a310e50.jpg",
-    "icongray": "achievement_images/2d90ca6d4475fb2103f5c9d8c6b469f81652a809.jpg",
-    "name": "GAIN_TORCH_GODS_FAVOR"
+    "icon": "achievement_images/aacb3001c714282a6b675946c3496d52d6d137c7.jpg",
+    "icongray": "achievement_images/a9697f91f2acc28a4a1acd501226a7f6bb914418.jpg",
+    "name": "geometry.ach.creator01"
   },
   {
-    "description": "Some very special seeds can lead to unique and rewarding experiences. Can you find one?",
-    "displayName": "A Rare Realm",
+    "description": "Click on the More Games button!",
+    "displayName": "RobTop Gamer",
     "hidden": 0,
-    "icon": "achievement_images/ee1bf7006604da48b973c5d793c9b13b68ea7b63.jpg",
-    "icongray": "achievement_images/25b095d1cbe17806165e130e70de4ce0aa296fd6.jpg",
-    "name": "PLAY_ON_A_SPECIAL_SEED"
+    "icon": "achievement_images/9430df8cfb53bbc24b31566e3fbca2e44fa1ff0e.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.moreGames"
   },
   {
-    "description": "Find all of the Slime Pets and have them move in!",
-    "displayName": "The Great Slime Mitosis",
+    "description": "Like Geometry Dash on Facebook",
+    "displayName": "Number one fan!",
     "hidden": 0,
-    "icon": "achievement_images/e1c0a92f692a92243f7fd948781488c65aa07e21.jpg",
-    "icongray": "achievement_images/8b9fbdfdccd4e0f81b305e6fc5d39aeacf2dbe38.jpg",
-    "name": "ALL_TOWN_SLIMES"
+    "icon": "achievement_images/358f37d05e8c4bc013c04b02f42b7cd14605459e.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.facebook"
   },
   {
-    "description": "Shimmer an item into another item. What other transmutations can you find?",
-    "displayName": "A Shimmer In The Dark",
+    "description": "Subscribe to RobTop Games on YouTube",
+    "displayName": "GeometryTube",
     "hidden": 0,
-    "icon": "achievement_images/2e8221bd7bc11ac180bf2949a1a57bb5649b8cce.jpg",
-    "icongray": "achievement_images/a41394f0501fae75ae02d106904bd68641cae6a4.jpg",
-    "name": "TRANSMUTE_ITEM"
+    "icon": "achievement_images/453abff4c495c3b1bad2cb8a7e3a0a4070e9e2a5.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.youtube"
   },
   {
-    "description": "Completely purify all Corruption, Crimson, and Hallow from your world, until the Dryad is satisfied!",
-    "displayName": "And Good Riddance!",
+    "description": "Crash at over 95% on a main level in normal mode",
+    "displayName": "So close",
     "hidden": 0,
-    "icon": "achievement_images/aeb266a1824b439683465935d418490151b96213.jpg",
-    "icongray": "achievement_images/36dddfdca36de597b925b8000c709207db645eb8.jpg",
-    "name": "PURIFY_ENTIRE_WORLD"
+    "icon": "achievement_images/7b7970299864f35b6f188a87182a075c7a828639.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.special01"
   },
   {
-    "description": "Fly a Kwad Racer into outer space.",
-    "displayName": "To Infinity... and Beyond!",
+    "description": "A secret is required",
+    "displayName": "Rampage!",
     "hidden": 0,
-    "icon": "achievement_images/266154858cd3adc18282e0c3f4a7b192d901e572.jpg",
-    "icongray": "achievement_images/a23ee25dc5f993fe57f45f09a42b7ea20cf569fd.jpg",
-    "name": "TO_INFINITY_AND_BEYOND"
+    "icon": "achievement_images/0a4a4af39b3be3ede590370d4550fcf40e625721.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.secret01"
+  },
+  {
+    "description": "A secret is required",
+    "displayName": "Dominating!",
+    "hidden": 0,
+    "icon": "achievement_images/994c031a9d992e02bd281924f716d2c7ea8f937d.jpg",
+    "icongray": "achievement_images/3cc5ae303a2577de3f2b29482d5589769623ebde.jpg",
+    "name": "geometry.ach.secret02"
+  },
+  {
+    "description": "A secret is required",
+    "displayName": "Godlike!",
+    "hidden": 0,
+    "icon": "achievement_images/16f7951e2595bfc1b2ce656942e76e5675076334.jpg",
+    "icongray": "achievement_images/a5575e87a5758422b82285735ec68792321b4328.jpg",
+    "name": "geometry.ach.secret03"
+  },
+  {
+    "description": "A hidden treasure is required",
+    "displayName": "Master Detective",
+    "hidden": 0,
+    "icon": "achievement_images/fafe07ecee79901246ba3352cea3fc24e91f1968.jpg",
+    "icongray": "achievement_images/724d0ee630113ba2203321163332384fe2f83231.jpg",
+    "name": "geometry.ach.secret04"
+  },
+  {
+    "description": "Complete level 1-3 in Normal mode (Steam Exclusive)",
+    "displayName": "Steamrolling!",
+    "hidden": 0,
+    "icon": "achievement_images/a6903a85fe675b81bf1d7b82b13880643ca8fe8e.jpg",
+    "icongray": "achievement_images/76e8c650cb6e9d98728980c4ab90a975de5c9a2a.jpg",
+    "name": "geometry.ach.steam01"
+  },
+  {
+    "description": "Complete \"Clubstep\" in Normal mode (Steam Exclusive Bonus)",
+    "displayName": "SteamStep!",
+    "hidden": 0,
+    "icon": "achievement_images/5e99bedbb2244709a966a5019d1648f349567247.jpg",
+    "icongray": "achievement_images/616e63692e552bb915ee03053baa79b6028217f2.jpg",
+    "name": "geometry.ach.steam02"
   }
 ]

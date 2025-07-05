@@ -94,7 +94,7 @@ gamePathTXT = os.path.join(temp_dir, "game_path.txt")
 gameNameTXT = os.path.join(temp_dir, "game_name.txt")
 fullExecutablePathTXT = os.path.join(temp_dir, "full_executable_path.txt")
 
-for path in [executableTXT, crackTXT, appidTXT, gamePathTXT, gameNameTXT, fullExecutablePathTXT]:
+for path in [executableTXT, crackTXT, gamePathTXT, gameNameTXT, fullExecutablePathTXT]:
     if os.path.exists(path):
         try:
             os.remove(path)
@@ -619,6 +619,50 @@ def process_executable(executable, folder_path, manifest_data, update_progress):
             print(f"[WARN] No se pudo resolver el juego por nombre de ejecutable: {executable}")
             log_message(f"No se pudo resolver el juego por nombre de ejecutable: {executable}")
 
+    # 3) Si no se resolvió vía AppID ni por nombre...
+    if not resolved_game:
+        print("[INFO] Intentando resolver por AppID proporcionado por steam.py")
+        log_message("Intentando resolver por AppID proporcionado por steam.py")
+
+        try:
+            steam_txt_path = os.path.join(assets, "appid.txt")
+            if os.path.exists(steam_txt_path):
+                with open(steam_txt_path, "r", encoding="utf-8") as f:
+                    appid_from_file = f.read().strip()
+
+                if appid_from_file.isdigit():
+                    appid = appid_from_file
+                    print(f"[INFO] AppID leído desde appid.txt: {appid}")
+                    log_message(f"AppID leído desde appid.txt: {appid}")
+
+                    # Repetir lógica de búsqueda en el manifest con este AppID
+                    for game_name, game_info in manifest_data.items():
+                        manifest_appid = str(game_info.get("steam", {}).get("id", ""))
+                        if manifest_appid == appid:
+                            launch_paths = game_info.get("launch", {})
+                            if launch_paths:
+                                desired_exe = os.path.basename(next(iter(launch_paths.keys())))
+                                if not desired_exe.lower().endswith('.exe'):
+                                    desired_exe += ".exe"
+                                print(f"[INFO] Ejecutable esperado según manifest: {desired_exe}")
+                                log_message(f"Ejecutable esperado según manifest: {desired_exe}")
+
+                                for root, _, files in os.walk(folder_path):
+                                    if desired_exe.lower() in (f.lower() for f in files):
+                                        resolved_exe = next(f for f in files if f.lower() == desired_exe.lower())
+                                        resolved_path = root
+                                        resolved_game = (game_name, game_info)
+                                        print(f"[INFO] Juego encontrado con AppID desde appid.txt: {game_name}")
+                                        log_message(f"Juego encontrado con AppID desde appid.txt: {game_name}")
+                                        break
+                            break
+                    else:
+                        print(f"[WARN] No se encontró juego en el manifest con AppID={appid} leído desde appid.txt")
+                        log_message(f"No se encontró juego en el manifest con AppID={appid} leído desde appid.txt")
+        except Exception as e:
+            print(f"[ERROR] Error al leer appid.txt: {e}")
+            log_message(f"Error al leer appid.txt: {e}")
+
 
     # 4) Si no se encontró en el manifest, usar el .exe más grande (excluyendo los de la lista)
     fitgirl_found = False
@@ -858,7 +902,7 @@ def apply_crack():
 
         # Leer la ruta del juego y el appid
         if not os.path.exists(gamePathTXT) or not os.path.exists(appidTXT):
-            log_message("No se encontró game_path.txt o appid.txt para aplicar el crack.")
+            log_message("No se encontró game_path.txt, appid.txt o steam.txt para aplicar el crack.")
             return False
 
         with open(gamePathTXT, "r", encoding="utf-8") as f:

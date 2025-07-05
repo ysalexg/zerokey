@@ -3,35 +3,7 @@
     "name": "public",
     "description": "",
     "protected": false,
-    "build_id": 9965506,
-    "time_updated": 1668752523
-  },
-  {
-    "name": "v1.3.0.8",
-    "description": "Lunacy!",
-    "protected": false,
-    "build_id": 18467854,
-    "time_updated": 1747345500
-  },
-  {
-    "name": "v1.2.4.1",
-    "description": "Angler\u0027s Delight",
-    "protected": false,
-    "build_id": 16547892,
-    "time_updated": 1735142912
-  },
-  {
-    "name": "v1.1.2",
-    "description": "First Final Update",
-    "protected": false,
-    "build_id": 14381510,
-    "time_updated": 1715872245
-  },
-  {
-    "name": "v1.0.6.1",
-    "description": "Undeluxe Edition",
-    "protected": false,
-    "build_id": 14381608,
-    "time_updated": 1715880177
+    "build_id": 16373064,
+    "time_updated": 1731379706
   }
 ]

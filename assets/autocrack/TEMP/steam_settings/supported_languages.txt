@@ -1,9 +1,1 @@
 english
-french
-italian
-german
-spanish
-polish
-brazilian
-russian
-schinese
