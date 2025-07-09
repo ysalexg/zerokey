@@ -14,6 +14,14 @@ if getattr(sys, 'frozen', False):
     base_path = os.path.dirname(os.path.abspath(sys.argv[0]))
     log_path = os.path.join(base_path, "assets", "zerokey.log")
     os.makedirs(os.path.dirname(log_path), exist_ok=True)
+
+    # Borrar log anterior si existe
+    if os.path.exists(log_path):
+        try:
+            os.remove(log_path)
+        except Exception as e:
+            print(f"No se pudo eliminar el archivo de log anterior: {e}")
+
     logging.basicConfig(
         filename=log_path,
         level=logging.INFO,
@@ -45,7 +53,7 @@ class ZerokeyMonitor:
         self.download_folder = None
         self.excluded_folder = None
         self.handle_path = None
-        self.ui_script = None
+        self.zerokey = None
         self.config_file = config_file
 
     def load_config(self):
@@ -129,7 +137,7 @@ class ZerokeyMonitor:
         prev_in_use = set()
         while self.running:
             try:
-                # logging.info("Esperando a que un archivo esté en uso por Hydra o proceso Hydra corriendo...")
+                logging.info("Esperando a que un archivo esté en uso por Hydra o proceso Hydra corriendo...")
                 # Esperar hasta que Hydra corra o algún archivo en uso
                 while self.running:
                     hydra_running = self.is_process_running("Hydra")
@@ -152,7 +160,7 @@ class ZerokeyMonitor:
                 if not self.running:
                     break
 
-                # logging.info("Detección de Hydra o archivo en uso. Verificando archivos...")
+                logging.info("Detección de Hydra o archivo en uso. Verificando archivos...")
 
                 # Esperar a que archivos dejen de estar en uso
                 while self.running:
@@ -180,12 +188,12 @@ class ZerokeyMonitor:
                         break
                     time.sleep(3)
 
-                # logging.info("Esperando reinicio de Hydra para siguiente ciclo...")
+                logging.info("Esperando reinicio de Hydra para siguiente ciclo...")
                 while self.running:
                     if self.is_process_running("Hydra"):
                         break
                     time.sleep(3)
-                # logging.info("Hydra detectado de nuevo. Volviendo a esperar archivos...")
+                logging.info("Hydra detectado de nuevo. Volviendo a esperar archivos...")
                 time.sleep(3)
             except Exception as e:
                 logging.error(f"Error en monitor_loop: {e}")
@@ -205,9 +213,9 @@ class ZerokeyMonitor:
                 break
             logging.info(f"Archivo libre: {archive_path}. Ejecutando zerokey...")
             try:
-                if os.path.exists(self.ui_script):
+                if os.path.exists(self.zerokey):
                     proc = subprocess.Popen(
-                        [self.ui_script],
+                        [self.zerokey],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
                         bufsize=0,
@@ -241,7 +249,7 @@ class ZerokeyMonitor:
                         else:
                             logging.error(f"ui.py retornó código {proc.returncode} para {archive_path}. STDERR: {err.strip()}")
                     else:
-                        logging.error(f"No existe zerokey.exe en: {self.ui_script} ni ui.py en: {ui_py_path}. No se puede ejecutar instalador.")
+                        logging.error(f"No existe zerokey.exe en: {self.zerokey} ni ui.py en: {ui_py_path}. No se puede ejecutar instalador.")
             except Exception as e:
                 logging.error(f"Error ejecutando instalador para {archive_path}: {e}")
 
@@ -255,11 +263,11 @@ class ZerokeyMonitor:
             self.handle_path = "handle.exe"
         logging.info(f'Usando handle.exe en: {self.handle_path}')
 
-        self.ui_script = resource_path("zerokey.exe")
-        if not os.path.exists(self.ui_script):
-            logging.warning(f"zerokey.exe no encontrado en: {self.ui_script}. Asegúrate de empacarlo junto al script.")
+        self.zerokey = resource_path("zerokey.exe")
+        if not os.path.exists(self.zerokey):
+            logging.warning(f"zerokey.exe no encontrado en: {self.zerokey}. Asegúrate de empacarlo junto al script.")
         else:
-            logging.info(f'Encontrado zerokey.exe en: {self.ui_script}')
+            logging.info(f'Encontrado zerokey.exe en: {self.zerokey}')
 
         self.running = True
         self.monitor_thread = threading.Thread(target=self.monitor_loop, daemon=True)

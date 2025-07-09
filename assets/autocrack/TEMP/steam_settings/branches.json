@@ -3,28 +3,7 @@
     "name": "public",
     "description": "",
     "protected": false,
-    "build_id": 9318602,
-    "time_updated": 1660937966
-  },
-  {
-    "name": "legacy",
-    "description": "No patches -- use at your own risk",
-    "protected": false,
-    "build_id": 2157580,
-    "time_updated": 1513803752
-  },
-  {
-    "name": "legacy-1.1.5",
-    "description": "DX9 -- not compatible with DLC",
-    "protected": false,
-    "build_id": 3454824,
-    "time_updated": 1553111056
-  },
-  {
-    "name": "legacy-1.2.4",
-    "description": "Pre-DLC -- not compatible with DLC",
-    "protected": false,
-    "build_id": 9030965,
-    "time_updated": 1656526139
+    "build_id": 9849657,
+    "time_updated": 1669798857
   }
 ]
